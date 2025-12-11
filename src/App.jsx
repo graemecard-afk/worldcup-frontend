@@ -6,17 +6,24 @@ const STADIUM_BG =
 const BALL_IMAGE =
   'https://images.pexels.com/photos/47730/the-ball-stadion-football-the-pitch-47730.jpeg?auto=compress&cs=tinysrgb&w=800';
 
+// Simple pool code for now – front-end check only.
+// Later we can enforce this on the backend too if you like.
+const POOL_CODE = 'GRAEME-2026';
+
 export default function App() {
   const [mode, setMode] = useState('login'); // 'login' or 'register'
   const [user, setUser] = useState(null);
   const [authError, setAuthError] = useState('');
   const [loadingUser, setLoadingUser] = useState(true);
 
+  const [theme, setTheme] = useState('dark'); // 'dark' | 'light'
+
   const [form, setForm] = useState({
     name: '',
     email: '',
     password: '',
     timezone: 'UTC',
+    poolCode: '',
   });
 
   const [tournaments, setTournaments] = useState([]);
@@ -46,12 +53,26 @@ export default function App() {
     init();
   }, []);
 
+  function toggleTheme() {
+    setTheme(t => (t === 'dark' ? 'light' : 'dark'));
+  }
+
   async function handleAuthSubmit(e) {
     e.preventDefault();
     setAuthError('');
 
     try {
       if (mode === 'register') {
+        // Front-end pool code check
+        if (
+          form.poolCode.trim().toUpperCase() !== POOL_CODE.toUpperCase()
+        ) {
+          setAuthError(
+            "Incorrect pool code. Please check with Graeme for the right code."
+          );
+          return;
+        }
+
         const result = await apiPost('/auth/register', {
           name: form.name,
           email: form.email,
@@ -102,7 +123,12 @@ export default function App() {
 
   if (loadingUser) {
     return (
-      <Screen>
+      <Screen
+        user={user}
+        onLogout={handleLogout}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+      >
         <FrostedCard>
           <TitleRow />
           <Sub>Loading your session…</Sub>
@@ -113,7 +139,12 @@ export default function App() {
 
   if (!user) {
     return (
-      <Screen>
+      <Screen
+        user={null}
+        onLogout={null}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+      >
         <FrostedCard>
           <TitleRow />
           <Sub>Sign in to start making predictions with your mates.</Sub>
@@ -161,7 +192,9 @@ export default function App() {
               <input
                 type="email"
                 value={form.email}
-                onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                onChange={e =>
+                  setForm(f => ({ ...f, email: e.target.value }))
+                }
                 required
               />
             </Field>
@@ -176,15 +209,27 @@ export default function App() {
               />
             </Field>
             {mode === 'register' && (
-              <Field label="Timezone (for future local kick-off times)">
-                <input
-                  type="text"
-                  value={form.timezone}
-                  onChange={e =>
-                    setForm(f => ({ ...f, timezone: e.target.value }))
-                  }
-                />
-              </Field>
+              <>
+                <Field label="Timezone (for future local kick-off times)">
+                  <input
+                    type="text"
+                    value={form.timezone}
+                    onChange={e =>
+                      setForm(f => ({ ...f, timezone: e.target.value }))
+                    }
+                  />
+                </Field>
+                <Field label="Pool code (required to join this pool)">
+                  <input
+                    type="text"
+                    value={form.poolCode}
+                    onChange={e =>
+                      setForm(f => ({ ...f, poolCode: e.target.value }))
+                    }
+                    required
+                  />
+                </Field>
+              </>
             )}
 
             {authError && (
@@ -219,7 +264,12 @@ export default function App() {
 
   // Logged-in view
   return (
-    <Screen>
+    <Screen
+      user={user}
+      onLogout={handleLogout}
+      theme={theme}
+      onToggleTheme={toggleTheme}
+    >
       <FrostedCard>
         <div
           style={{
@@ -234,21 +284,6 @@ export default function App() {
             <TitleRow />
             <Sub>Welcome, {user.name}</Sub>
           </div>
-          <button
-            onClick={handleLogout}
-            style={{
-              padding: '6px 10px',
-              borderRadius: '999px',
-              border: '1px solid rgba(148,163,184,0.6)',
-              background: 'rgba(15,23,42,0.7)',
-              color: '#e5e7eb',
-              cursor: 'pointer',
-              fontSize: '0.8rem',
-              backdropFilter: 'blur(6px)',
-            }}
-          >
-            Log out
-          </button>
         </div>
 
         <div
@@ -372,17 +407,39 @@ export default function App() {
   );
 }
 
-function Screen({ children }) {
+// ===== Layout & UI helpers =====
+
+function Screen({ children, user, onLogout, theme, onToggleTheme }) {
+  const [navOpen, setNavOpen] = useState(false);
+  const [avatarOpen, setAvatarOpen] = useState(false);
+
+  const isDark = theme === 'dark';
+
+  const bgImage = isDark
+    ? `linear-gradient(120deg, rgba(15,23,42,0.9), rgba(8,47,73,0.85)), url(${STADIUM_BG})`
+    : `linear-gradient(120deg, rgba(226,232,240,0.96), rgba(209,250,229,0.96)), url(${STADIUM_BG})`;
+
+  const textColor = isDark ? '#e5e7eb' : '#0f172a';
+
+  const initials = user?.name
+    ? user.name
+        .split(' ')
+        .filter(Boolean)
+        .map(n => n[0]?.toUpperCase())
+        .slice(0, 2)
+        .join('')
+    : '';
+
   return (
     <div
       style={{
         minHeight: '100vh',
         fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, sans-serif',
-        backgroundImage: `linear-gradient(120deg, rgba(15,23,42,0.9), rgba(8,47,73,0.85)), url(${STADIUM_BG})`,
+        backgroundImage: bgImage,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        color: '#e5e7eb',
-        paddingTop: '80px',    // pushes content below top bar
+        color: textColor,
+        paddingTop: '80px', // space for top bar
         position: 'relative',
       }}
     >
@@ -396,19 +453,233 @@ function Screen({ children }) {
           height: '60px',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center',
-          background: 'rgba(0,0,0,0.55)',
+          justifyContent: 'space-between',
+          background: isDark
+            ? 'rgba(0,0,0,0.55)'
+            : 'rgba(15,23,42,0.12)',
           backdropFilter: 'blur(8px)',
-          color: '#fefefe',
-          fontSize: '1.1rem',
+          color: isDark ? '#fefefe' : '#0f172a',
+          fontSize: '1.05rem',
           fontWeight: 600,
           letterSpacing: '0.03em',
-          borderBottom: '1px solid rgba(255,255,255,0.1)',
+          borderBottom: '1px solid rgba(255,255,255,0.12)',
           zIndex: 50,
+          padding: '0 14px',
+          boxSizing: 'border-box',
         }}
       >
-        🏆 Graeme&apos;s World Cup Predictor Pool 2026
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {user && (
+            <button
+              onClick={() => setNavOpen(o => !o)}
+              style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '999px',
+                border: 'none',
+                background: isDark
+                  ? 'rgba(15,23,42,0.9)'
+                  : 'rgba(255,255,255,0.8)',
+                color: isDark ? '#e5e7eb' : '#0f172a',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                boxShadow: isDark
+                  ? '0 3px 8px rgba(15,23,42,0.8)'
+                  : '0 3px 8px rgba(148,163,184,0.6)',
+              }}
+              aria-label="Open navigation"
+            >
+              ☰
+            </button>
+          )}
+        </div>
+
+        <div
+          style={{
+            textAlign: 'center',
+            flex: 1,
+            pointerEvents: 'none',
+          }}
+        >
+          <span style={{ whiteSpace: 'nowrap' }}>
+            🏆 Graeme&apos;s World Cup Predictor Pool 2026
+          </span>
+        </div>
+
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            justifyContent: 'flex-end',
+          }}
+        >
+          <button
+            onClick={onToggleTheme}
+            style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '999px',
+              border: 'none',
+              background: isDark
+                ? 'rgba(15,23,42,0.9)'
+                : 'rgba(255,255,255,0.9)',
+              color: isDark ? '#fbbf24' : '#0f172a',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              fontSize: '1rem',
+            }}
+            aria-label="Toggle colour theme"
+          >
+            {isDark ? '☀️' : '🌙'}
+          </button>
+
+          {user && (
+            <div style={{ position: 'relative' }}>
+              <button
+                onClick={() => setAvatarOpen(o => !o)}
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '999px',
+                  border: '1px solid rgba(148,163,184,0.7)',
+                  background: isDark
+                    ? 'rgba(15,23,42,0.95)'
+                    : 'rgba(255,255,255,0.95)',
+                  color: isDark ? '#e5e7eb' : '#0f172a',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  fontSize: '0.8rem',
+                  fontWeight: 700,
+                }}
+                aria-label="User menu"
+              >
+                {initials || 'U'}
+              </button>
+
+              {avatarOpen && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '40px',
+                    right: 0,
+                    background: isDark
+                      ? 'rgba(15,23,42,0.95)'
+                      : 'rgba(248,250,252,0.98)',
+                    borderRadius: '10px',
+                    border: '1px solid rgba(148,163,184,0.7)',
+                    minWidth: '200px',
+                    boxShadow: '0 12px 30px rgba(0,0,0,0.6)',
+                    padding: '8px 10px',
+                    fontSize: '0.85rem',
+                    zIndex: 60,
+                  }}
+                >
+                  <div
+                    style={{
+                      marginBottom: '6px',
+                      opacity: 0.9,
+                      paddingBottom: '4px',
+                      borderBottom: '1px solid rgba(148,163,184,0.4)',
+                    }}
+                  >
+                    Logged in as
+                    <br />
+                    <strong>{user.name}</strong>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setAvatarOpen(false);
+                      if (onLogout) onLogout();
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '6px 8px',
+                      borderRadius: '8px',
+                      border: 'none',
+                      background: '#ef4444',
+                      color: '#f9fafb',
+                      cursor: 'pointer',
+                      fontWeight: 600,
+                    }}
+                  >
+                    Log out
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* SIDE NAV SHELL (for future multi-page nav) */}
+      {user && navOpen && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 60,
+            left: 0,
+            width: '220px',
+            bottom: 0,
+            background: isDark
+              ? 'rgba(15,23,42,0.98)'
+              : 'rgba(248,250,252,0.98)',
+            borderRight: '1px solid rgba(148,163,184,0.5)',
+            boxShadow: '4px 0 18px rgba(0,0,0,0.6)',
+            padding: '12px 10px',
+            zIndex: 40,
+            fontSize: '0.9rem',
+          }}
+        >
+          <div
+            style={{
+              marginBottom: '8px',
+              fontWeight: 600,
+              opacity: 0.85,
+            }}
+          >
+            Navigation
+          </div>
+          {['Dashboard', 'Group Stage', 'Knockouts', 'Leaderboard', 'Rules'].map(
+            item => (
+              <div
+                key={item}
+                style={{
+                  padding: '6px 8px',
+                  borderRadius: '8px',
+                  cursor: 'default',
+                  opacity: 0.9,
+                  marginBottom: '4px',
+                  background:
+                    item === 'Dashboard'
+                      ? isDark
+                        ? 'rgba(30,64,175,0.7)'
+                        : 'rgba(191,219,254,0.9)'
+                      : 'transparent',
+                }}
+              >
+                {item}
+              </div>
+            )
+          )}
+          <p
+            style={{
+              marginTop: '10px',
+              fontSize: '0.8rem',
+              opacity: 0.7,
+            }}
+          >
+            (Links are placeholders – we can wire them up once we add those
+            pages.)
+          </p>
+        </div>
+      )}
 
       {/* PAGE CONTENT */}
       <div
@@ -424,7 +695,6 @@ function Screen({ children }) {
     </div>
   );
 }
-
 
 function FrostedCard({ children }) {
   return (
