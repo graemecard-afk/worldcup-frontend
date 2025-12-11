@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { apiGet, apiPost, setAuthToken, getStoredToken } from './api.js';
 
+const STADIUM_BG =
+  'https://images.pexels.com/photos/399187/pexels-photo-399187.jpeg?auto=compress&cs=tinysrgb&w=1600'; // generic stadium
+const BALL_IMAGE =
+  'https://images.pexels.com/photos/47730/the-ball-stadion-football-the-pitch-47730.jpeg?auto=compress&cs=tinysrgb&w=800';
+
 export default function App() {
   const [mode, setMode] = useState('login'); // 'login' or 'register'
   const [user, setUser] = useState(null);
@@ -98,10 +103,10 @@ export default function App() {
   if (loadingUser) {
     return (
       <Screen>
-        <Card>
-          <Title>World Cup Predictor</Title>
+        <FrostedCard>
+          <TitleRow />
           <Sub>Loading your session…</Sub>
-        </Card>
+        </FrostedCard>
       </Screen>
     );
   }
@@ -109,11 +114,18 @@ export default function App() {
   if (!user) {
     return (
       <Screen>
-        <Card>
-          <Title>World Cup Predictor</Title>
-          <Sub>Sign in to start making predictions</Sub>
+        <FrostedCard>
+          <TitleRow />
+          <Sub>Sign in to start making predictions with your mates.</Sub>
 
-          <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+          <div
+            style={{
+              display: 'flex',
+              gap: '8px',
+              marginBottom: '18px',
+              marginTop: '10px',
+            }}
+          >
             <TabButton
               active={mode === 'login'}
               onClick={() => {
@@ -164,7 +176,7 @@ export default function App() {
               />
             </Field>
             {mode === 'register' && (
-              <Field label="Timezone (for future features)">
+              <Field label="Timezone (for future local kick-off times)">
                 <input
                   type="text"
                   value={form.timezone}
@@ -176,7 +188,7 @@ export default function App() {
             )}
 
             {authError && (
-              <p style={{ color: '#ff6b6b', fontSize: '0.85rem' }}>
+              <p style={{ color: '#fecaca', fontSize: '0.85rem' }}>
                 {authError}
               </p>
             )}
@@ -187,18 +199,20 @@ export default function App() {
                 marginTop: '12px',
                 width: '100%',
                 padding: '10px 12px',
-                borderRadius: '8px',
+                borderRadius: '999px',
                 border: 'none',
-                background: '#3b82f6',
-                color: '#fff',
-                fontWeight: 600,
+                background:
+                  'linear-gradient(135deg, #22c55e 0%, #16a34a 40%, #22c55e 100%)',
+                color: '#0b1120',
+                fontWeight: 700,
                 cursor: 'pointer',
+                boxShadow: '0 8px 20px rgba(16,185,129,0.35)',
               }}
             >
               {mode === 'login' ? 'Log in' : 'Create account'}
             </button>
           </form>
-        </Card>
+        </FrostedCard>
       </Screen>
     );
   }
@@ -206,27 +220,74 @@ export default function App() {
   // Logged-in view
   return (
     <Screen>
-      <Card>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+      <FrostedCard>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            gap: '12px',
+            marginBottom: '14px',
+            alignItems: 'flex-start',
+          }}
+        >
           <div>
-            <Title>World Cup Predictor</Title>
+            <TitleRow />
             <Sub>Welcome, {user.name}</Sub>
           </div>
           <button
             onClick={handleLogout}
             style={{
-              alignSelf: 'flex-start',
               padding: '6px 10px',
-              borderRadius: '6px',
-              border: '1px solid #4b5563',
-              background: 'transparent',
+              borderRadius: '999px',
+              border: '1px solid rgba(148,163,184,0.6)',
+              background: 'rgba(15,23,42,0.7)',
               color: '#e5e7eb',
               cursor: 'pointer',
               fontSize: '0.8rem',
+              backdropFilter: 'blur(6px)',
             }}
           >
             Log out
           </button>
+        </div>
+
+        <div
+          style={{
+            display: 'flex',
+            gap: '12px',
+            alignItems: 'center',
+            marginBottom: '18px',
+          }}
+        >
+          <div
+            style={{
+              width: '52px',
+              height: '52px',
+              borderRadius: '50%',
+              overflow: 'hidden',
+              border: '2px solid rgba(190,242,100,0.8)',
+              boxShadow: '0 0 0 3px rgba(15,23,42,0.9)',
+              flexShrink: 0,
+            }}
+          >
+            <img
+              src={BALL_IMAGE}
+              alt="Football"
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+          </div>
+          <div style={{ textAlign: 'left', flex: 1 }}>
+            <p
+              style={{
+                margin: 0,
+                fontSize: '0.85rem',
+                opacity: 0.9,
+              }}
+            >
+              Get your predictions in before kick-off and see who tops the
+              table in your pool.
+            </p>
+          </div>
         </div>
 
         <div style={{ marginBottom: '16px' }}>
@@ -234,12 +295,14 @@ export default function App() {
             onClick={loadTournamentAndMatches}
             style={{
               padding: '8px 12px',
-              borderRadius: '8px',
+              borderRadius: '999px',
               border: 'none',
-              background: '#10b981',
-              color: '#fff',
+              background:
+                'linear-gradient(135deg, #3b82f6 0%, #2563eb 40%, #3b82f6 100%)',
+              color: '#f9fafb',
               fontWeight: 600,
               cursor: 'pointer',
+              boxShadow: '0 6px 18px rgba(37,99,235,0.45)',
             }}
           >
             Load Dummy Cup matches
@@ -248,7 +311,7 @@ export default function App() {
 
         {loadingData && <Sub>Loading tournament data…</Sub>}
         {dataError && (
-          <p style={{ color: '#ff6b6b', fontSize: '0.85rem' }}>{dataError}</p>
+          <p style={{ color: '#fecaca', fontSize: '0.85rem' }}>{dataError}</p>
         )}
 
         {tournaments.length > 0 && (
@@ -267,8 +330,9 @@ export default function App() {
               style={{
                 maxHeight: '260px',
                 overflowY: 'auto',
-                borderRadius: '8px',
-                border: '1px solid #1f2933',
+                borderRadius: '12px',
+                border: '1px solid rgba(30,64,175,0.7)',
+                background: 'rgba(15,23,42,0.85)',
               }}
             >
               {matches.map(m => (
@@ -276,10 +340,11 @@ export default function App() {
                   key={m.id}
                   style={{
                     padding: '8px 10px',
-                    borderBottom: '1px solid #111827',
+                    borderBottom: '1px solid rgba(15,23,42,0.9)',
                     fontSize: '0.9rem',
                     display: 'flex',
                     justifyContent: 'space-between',
+                    gap: '10px',
                   }}
                 >
                   <span>
@@ -287,7 +352,7 @@ export default function App() {
                     <strong>{m.away_team}</strong>
                     {m.group_name ? ` – ${m.group_name}` : ''}
                   </span>
-                  <span style={{ opacity: 0.8 }}>
+                  <span style={{ opacity: 0.8, whiteSpace: 'nowrap' }}>
                     {new Date(m.kickoff_utc).toISOString().slice(0, 16)} UTC
                   </span>
                 </div>
@@ -297,9 +362,12 @@ export default function App() {
         )}
 
         {!loadingData && !dataError && tournaments.length === 0 && (
-          <Sub>Click “Load Dummy Cup matches” to fetch data from the backend.</Sub>
+          <Sub>
+            Click <strong>Load Dummy Cup matches</strong> to fetch games from
+            the backend.
+          </Sub>
         )}
-      </Card>
+      </FrostedCard>
     </Screen>
   );
 }
@@ -313,7 +381,9 @@ function Screen({ children }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: '#020617',
+        backgroundImage: `linear-gradient(120deg, rgba(15,23,42,0.9), rgba(8,47,73,0.85)), url(${STADIUM_BG})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
         color: '#e5e7eb',
         padding: '16px',
       }}
@@ -323,17 +393,18 @@ function Screen({ children }) {
   );
 }
 
-function Card({ children }) {
+function FrostedCard({ children }) {
   return (
     <div
       style={{
-        background: '#020617',
-        borderRadius: '16px',
-        border: '1px solid #1f2933',
-        boxShadow: '0 12px 40px rgba(0,0,0,0.6)',
+        background: 'rgba(15,23,42,0.82)',
+        borderRadius: '18px',
+        border: '1px solid rgba(148,163,184,0.4)',
+        boxShadow: '0 18px 50px rgba(0,0,0,0.7)',
         padding: '24px 28px',
         maxWidth: '520px',
         width: '100%',
+        backdropFilter: 'blur(16px)',
       }}
     >
       {children}
@@ -341,18 +412,28 @@ function Card({ children }) {
   );
 }
 
-function Title({ children }) {
+function TitleRow() {
   return (
-    <h1
+    <div
       style={{
-        margin: 0,
-        marginBottom: '6px',
-        fontSize: '1.6rem',
-        fontWeight: 700,
+        display: 'flex',
+        gap: '10px',
+        alignItems: 'center',
+        marginBottom: '4px',
       }}
     >
-      {children}
-    </h1>
+      <span style={{ fontSize: '1.7rem' }}>🏆</span>
+      <h1
+        style={{
+          margin: 0,
+          fontSize: '1.5rem',
+          fontWeight: 700,
+          letterSpacing: '0.03em',
+        }}
+      >
+        World Cup Predictor
+      </h1>
+    </div>
   );
 }
 
@@ -363,7 +444,7 @@ function Sub({ children }) {
         margin: 0,
         marginBottom: '10px',
         fontSize: '0.9rem',
-        opacity: 0.85,
+        opacity: 0.9,
       }}
     >
       {children}
@@ -383,8 +464,11 @@ function TabButton({ active, children, ...props }) {
         cursor: 'pointer',
         fontWeight: 600,
         fontSize: '0.9rem',
-        background: active ? '#3b82f6' : '#0b1120',
-        color: active ? '#fff' : '#e5e7eb',
+        background: active ? '#3b82f6' : 'rgba(15,23,42,0.8)',
+        color: active ? '#f9fafb' : '#e5e7eb',
+        boxShadow: active
+          ? '0 4px 12px rgba(59,130,246,0.5)'
+          : '0 0 0 rgba(0,0,0,0)',
       }}
     >
       {children}
@@ -394,8 +478,20 @@ function TabButton({ active, children, ...props }) {
 
 function Field({ label, children }) {
   return (
-    <label style={{ display: 'block', marginBottom: '10px', fontSize: '0.85rem' }}>
-      <span style={{ display: 'block', marginBottom: '4px', opacity: 0.9 }}>
+    <label
+      style={{
+        display: 'block',
+        marginBottom: '10px',
+        fontSize: '0.85rem',
+      }}
+    >
+      <span
+        style={{
+          display: 'block',
+          marginBottom: '4px',
+          opacity: 0.9,
+        }}
+      >
         {label}
       </span>
       {React.cloneElement(children, {
@@ -403,8 +499,8 @@ function Field({ label, children }) {
           width: '100%',
           padding: '8px 10px',
           borderRadius: '8px',
-          border: '1px solid #4b5563',
-          background: '#020617',
+          border: '1px solid rgba(148,163,184,0.7)',
+          background: 'rgba(15,23,42,0.9)',
           color: '#e5e7eb',
           fontSize: '0.9rem',
         },
