@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { apiGet, apiPost, setAuthToken, getStoredToken } from './api.js';
 
 const STADIUM_BG =
-  'https://images.pexels.com/photos/399187/pexels-photo-399187.jpeg?auto=compress&cs=tinysrgb&w=1600'; // generic stadium
+  '/wc-background.jpg';
 const BALL_IMAGE =
   'https://images.pexels.com/photos/47730/the-ball-stadion-football-the-pitch-47730.jpeg?auto=compress&cs=tinysrgb&w=800';
 
