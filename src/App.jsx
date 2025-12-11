@@ -378,20 +378,53 @@ function Screen({ children }) {
       style={{
         minHeight: '100vh',
         fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, sans-serif',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
         backgroundImage: `linear-gradient(120deg, rgba(15,23,42,0.9), rgba(8,47,73,0.85)), url(${STADIUM_BG})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         color: '#e5e7eb',
-        padding: '16px',
+        paddingTop: '80px',    // pushes content below top bar
+        position: 'relative',
       }}
     >
-      {children}
+      {/* TOP BAR */}
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '60px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'rgba(0,0,0,0.55)',
+          backdropFilter: 'blur(8px)',
+          color: '#fefefe',
+          fontSize: '1.1rem',
+          fontWeight: 600,
+          letterSpacing: '0.03em',
+          borderBottom: '1px solid rgba(255,255,255,0.1)',
+          zIndex: 50,
+        }}
+      >
+        🏆 G’s World Cup Predictor Pool 2026
+      </div>
+
+      {/* PAGE CONTENT */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '16px',
+        }}
+      >
+        {children}
+      </div>
     </div>
   );
 }
+
 
 function FrostedCard({ children }) {
   return (
