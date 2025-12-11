@@ -407,7 +407,7 @@ function Screen({ children }) {
           zIndex: 50,
         }}
       >
-        🏆 G’s World Cup Predictor Pool 2026
+        🏆 Graeme&apos;s World Cup Predictor Pool 2026
       </div>
 
       {/* PAGE CONTENT */}
