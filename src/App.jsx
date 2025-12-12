@@ -374,7 +374,7 @@ export default function App() {
         theme={theme}
         onToggleTheme={toggleTheme}
       >
-        <FrostedCard>
+        <FrostedCard theme={theme}>
           <TitleRow />
           <Sub>Loading your session…</Sub>
         </FrostedCard>
@@ -390,7 +390,7 @@ export default function App() {
         theme={theme}
         onToggleTheme={toggleTheme}
       >
-        <FrostedCard>
+        <FrostedCard theme={theme}>
           <TitleRow />
           <Sub>Sign in to start making predictions with your mates.</Sub>
 
@@ -515,7 +515,7 @@ export default function App() {
       theme={theme}
       onToggleTheme={toggleTheme}
     >
-      <FrostedCard>
+      <FrostedCard theme={theme}>
         <div
           style={{
             display: 'flex',
@@ -1259,14 +1259,22 @@ function Screen({ children, user, onLogout, theme, onToggleTheme }) {
   );
 }
 
-function FrostedCard({ children }) {
+function FrostedCard({ children, theme = 'dark' }) {
+  const isDark = theme === 'dark';
+
   return (
     <div
       style={{
-        background: 'rgba(15,23,42,0.82)',
+        background: isDark
+          ? 'rgba(15,23,42,0.82)'
+          : 'rgba(255,255,255,0.9)',
         borderRadius: '18px',
-        border: '1px solid rgba(148,163,184,0.4)',
-        boxShadow: '0 18px 50px rgba(0,0,0,0.7)',
+        border: isDark
+          ? '1px solid rgba(148,163,184,0.4)'
+          : '1px solid rgba(148,163,184,0.7)',
+        boxShadow: isDark
+          ? '0 18px 50px rgba(0,0,0,0.7)'
+          : '0 14px 30px rgba(15,23,42,0.18)',
         padding: '24px 28px',
         maxWidth: '520px',
         width: '100%',
