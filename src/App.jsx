@@ -116,20 +116,22 @@ export default function App() {
       const ms = await apiGet(`/matches/${first.id}`);
       setMatches(ms);
 
-      // Try to load existing predictions; if endpoint not ready yet, fail silently
+            // Try to load existing predictions; if endpoint not ready yet, fail silently
       try {
-        const ps = await apiGet(`/predictions/${first.id}`);
+        const ps = await apiGet(`/predictions/tournament/${first.id}`);
         const map = {};
         ps.forEach(p => {
           map[p.match_id] = {
             home:
-              p.home_goals === null || p.home_goals === undefined
+              p.predicted_home_goals === null ||
+              p.predicted_home_goals === undefined
                 ? ''
-                : String(p.home_goals),
+                : String(p.predicted_home_goals),
             away:
-              p.away_goals === null || p.away_goals === undefined
+              p.predicted_away_goals === null ||
+              p.predicted_away_goals === undefined
                 ? ''
-                : String(p.away_goals),
+                : String(p.predicted_away_goals),
             status: 'saved',
           };
         });
@@ -141,6 +143,7 @@ export default function App() {
         );
         setPredictions({});
       }
+
     } catch (err) {
       console.error(err);
       setDataError('Failed to load tournament data.');
@@ -173,17 +176,40 @@ export default function App() {
     }));
   }
 
-  async function savePrediction(match) {
+    async function savePrediction(match) {
     if (!currentTournament) return;
     const entry = predictions[match.id] || {};
-    const home =
-      entry.home === '' || entry.home === undefined
-        ? null
-        : parseInt(entry.home, 10);
-    const away =
-      entry.away === '' || entry.away === undefined
-        ? null
-        : parseInt(entry.away, 10);
+
+    // If either field is empty, don't try to save yet
+    if (
+      entry.home === '' ||
+      entry.home === undefined ||
+      entry.away === '' ||
+      entry.away === undefined
+    ) {
+      setPredictions(prev => ({
+        ...prev,
+        [match.id]: {
+          ...prev[match.id],
+          status: 'idle',
+        },
+      }));
+      return;
+    }
+
+    const home = parseInt(entry.home, 10);
+    const away = parseInt(entry.away, 10);
+
+    if (Number.isNaN(home) || Number.isNaN(away)) {
+      setPredictions(prev => ({
+        ...prev,
+        [match.id]: {
+          ...prev[match.id],
+          status: 'error',
+        },
+      }));
+      return;
+    }
 
     setPredictions(prev => ({
       ...prev,
@@ -195,9 +221,8 @@ export default function App() {
 
     try {
       await apiPost(`/predictions/${match.id}`, {
-        tournamentId: currentTournament.id,
-        homeGoals: home,
-        awayGoals: away,
+        predicted_home_goals: home,
+        predicted_away_goals: away,
       });
 
       setPredictions(prev => ({
@@ -218,6 +243,7 @@ export default function App() {
       }));
     }
   }
+
 
   if (loadingUser) {
     return (
