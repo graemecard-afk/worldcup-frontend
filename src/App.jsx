@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { apiGet, apiPost, setAuthToken, getStoredToken } from './api.js';
 
-const STADIUM_BG =
-  '/wc-background.png';
+const STADIUM_BG = '/wc-background.jpg';
 const BALL_IMAGE =
   'https://images.pexels.com/photos/47730/the-ball-stadion-football-the-pitch-47730.jpeg?auto=compress&cs=tinysrgb&w=800';
 
 // Simple pool code for now – front-end check only.
-// Later we can enforce this on the backend too if you like.
 const POOL_CODE = 'GRAEME-2026';
 
 export default function App() {
@@ -27,9 +25,13 @@ export default function App() {
   });
 
   const [tournaments, setTournaments] = useState([]);
+  const [currentTournament, setCurrentTournament] = useState(null);
   const [matches, setMatches] = useState([]);
   const [loadingData, setLoadingData] = useState(false);
   const [dataError, setDataError] = useState('');
+
+  // predictions: { [matchId]: { home: string, away: string, status: 'idle'|'dirty'|'saving'|'saved'|'error' } }
+  const [predictions, setPredictions] = useState({});
 
   // On load, restore token and try /auth/me
   useEffect(() => {
@@ -64,11 +66,9 @@ export default function App() {
     try {
       if (mode === 'register') {
         // Front-end pool code check
-        if (
-          form.poolCode.trim().toUpperCase() !== POOL_CODE.toUpperCase()
-        ) {
+        if (form.poolCode.trim().toUpperCase() !== POOL_CODE.toUpperCase()) {
           setAuthError(
-            "Incorrect pool code. Please check with Graeme for the right code."
+            'Incorrect pool code. Please check with Graeme for the right code.'
           );
           return;
         }
@@ -101,10 +101,45 @@ export default function App() {
     try {
       const ts = await apiGet('/tournaments');
       setTournaments(ts);
-      if (ts.length > 0) {
-        const first = ts[0];
-        const ms = await apiGet(`/matches/${first.id}`);
-        setMatches(ms);
+
+      if (ts.length === 0) {
+        setCurrentTournament(null);
+        setMatches([]);
+        setPredictions({});
+        setLoadingData(false);
+        return;
+      }
+
+      const first = ts[0];
+      setCurrentTournament(first);
+
+      const ms = await apiGet(`/matches/${first.id}`);
+      setMatches(ms);
+
+      // Try to load existing predictions; if endpoint not ready yet, fail silently
+      try {
+        const ps = await apiGet(`/predictions/${first.id}`);
+        const map = {};
+        ps.forEach(p => {
+          map[p.match_id] = {
+            home:
+              p.home_goals === null || p.home_goals === undefined
+                ? ''
+                : String(p.home_goals),
+            away:
+              p.away_goals === null || p.away_goals === undefined
+                ? ''
+                : String(p.away_goals),
+            status: 'saved',
+          };
+        });
+        setPredictions(map);
+      } catch (err) {
+        console.error(
+          'Failed to load existing predictions (OK if endpoint not implemented yet):',
+          err
+        );
+        setPredictions({});
       }
     } catch (err) {
       console.error(err);
@@ -118,7 +153,70 @@ export default function App() {
     setAuthToken(null);
     setUser(null);
     setTournaments([]);
+    setCurrentTournament(null);
     setMatches([]);
+    setPredictions({});
+  }
+
+  function handleScoreChange(matchId, field, value) {
+    // Keep it numeric or empty
+    const clean =
+      value === '' ? '' : value.replace(/[^\d]/g, '').slice(0, 2); // 0–99
+
+    setPredictions(prev => ({
+      ...prev,
+      [matchId]: {
+        home: field === 'home' ? clean : prev[matchId]?.home ?? '',
+        away: field === 'away' ? clean : prev[matchId]?.away ?? '',
+        status: 'dirty',
+      },
+    }));
+  }
+
+  async function savePrediction(match) {
+    if (!currentTournament) return;
+    const entry = predictions[match.id] || {};
+    const home =
+      entry.home === '' || entry.home === undefined
+        ? null
+        : parseInt(entry.home, 10);
+    const away =
+      entry.away === '' || entry.away === undefined
+        ? null
+        : parseInt(entry.away, 10);
+
+    setPredictions(prev => ({
+      ...prev,
+      [match.id]: {
+        ...prev[match.id],
+        status: 'saving',
+      },
+    }));
+
+    try {
+      await apiPost(`/predictions/${match.id}`, {
+        tournamentId: currentTournament.id,
+        homeGoals: home,
+        awayGoals: away,
+      });
+
+      setPredictions(prev => ({
+        ...prev,
+        [match.id]: {
+          ...prev[match.id],
+          status: 'saved',
+        },
+      }));
+    } catch (err) {
+      console.error(err);
+      setPredictions(prev => ({
+        ...prev,
+        [match.id]: {
+          ...prev[match.id],
+          status: 'error',
+        },
+      }));
+    }
   }
 
   if (loadingUser) {
@@ -349,54 +447,168 @@ export default function App() {
           <p style={{ color: '#fecaca', fontSize: '0.85rem' }}>{dataError}</p>
         )}
 
-        {tournaments.length > 0 && (
+        {currentTournament && (
           <div style={{ textAlign: 'left', marginBottom: '12px' }}>
             <h3 style={{ margin: 0, fontSize: '1rem' }}>Tournament</h3>
             <p style={{ margin: 0, fontSize: '0.9rem', opacity: 0.9 }}>
-              {tournaments[0].name} ({tournaments[0].year})
+              {currentTournament.name} ({currentTournament.year})
             </p>
           </div>
         )}
 
         {matches.length > 0 && (
           <div style={{ textAlign: 'left', marginTop: '8px' }}>
-            <h3 style={{ marginBottom: '8px', fontSize: '1rem' }}>Matches</h3>
+            <h3 style={{ marginBottom: '8px', fontSize: '1rem' }}>
+              Your group stage predictions
+            </h3>
+            <p
+              style={{
+                marginTop: 0,
+                marginBottom: '6px',
+                fontSize: '0.8rem',
+                opacity: 0.8,
+              }}
+            >
+              Enter scores and tap away from the field – your prediction will
+              autosave for that match.
+            </p>
             <div
               style={{
-                maxHeight: '260px',
+                maxHeight: '280px',
                 overflowY: 'auto',
                 borderRadius: '12px',
                 border: '1px solid rgba(30,64,175,0.7)',
                 background: 'rgba(15,23,42,0.85)',
               }}
             >
-              {matches.map(m => (
-                <div
-                  key={m.id}
-                  style={{
-                    padding: '8px 10px',
-                    borderBottom: '1px solid rgba(15,23,42,0.9)',
-                    fontSize: '0.9rem',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    gap: '10px',
-                  }}
-                >
-                  <span>
-                    <strong>{m.home_team}</strong> vs{' '}
-                    <strong>{m.away_team}</strong>
-                    {m.group_name ? ` – ${m.group_name}` : ''}
-                  </span>
-                  <span style={{ opacity: 0.8, whiteSpace: 'nowrap' }}>
-                    {new Date(m.kickoff_utc).toISOString().slice(0, 16)} UTC
-                  </span>
-                </div>
-              ))}
+              {matches.map(m => {
+                const pred = predictions[m.id] || {
+                  home: '',
+                  away: '',
+                  status: 'idle',
+                };
+
+                let statusLabel = '';
+                let statusColor = '#9ca3af';
+
+                if (pred.status === 'saving') {
+                  statusLabel = 'Saving…';
+                  statusColor = '#fbbf24';
+                } else if (pred.status === 'saved') {
+                  statusLabel = 'Saved';
+                  statusColor = '#22c55e';
+                } else if (pred.status === 'error') {
+                  statusLabel = 'Error – will retry on next change';
+                  statusColor = '#f97373';
+                } else if (pred.status === 'dirty') {
+                  statusLabel = 'Changed – will save on blur';
+                  statusColor = '#60a5fa';
+                }
+
+                return (
+                  <div
+                    key={m.id}
+                    style={{
+                      padding: '8px 10px',
+                      borderBottom: '1px solid rgba(15,23,42,0.9)',
+                      fontSize: '0.9rem',
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        gap: '10px',
+                        marginBottom: '4px',
+                      }}
+                    >
+                      <span>
+                        <strong>{m.home_team}</strong> vs{' '}
+                        <strong>{m.away_team}</strong>
+                        {m.group_name ? ` – ${m.group_name}` : ''}
+                      </span>
+                      <span style={{ opacity: 0.8, whiteSpace: 'nowrap' }}>
+                        {new Date(m.kickoff_utc).toISOString().slice(0, 16)} UTC
+                      </span>
+                    </div>
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        justifyContent: 'space-between',
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                        }}
+                      >
+                        <span style={{ fontSize: '0.8rem', opacity: 0.8 }}>
+                          Score:
+                        </span>
+                        <input
+                          type="number"
+                          min="0"
+                          value={pred.home}
+                          onChange={e =>
+                            handleScoreChange(m.id, 'home', e.target.value)
+                          }
+                          onBlur={() => savePrediction(m)}
+                          style={{
+                            width: '46px',
+                            padding: '4px 6px',
+                            borderRadius: '6px',
+                            border:
+                              '1px solid rgba(148,163,184,0.85)',
+                            background: 'rgba(15,23,42,0.95)',
+                            color: '#e5e7eb',
+                            textAlign: 'center',
+                            fontSize: '0.85rem',
+                          }}
+                        />
+                        <span>:</span>
+                        <input
+                          type="number"
+                          min="0"
+                          value={pred.away}
+                          onChange={e =>
+                            handleScoreChange(m.id, 'away', e.target.value)
+                          }
+                          onBlur={() => savePrediction(m)}
+                          style={{
+                            width: '46px',
+                            padding: '4px 6px',
+                            borderRadius: '6px',
+                            border:
+                              '1px solid rgba(148,163,184,0.85)',
+                            background: 'rgba(15,23,42,0.95)',
+                            color: '#e5e7eb',
+                            textAlign: 'center',
+                            fontSize: '0.85rem',
+                          }}
+                        />
+                      </div>
+                      <span
+                        style={{
+                          fontSize: '0.75rem',
+                          color: statusColor,
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        {statusLabel}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
 
-        {!loadingData && !dataError && tournaments.length === 0 && (
+        {!loadingData && !dataError && matches.length === 0 && (
           <Sub>
             Click <strong>Load Dummy Cup matches</strong> to fetch games from
             the backend.
