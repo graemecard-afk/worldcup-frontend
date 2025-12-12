@@ -624,8 +624,12 @@ export default function App() {
                 maxHeight: '280px',
                 overflowY: 'auto',
                 borderRadius: '12px',
-                border: '1px solid rgba(30,64,175,0.7)',
-                background: 'rgba(15,23,42,0.85)',
+    border: theme === 'dark'
+      ? '1px solid rgba(30,64,175,0.7)'
+      : '1px solid rgba(15,23,42,0.15)',
+    background: theme === 'dark'
+      ? 'rgba(15,23,42,0.85)'
+      : 'rgba(255,255,255,0.95)',
               }}
             >
               {matches.map(m => {
@@ -657,8 +661,11 @@ export default function App() {
                     key={m.id}
                     style={{
                       padding: '8px 10px',
-                      borderBottom: '1px solid rgba(15,23,42,0.9)',
-                      fontSize: '0.9rem',
+                      borderBottom: theme === 'dark'
+      ? '1px solid rgba(15,23,42,0.9)'
+      : '1px solid rgba(0,0,0,0.08)',
+    fontSize: '0.9rem',
+    color: theme === 'dark' ? '#e5e7eb' : '#0f172a',
                     }}
                   >
                     <div
@@ -795,9 +802,14 @@ export default function App() {
                     key={groupName}
                     style={{
                       borderRadius: '10px',
-                      border: '1px solid rgba(30,64,175,0.7)',
-                      background: 'rgba(15,23,42,0.9)',
-                      padding: '8px 10px',
+                      border: theme === 'dark'
+      ? '1px solid rgba(30,64,175,0.7)'
+      : '1px solid rgba(15,23,42,0.15)',
+    background: theme === 'dark'
+      ? 'rgba(15,23,42,0.9)'
+      : 'rgba(255,255,255,0.96)',
+    padding: '8px 10px',
+    color: theme === 'dark' ? '#e5e7eb' : '#0f172a',
                     }}
                   >
                     <div
@@ -830,9 +842,10 @@ export default function App() {
                           <th
                             style={{
                               textAlign: 'left',
-                              paddingBottom: '4px',
-                              borderBottom:
-                                '1px solid rgba(30,64,175,0.7)',
+                             borderBottom: theme === 'dark'
+      ? '1px solid rgba(30,64,175,0.7)'
+      : '1px solid rgba(0,0,0,0.15)',
+    color: theme === 'dark' ? '#e5e7eb' : '#0f172a',
                             }}
                           >
                             Team
