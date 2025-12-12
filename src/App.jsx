@@ -639,23 +639,7 @@ export default function App() {
                   status: 'idle',
                 };
 
-                let statusLabel = '';
-                let statusColor = '#9ca3af';
-
-                if (pred.status === 'saving') {
-                  statusLabel = 'Saving…';
-                  statusColor = '#fbbf24';
-                } else if (pred.status === 'saved') {
-                  statusLabel = 'Saved';
-                  statusColor = '#22c55e';
-                } else if (pred.status === 'error') {
-                  statusLabel = 'Error – will retry on next change';
-                  statusColor = '#f97373';
-                } else if (pred.status === 'dirty') {
-                  statusLabel = 'Changed – will save on blur';
-                  statusColor = '#60a5fa';
-                }
-
+                
                 return (
                   <div
                     key={m.id}
@@ -743,15 +727,7 @@ export default function App() {
                           }}
                         />
                       </div>
-                      <span
-                        style={{
-                          fontSize: '0.75rem',
-                          color: statusColor,
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        {statusLabel}
-                      </span>
+                      <StatusBadge status={pred.status} theme={theme} />
                     </div>
                   </div>
                 );
@@ -1271,6 +1247,59 @@ function Screen({ children, user, onLogout, theme, onToggleTheme }) {
     </div>
   );
 }
+function StatusBadge({ status, theme }) {
+  const isDark = theme === 'dark';
+
+  if (!status || status === 'idle') return null;
+
+  let label = '';
+  let bg = '';
+  let border = '';
+  let text = '';
+
+  if (status === 'saved') {
+    label = 'Saved';
+    bg = isDark ? 'rgba(22,163,74,0.18)' : 'rgba(22,163,74,0.08)';
+    border = isDark ? 'rgba(34,197,94,0.6)' : 'rgba(22,163,74,0.5)';
+    text = isDark ? '#bbf7d0' : '#166534';
+  } else if (status === 'saving') {
+    label = 'Saving…';
+    bg = isDark ? 'rgba(245,158,11,0.2)' : 'rgba(245,158,11,0.08)';
+    border = isDark ? 'rgba(245,158,11,0.7)' : 'rgba(217,119,6,0.5)';
+    text = isDark ? '#facc15' : '#92400e';
+  } else if (status === 'dirty') {
+    label = 'Changed';
+    bg = isDark ? 'rgba(59,130,246,0.24)' : 'rgba(59,130,246,0.08)';
+    border = isDark ? 'rgba(59,130,246,0.8)' : 'rgba(37,99,235,0.55)';
+    text = isDark ? '#bfdbfe' : '#1d4ed8';
+  } else if (status === 'error') {
+    label = 'Error';
+    bg = isDark ? 'rgba(248,113,113,0.2)' : 'rgba(239,68,68,0.08)';
+    border = isDark ? 'rgba(248,113,113,0.8)' : 'rgba(220,38,38,0.55)';
+    text = isDark ? '#fecaca' : '#b91c1c';
+  }
+
+  return (
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        padding: '2px 8px',
+        borderRadius: '999px',
+        fontSize: '0.7rem',
+        fontWeight: 600,
+        backgroundColor: bg,
+        border: `1px solid ${border}`,
+        color: text,
+        whiteSpace: 'nowrap',
+      }}
+    >
+      {label}
+    </span>
+  );
+}
+
+
 
 function FrostedCard({ children, theme = 'dark' }) {
   const isDark = theme === 'dark';
