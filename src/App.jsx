@@ -259,17 +259,16 @@ export default function App() {
         const map = {};
         ps.forEach(p => {
           map[p.match_id] = {
-            home:
-              p.predicted_home_goals === null ||
-              p.predicted_home_goals === undefined
-                ? ''
-                : String(p.predicted_home_goals),
-            away:
-              p.predicted_away_goals === null ||
-              p.predicted_away_goals === undefined
-                ? ''
-                : String(p.predicted_away_goals),
-            status: 'saved',
+  home:
+    p.predicted_home_goals === null || p.predicted_home_goals === undefined
+      ? ''
+      : String(p.predicted_home_goals),
+  away:
+    p.predicted_away_goals === null || p.predicted_away_goals === undefined
+      ? ''
+      : String(p.predicted_away_goals),
+  status: 'saved',
+  points: p.points ?? null,
           };
         });
         setPredictions(map);
@@ -308,6 +307,7 @@ export default function App() {
         home: field === 'home' ? clean : prev[matchId]?.home ?? '',
         away: field === 'away' ? clean : prev[matchId]?.away ?? '',
         status: 'dirty',
+        points: prev[matchId]?.points ?? null,
       },
     }));
   }
@@ -745,7 +745,68 @@ export default function App() {
                           }}
                         />
                       </div>
-                  
+
+{/* ACTUAL + POINTS (read-only) */}
+<div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+    <span style={{ fontSize: '0.8rem', opacity: 0.8 }}>Act:</span>
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '46px',
+        padding: '4px 6px',
+        borderRadius: '6px',
+        border: '1px solid rgba(148,163,184,0.85)',
+        background: 'rgba(148,163,184,0.25)',
+        fontSize: '0.85rem',
+        fontWeight: 600,
+      }}
+    >
+      {m.result_finalized ? (m.result_home_goals ?? '–') : '–'}
+    </span>
+    <span>:</span>
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '46px',
+        padding: '4px 6px',
+        borderRadius: '6px',
+        border: '1px solid rgba(148,163,184,0.85)',
+        background: 'rgba(148,163,184,0.25)',
+        fontSize: '0.85rem',
+        fontWeight: 600,
+      }}
+    >
+      {m.result_finalized ? (m.result_away_goals ?? '–') : '–'}
+    </span>
+  </div>
+
+  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+    <span style={{ fontSize: '0.8rem', opacity: 0.8 }}>Pts:</span>
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '52px',
+        padding: '4px 6px',
+        borderRadius: '6px',
+        border: '1px solid rgba(148,163,184,0.85)',
+        background: 'rgba(148,163,184,0.25)',
+        fontSize: '0.85rem',
+        fontWeight: 700,
+      }}
+    >
+      {pred.points === 0 || typeof pred.points === 'number' ? pred.points : '–'}
+    </span>
+  </div>
+</div>
+
+                      
                       <StatusBadge status={locked ? 'locked' : pred.status} theme={theme} />
 
                     </div>
