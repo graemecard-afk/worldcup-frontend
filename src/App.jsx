@@ -130,7 +130,6 @@ function computeGroupTables(matches, predictions) {
   return result;
 }
 
-
 export default function App() {
   const [mode, setMode] = useState('login'); // 'login' or 'register'
   const [user, setUser] = useState(null);
@@ -156,7 +155,6 @@ export default function App() {
   // predictions: { [matchId]: { home: string, away: string, status: 'idle'|'dirty'|'saving'|'saved'|'error' } }
   const [predictions, setPredictions] = useState({});
   const groupTables = computeGroupTables(matches, predictions);
-
 
   // On load, restore token and try /auth/me
   useEffect(() => {
@@ -241,7 +239,7 @@ export default function App() {
       const ms = await apiGet(`/matches/${first.id}`);
       setMatches(ms);
 
-            // Try to load existing predictions; if endpoint not ready yet, fail silently
+      // Try to load existing predictions; if endpoint not ready yet, fail silently
       try {
         const ps = await apiGet(`/predictions/tournament/${first.id}`);
         const map = {};
@@ -268,7 +266,6 @@ export default function App() {
         );
         setPredictions({});
       }
-
     } catch (err) {
       console.error(err);
       setDataError('Failed to load tournament data.');
@@ -301,7 +298,7 @@ export default function App() {
     }));
   }
 
-    async function savePrediction(match) {
+  async function savePrediction(match) {
     if (!currentTournament) return;
     const entry = predictions[match.id] || {};
 
@@ -368,7 +365,6 @@ export default function App() {
       }));
     }
   }
-
 
   if (loadingUser) {
     return (
@@ -712,8 +708,7 @@ export default function App() {
                             width: '46px',
                             padding: '4px 6px',
                             borderRadius: '6px',
-                            border:
-                              '1px solid rgba(148,163,184,0.85)',
+                            border: '1px solid rgba(148,163,184,0.85)',
                             background: 'rgba(15,23,42,0.95)',
                             color: '#e5e7eb',
                             textAlign: 'center',
@@ -733,8 +728,7 @@ export default function App() {
                             width: '46px',
                             padding: '4px 6px',
                             borderRadius: '6px',
-                            border:
-                              '1px solid rgba(148,163,184,0.85)',
+                            border: '1px solid rgba(148,163,184,0.85)',
                             background: 'rgba(15,23,42,0.95)',
                             color: '#e5e7eb',
                             textAlign: 'center',
@@ -759,7 +753,8 @@ export default function App() {
           </div>
         )}
 
-                {Object.keys(groupTables).length > 0 && (
+        {/* Predicted group tables: show the shell whenever matches exist */}
+        {matches.length > 0 && (
           <div style={{ textAlign: 'left', marginTop: '16px' }}>
             <h3 style={{ marginBottom: '8px', fontSize: '1rem' }}>
               Predicted group standings
@@ -775,167 +770,195 @@ export default function App() {
               These tables are based on your predicted scores only.
             </p>
 
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '12px',
-                maxHeight: '260px',
-                overflowY: 'auto',
-              }}
-            >
-              {Object.entries(groupTables).map(([groupName, teams]) => (
-                <div
-                  key={groupName}
-                  style={{
-                    borderRadius: '10px',
-                    border: '1px solid rgba(30,64,175,0.7)',
-                    background: 'rgba(15,23,42,0.9)',
-                    padding: '8px 10px',
-                  }}
-                >
+            {Object.keys(groupTables).length === 0 ? (
+              <p
+                style={{
+                  marginTop: 0,
+                  fontSize: '0.8rem',
+                  opacity: 0.75,
+                }}
+              >
+                Once you&apos;ve entered at least one full scoreline (both home
+                and away), your live group tables will appear here.
+              </p>
+            ) : (
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '12px',
+                  maxHeight: '260px',
+                  overflowY: 'auto',
+                }}
+              >
+                {Object.entries(groupTables).map(([groupName, teams]) => (
                   <div
+                    key={groupName}
                     style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      marginBottom: '4px',
+                      borderRadius: '10px',
+                      border: '1px solid rgba(30,64,175,0.7)',
+                      background: 'rgba(15,23,42,0.9)',
+                      padding: '8px 10px',
                     }}
                   >
-                    <strong>{groupName}</strong>
-                    <span
+                    <div
                       style={{
-                        fontSize: '0.75rem',
-                        opacity: 0.8,
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        marginBottom: '4px',
                       }}
                     >
-                      P, W, D, L, GF, GA, GD, Pts
-                    </span>
-                  </div>
-                  <table
-                    style={{
-                      width: '100%',
-                      borderCollapse: 'collapse',
-                      fontSize: '0.8rem',
-                    }}
-                  >
-                    <thead>
-                      <tr>
-                        <th
-                          style={{
-                            textAlign: 'left',
-                            paddingBottom: '4px',
-                            borderBottom:
-                              '1px solid rgba(30,64,175,0.7)',
-                          }}
-                        >
-                          Team
-                        </th>
-                        <th style={{ paddingBottom: '4px', textAlign: 'center' }}>
-                          P
-                        </th>
-                        <th style={{ paddingBottom: '4px', textAlign: 'center' }}>
-                          W
-                        </th>
-                        <th style={{ paddingBottom: '4px', textAlign: 'center' }}>
-                          D
-                        </th>
-                        <th style={{ paddingBottom: '4px', textAlign: 'center' }}>
-                          L
-                        </th>
-                        <th style={{ paddingBottom: '4px', textAlign: 'center' }}>
-                          GF
-                        </th>
-                        <th style={{ paddingBottom: '4px', textAlign: 'center' }}>
-                          GA
-                        </th>
-                        <th style={{ paddingBottom: '4px', textAlign: 'center' }}>
-                          GD
-                        </th>
-                        <th style={{ paddingBottom: '4px', textAlign: 'center' }}>
-                          Pts
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {teams.map(team => (
-                        <tr key={team.team}>
-                          <td style={{ padding: '4px 0' }}>{team.team}</td>
-                          <td
+                      <strong>{groupName}</strong>
+                      <span
+                        style={{
+                          fontSize: '0.75rem',
+                          opacity: 0.8,
+                        }}
+                      >
+                        P, W, D, L, GF, GA, GD, Pts
+                      </span>
+                    </div>
+                    <table
+                      style={{
+                        width: '100%',
+                        borderCollapse: 'collapse',
+                        fontSize: '0.8rem',
+                      }}
+                    >
+                      <thead>
+                        <tr>
+                          <th
                             style={{
-                              padding: '4px 0',
-                              textAlign: 'center',
+                              textAlign: 'left',
+                              paddingBottom: '4px',
+                              borderBottom:
+                                '1px solid rgba(30,64,175,0.7)',
                             }}
                           >
-                            {team.played}
-                          </td>
-                          <td
-                            style={{
-                              padding: '4px 0',
-                              textAlign: 'center',
-                            }}
+                            Team
+                          </th>
+                          <th
+                            style={{ paddingBottom: '4px', textAlign: 'center' }}
                           >
-                            {team.won}
-                          </td>
-                          <td
-                            style={{
-                              padding: '4px 0',
-                              textAlign: 'center',
-                            }}
+                            P
+                          </th>
+                          <th
+                            style={{ paddingBottom: '4px', textAlign: 'center' }}
                           >
-                            {team.drawn}
-                          </td>
-                          <td
-                            style={{
-                              padding: '4px 0',
-                              textAlign: 'center',
-                            }}
+                            W
+                          </th>
+                          <th
+                            style={{ paddingBottom: '4px', textAlign: 'center' }}
                           >
-                            {team.lost}
-                          </td>
-                          <td
-                            style={{
-                              padding: '4px 0',
-                              textAlign: 'center',
-                            }}
+                            D
+                          </th>
+                          <th
+                            style={{ paddingBottom: '4px', textAlign: 'center' }}
                           >
-                            {team.gf}
-                          </td>
-                          <td
-                            style={{
-                              padding: '4px 0',
-                              textAlign: 'center',
-                            }}
+                            L
+                          </th>
+                          <th
+                            style={{ paddingBottom: '4px', textAlign: 'center' }}
                           >
-                            {team.ga}
-                          </td>
-                          <td
-                            style={{
-                              padding: '4px 0',
-                              textAlign: 'center',
-                            }}
+                            GF
+                          </th>
+                          <th
+                            style={{ paddingBottom: '4px', textAlign: 'center' }}
                           >
-                            {team.gd}
-                          </td>
-                          <td
-                            style={{
-                              padding: '4px 0',
-                              textAlign: 'center',
-                              fontWeight: 600,
-                            }}
+                            GA
+                          </th>
+                          <th
+                            style={{ paddingBottom: '4px', textAlign: 'center' }}
                           >
-                            {team.pts}
-                          </td>
+                            GD
+                          </th>
+                          <th
+                            style={{ paddingBottom: '4px', textAlign: 'center' }}
+                          >
+                            Pts
+                          </th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ))}
-            </div>
+                      </thead>
+                      <tbody>
+                        {teams.map(team => (
+                          <tr key={team.team}>
+                            <td style={{ padding: '4px 0' }}>{team.team}</td>
+                            <td
+                              style={{
+                                padding: '4px 0',
+                                textAlign: 'center',
+                              }}
+                            >
+                              {team.played}
+                            </td>
+                            <td
+                              style={{
+                                padding: '4px 0',
+                                textAlign: 'center',
+                              }}
+                            >
+                              {team.won}
+                            </td>
+                            <td
+                              style={{
+                                padding: '4px 0',
+                                textAlign: 'center',
+                              }}
+                            >
+                              {team.drawn}
+                            </td>
+                            <td
+                              style={{
+                                padding: '4px 0',
+                                textAlign: 'center',
+                              }}
+                            >
+                              {team.lost}
+                            </td>
+                            <td
+                              style={{
+                                padding: '4px 0',
+                                textAlign: 'center',
+                              }}
+                            >
+                              {team.gf}
+                            </td>
+                            <td
+                              style={{
+                                padding: '4px 0',
+                                textAlign: 'center',
+                              }}
+                            >
+                              {team.ga}
+                            </td>
+                            <td
+                              style={{
+                                padding: '4px 0',
+                                textAlign: 'center',
+                              }}
+                            >
+                              {team.gd}
+                            </td>
+                            <td
+                              style={{
+                                padding: '4px 0',
+                                textAlign: 'center',
+                                fontWeight: 600,
+                              }}
+                            >
+                              {team.pts}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
-        
         {!loadingData && !dataError && matches.length === 0 && (
           <Sub>
             Click <strong>Load Dummy Cup matches</strong> to fetch games from
