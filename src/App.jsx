@@ -980,7 +980,7 @@ function Screen({ children, user, onLogout, theme, onToggleTheme }) {
 
   const bgImage = isDark
     ? `linear-gradient(120deg, rgba(15,23,42,0.9), rgba(8,47,73,0.85)), url(${STADIUM_BG})`
-    : `linear-gradient(120deg, rgba(226,232,240,0.96), rgba(209,250,229,0.96)), url(${STADIUM_BG})`;
+    : `url(${STADIUM_BG})`;
 
   const textColor = isDark ? '#e5e7eb' : '#0f172a';
 
@@ -1267,14 +1267,14 @@ function FrostedCard({ children, theme = 'dark' }) {
       style={{
         background: isDark
           ? 'rgba(15,23,42,0.82)'
-          : 'rgba(255,255,255,0.9)',
+          : 'rgba(255,255,255,0.98)',
         borderRadius: '18px',
         border: isDark
           ? '1px solid rgba(148,163,184,0.4)'
-          : '1px solid rgba(148,163,184,0.7)',
+          : '1px solid rgba(15,23,42,0.18)',
         boxShadow: isDark
           ? '0 18px 50px rgba(0,0,0,0.7)'
-          : '0 14px 30px rgba(15,23,42,0.18)',
+          : '0 18px 40px rgba(15,23,42,0.35)',
         padding: '24px 28px',
         maxWidth: '520px',
         width: '100%',
@@ -1285,6 +1285,7 @@ function FrostedCard({ children, theme = 'dark' }) {
     </div>
   );
 }
+
 
 function TitleRow() {
   return (
