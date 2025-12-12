@@ -8,6 +8,20 @@ const BALL_IMAGE =
 // Simple pool code for now – front-end check only.
 const POOL_CODE = 'GRAEME-2026';
 
+function isMatchLocked(match) {
+  if (!match || !match.kickoff_utc) return false;
+
+  const kickoff = new Date(match.kickoff_utc);
+  if (Number.isNaN(kickoff.getTime())) return false;
+
+  const now = new Date();
+  const diffMs = kickoff.getTime() - now.getTime();
+
+  // Lock from 2 hours before KO onwards
+  return diffMs <= 2 * 60 * 60 * 1000;
+}
+
+
 function formatKickoff(isoString) {
   const d = new Date(isoString);
   if (Number.isNaN(d.getTime())) return '';
@@ -638,6 +652,8 @@ export default function App() {
                   away: '',
                   status: 'idle',
                 };
+              
+  const locked = isMatchLocked(m);
 
                 
                 return (
@@ -691,6 +707,7 @@ export default function App() {
                           type="number"
                           min="0"
                           value={pred.home}
+                          disabled={locked}
                           onChange={e =>
                             handleScoreChange(m.id, 'home', e.target.value)
                           }
@@ -711,6 +728,7 @@ export default function App() {
                           type="number"
                           min="0"
                           value={pred.away}
+                          disabled={locked}
                           onChange={e =>
                             handleScoreChange(m.id, 'away', e.target.value)
                           }
@@ -727,7 +745,9 @@ export default function App() {
                           }}
                         />
                       </div>
-                      <StatusBadge status={pred.status} theme={theme} />
+                  
+                      <StatusBadge status={locked ? 'locked' : pred.status} theme={theme} />
+
                     </div>
                   </div>
                 );
@@ -1278,6 +1298,21 @@ function StatusBadge({ status, theme }) {
     border = isDark ? 'rgba(248,113,113,0.8)' : 'rgba(220,38,38,0.55)';
     text = isDark ? '#fecaca' : '#b91c1c';
   }
+
+    } else if (status === 'error') {
+    label = 'Error';
+    bg = isDark ? 'rgba(248,113,113,0.2)' : 'rgba(239,68,68,0.08)';
+    border = isDark ? 'rgba(248,113,113,0.8)' : 'rgba(220,38,38,0.55)';
+    text = isDark ? '#fecaca' : '#b91c1c';
+  } else if (status === 'locked') {
+    label = 'Locked';
+    bg = isDark ? 'rgba(148,163,184,0.24)' : 'rgba(148,163,184,0.1)';
+    border = isDark ? 'rgba(148,163,184,0.8)' : 'rgba(148,163,184,0.7)';
+    text = isDark ? '#e5e7eb' : '#374151';
+  } else {
+    return null;
+  }
+
 
   return (
     <span
