@@ -8,6 +8,21 @@ const BALL_IMAGE =
 // Simple pool code for now – front-end check only.
 const POOL_CODE = 'GRAEME-2026';
 
+function formatKickoff(isoString) {
+  const d = new Date(isoString);
+  if (Number.isNaN(d.getTime())) return '';
+
+  const day = String(d.getUTCDate()).padStart(2, '0');
+  const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const year = d.getUTCFullYear();
+
+  const hours = String(d.getUTCHours()).padStart(2, '0');
+  const minutes = String(d.getUTCMinutes()).padStart(2, '0');
+
+  return `${day}-${month}-${year} KO ${hours}:${minutes}`;
+}
+
+
 export default function App() {
   const [mode, setMode] = useState('login'); // 'login' or 'register'
   const [user, setUser] = useState(null);
@@ -554,7 +569,7 @@ export default function App() {
                         {m.group_name ? ` – ${m.group_name}` : ''}
                       </span>
                       <span style={{ opacity: 0.8, whiteSpace: 'nowrap' }}>
-                        {new Date(m.kickoff_utc).toISOString().slice(0, 16)} UTC
+                        {formatKickoff(m.kickoff_utc)}
                       </span>
                     </div>
                     <div
