@@ -22,6 +22,114 @@ function formatKickoff(isoString) {
   return `${day}-${month}-${year} KO ${hours}:${minutes}`;
 }
 
+function computeGroupTables(matches, predictions) {
+  const tables = {};
+
+  for (const m of matches) {
+    const pred = predictions[m.id];
+    if (!pred) continue;
+
+    const homeStr = pred.home;
+    const awayStr = pred.away;
+
+    if (
+      homeStr === '' ||
+      homeStr === undefined ||
+      awayStr === '' ||
+      awayStr === undefined
+    ) {
+      continue; // only include matches where both scores are set
+    }
+
+    const homeGoals = parseInt(homeStr, 10);
+    const awayGoals = parseInt(awayStr, 10);
+
+    if (Number.isNaN(homeGoals) || Number.isNaN(awayGoals)) continue;
+
+    const groupKey = m.group_name || 'Group';
+
+    if (!tables[groupKey]) {
+      tables[groupKey] = {};
+    }
+
+    // Ensure both teams exist
+    if (!tables[groupKey][m.home_team]) {
+      tables[groupKey][m.home_team] = {
+        team: m.home_team,
+        played: 0,
+        won: 0,
+        drawn: 0,
+        lost: 0,
+        gf: 0,
+        ga: 0,
+        gd: 0,
+        pts: 0,
+      };
+    }
+    if (!tables[groupKey][m.away_team]) {
+      tables[groupKey][m.away_team] = {
+        team: m.away_team,
+        played: 0,
+        won: 0,
+        drawn: 0,
+        lost: 0,
+        gf: 0,
+        ga: 0,
+        gd: 0,
+        pts: 0,
+      };
+    }
+
+    const home = tables[groupKey][m.home_team];
+    const away = tables[groupKey][m.away_team];
+
+    // Update basic stats
+    home.played += 1;
+    away.played += 1;
+
+    home.gf += homeGoals;
+    home.ga += awayGoals;
+    home.gd = home.gf - home.ga;
+
+    away.gf += awayGoals;
+    away.ga += homeGoals;
+    away.gd = away.gf - away.ga;
+
+    // Result
+    if (homeGoals > awayGoals) {
+      home.won += 1;
+      away.lost += 1;
+      home.pts += 3;
+    } else if (homeGoals < awayGoals) {
+      away.won += 1;
+      home.lost += 1;
+      away.pts += 3;
+    } else {
+      home.drawn += 1;
+      away.drawn += 1;
+      home.pts += 1;
+      away.pts += 1;
+    }
+  }
+
+  // Convert inner maps to sorted arrays
+  const result = {};
+  for (const groupKey of Object.keys(tables)) {
+    const teamsArr = Object.values(tables[groupKey]);
+
+    teamsArr.sort((a, b) => {
+      if (b.pts !== a.pts) return b.pts - a.pts;
+      if (b.gd !== a.gd) return b.gd - a.gd;
+      if (b.gf !== a.gf) return b.gf - a.gf;
+      return a.team.localeCompare(b.team);
+    });
+
+    result[groupKey] = teamsArr;
+  }
+
+  return result;
+}
+
 
 export default function App() {
   const [mode, setMode] = useState('login'); // 'login' or 'register'
@@ -47,6 +155,8 @@ export default function App() {
 
   // predictions: { [matchId]: { home: string, away: string, status: 'idle'|'dirty'|'saving'|'saved'|'error' } }
   const [predictions, setPredictions] = useState({});
+  const groupTables = computeGroupTables(matches, predictions);
+
 
   // On load, restore token and try /auth/me
   useEffect(() => {
@@ -649,6 +759,183 @@ export default function App() {
           </div>
         )}
 
+                {Object.keys(groupTables).length > 0 && (
+          <div style={{ textAlign: 'left', marginTop: '16px' }}>
+            <h3 style={{ marginBottom: '8px', fontSize: '1rem' }}>
+              Predicted group standings
+            </h3>
+            <p
+              style={{
+                marginTop: 0,
+                marginBottom: '6px',
+                fontSize: '0.8rem',
+                opacity: 0.8,
+              }}
+            >
+              These tables are based on your predicted scores only.
+            </p>
+
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '12px',
+                maxHeight: '260px',
+                overflowY: 'auto',
+              }}
+            >
+              {Object.entries(groupTables).map(([groupName, teams]) => (
+                <div
+                  key={groupName}
+                  style={{
+                    borderRadius: '10px',
+                    border: '1px solid rgba(30,64,175,0.7)',
+                    background: 'rgba(15,23,42,0.9)',
+                    padding: '8px 10px',
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      marginBottom: '4px',
+                    }}
+                  >
+                    <strong>{groupName}</strong>
+                    <span
+                      style={{
+                        fontSize: '0.75rem',
+                        opacity: 0.8,
+                      }}
+                    >
+                      P, W, D, L, GF, GA, GD, Pts
+                    </span>
+                  </div>
+                  <table
+                    style={{
+                      width: '100%',
+                      borderCollapse: 'collapse',
+                      fontSize: '0.8rem',
+                    }}
+                  >
+                    <thead>
+                      <tr>
+                        <th
+                          style={{
+                            textAlign: 'left',
+                            paddingBottom: '4px',
+                            borderBottom:
+                              '1px solid rgba(30,64,175,0.7)',
+                          }}
+                        >
+                          Team
+                        </th>
+                        <th style={{ paddingBottom: '4px', textAlign: 'center' }}>
+                          P
+                        </th>
+                        <th style={{ paddingBottom: '4px', textAlign: 'center' }}>
+                          W
+                        </th>
+                        <th style={{ paddingBottom: '4px', textAlign: 'center' }}>
+                          D
+                        </th>
+                        <th style={{ paddingBottom: '4px', textAlign: 'center' }}>
+                          L
+                        </th>
+                        <th style={{ paddingBottom: '4px', textAlign: 'center' }}>
+                          GF
+                        </th>
+                        <th style={{ paddingBottom: '4px', textAlign: 'center' }}>
+                          GA
+                        </th>
+                        <th style={{ paddingBottom: '4px', textAlign: 'center' }}>
+                          GD
+                        </th>
+                        <th style={{ paddingBottom: '4px', textAlign: 'center' }}>
+                          Pts
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {teams.map(team => (
+                        <tr key={team.team}>
+                          <td style={{ padding: '4px 0' }}>{team.team}</td>
+                          <td
+                            style={{
+                              padding: '4px 0',
+                              textAlign: 'center',
+                            }}
+                          >
+                            {team.played}
+                          </td>
+                          <td
+                            style={{
+                              padding: '4px 0',
+                              textAlign: 'center',
+                            }}
+                          >
+                            {team.won}
+                          </td>
+                          <td
+                            style={{
+                              padding: '4px 0',
+                              textAlign: 'center',
+                            }}
+                          >
+                            {team.drawn}
+                          </td>
+                          <td
+                            style={{
+                              padding: '4px 0',
+                              textAlign: 'center',
+                            }}
+                          >
+                            {team.lost}
+                          </td>
+                          <td
+                            style={{
+                              padding: '4px 0',
+                              textAlign: 'center',
+                            }}
+                          >
+                            {team.gf}
+                          </td>
+                          <td
+                            style={{
+                              padding: '4px 0',
+                              textAlign: 'center',
+                            }}
+                          >
+                            {team.ga}
+                          </td>
+                          <td
+                            style={{
+                              padding: '4px 0',
+                              textAlign: 'center',
+                            }}
+                          >
+                            {team.gd}
+                          </td>
+                          <td
+                            style={{
+                              padding: '4px 0',
+                              textAlign: 'center',
+                              fontWeight: 600,
+                            }}
+                          >
+                            {team.pts}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        
         {!loadingData && !dataError && matches.length === 0 && (
           <Sub>
             Click <strong>Load Dummy Cup matches</strong> to fetch games from
