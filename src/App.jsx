@@ -165,6 +165,8 @@ export default function App() {
   const [matches, setMatches] = useState([]);
   const [loadingData, setLoadingData] = useState(false);
   const [dataError, setDataError] = useState('');
+  const [adminMode, setAdminMode] = React.useState(false);
+
 
   // predictions: { [matchId]: { home: string, away: string, status: 'idle'|'dirty'|'saving'|'saved'|'error' } }
   const [predictions, setPredictions] = useState({});
@@ -646,6 +648,17 @@ export default function App() {
       : 'rgba(255,255,255,0.95)',
               }}
             >
+              <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '8px 0' }}>
+  <label style={{ display: 'flex', alignItems: 'center', gap: 8, userSelect: 'none' }}>
+    <input
+      type="checkbox"
+      checked={adminMode}
+      onChange={(e) => setAdminMode(e.target.checked)}
+    />
+    Admin mode
+  </label>
+</div>
+
               {matches.map(m => {
                 const pred = predictions[m.id] || {
                   home: '',
