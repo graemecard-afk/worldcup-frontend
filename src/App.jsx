@@ -143,6 +143,86 @@ function computeGroupTables(matches, predictions) {
 
   return result;
 }
+function AdminFinalizeMatchPanel({ apiBaseUrl, token, tournamentId }) {
+  const [matchId, setMatchId] = useState('');
+  const [homeGoals, setHomeGoals] = useState('');
+  const [awayGoals, setAwayGoals] = useState('');
+  const [status, setStatus] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  async function saveResult() {
+    setStatus('');
+
+    if (!matchId) return setStatus('Pick a match ID.');
+    if (homeGoals === '' || awayGoals === '') return setStatus('Enter both scores.');
+
+    const hg = Number(homeGoals);
+    const ag = Number(awayGoals);
+    if (!Number.isInteger(hg) || !Number.isInteger(ag) || hg < 0 || ag < 0) {
+      return setStatus('Scores must be whole numbers (0 or more).');
+    }
+
+    setSaving(true);
+    try {
+      const res = await fetch(`${apiBaseUrl}/matches/${matchId}/result`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ home_goals: hg, away_goals: ag }),
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || `Failed (${res.status})`);
+      }
+
+      setStatus('✅ Saved. Now refresh the page to see Actual + Points.');
+      setHomeGoals('');
+      setAwayGoals('');
+    } catch (e) {
+      setStatus(`❌ Save failed: ${e.message}`);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div style={{ border: '1px solid rgba(0,0,0,0.15)', borderRadius: 10, padding: 12, margin: '12px 0' }}>
+      <div style={{ fontWeight: 700, marginBottom: 8 }}>Admin: Finalise Match Result</div>
+
+      <div style={{ display: 'grid', gap: 8, maxWidth: 520 }}>
+        <label>
+          Match ID (for now)
+          <input
+            value={matchId}
+            onChange={(e) => setMatchId(e.target.value)}
+            placeholder="e.g. 123"
+            style={{ width: '100%' }}
+          />
+        </label>
+
+        <div style={{ display: 'flex', gap: 8 }}>
+          <label style={{ flex: 1 }}>
+            Home goals
+            <input value={homeGoals} onChange={(e) => setHomeGoals(e.target.value)} inputMode="numeric" />
+          </label>
+          <label style={{ flex: 1 }}>
+            Away goals
+            <input value={awayGoals} onChange={(e) => setAwayGoals(e.target.value)} inputMode="numeric" />
+          </label>
+        </div>
+
+        <button onClick={saveResult} disabled={saving || !token || !tournamentId}>
+          {saving ? 'Saving…' : 'Save Result'}
+        </button>
+
+        {status ? <div style={{ whiteSpace: 'pre-wrap' }}>{status}</div> : null}
+      </div>
+    </div>
+  );
+}
 
 export default function App() {
   const [mode, setMode] = useState('login'); // 'login' or 'register'
