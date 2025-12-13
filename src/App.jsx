@@ -164,14 +164,11 @@ function AdminFinalizeMatchPanel({ apiBaseUrl, token, tournamentId, matches }) {
 
     setSaving(true);
     try {
-      const res = await fetch(`${apiBaseUrl}/matches/${matchId}/result`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ home_goals: hg, away_goals: ag }),
-      });
+      await apiPost(`/matches/${matchId}/result`, {
+  home_goals: hg,
+  away_goals: ag,
+});
+
 
       if (!res.ok) {
         const text = await res.text();
