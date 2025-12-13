@@ -741,11 +741,14 @@ export default function App() {
   </label>
 </div>
 
-              {adminMode && (
-  <div style={{ padding: 12, border: '2px dashed red' }}>
-    Admin panel placeholder
-  </div>
+             {adminMode && (
+  <AdminFinalizeMatchPanel
+    apiBaseUrl={''}
+    token={token}
+    tournamentId={currentTournament?.id}
+  />
 )}
+
 
               
               {matches.map(m => {
