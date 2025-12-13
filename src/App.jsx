@@ -1375,21 +1375,6 @@ function StatusBadge({ status, theme }) {
     text = isDark ? '#fecaca' : '#b91c1c';
   }
 
-    } else if (status === 'error') {
-    label = 'Error';
-    bg = isDark ? 'rgba(248,113,113,0.2)' : 'rgba(239,68,68,0.08)';
-    border = isDark ? 'rgba(248,113,113,0.8)' : 'rgba(220,38,38,0.55)';
-    text = isDark ? '#fecaca' : '#b91c1c';
-  } else if (status === 'locked') {
-    label = 'Locked';
-    bg = isDark ? 'rgba(148,163,184,0.24)' : 'rgba(148,163,184,0.1)';
-    border = isDark ? 'rgba(148,163,184,0.8)' : 'rgba(148,163,184,0.7)';
-    text = isDark ? '#e5e7eb' : '#374151';
-  } else {
-    return null;
-  }
-
-
   return (
     <span
       style={{
