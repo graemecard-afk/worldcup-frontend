@@ -177,10 +177,7 @@ try {
 } finally {
   setSaving(false);
 }
-      setSaving(false);
-    }
   }
-
   return (
     <div style={{ border: '1px solid rgba(0,0,0,0.15)', borderRadius: 10, padding: 12, margin: '12px 0' }}>
       <div style={{ fontWeight: 700, marginBottom: 8 }}>Admin: Finalise Match Result</div>
