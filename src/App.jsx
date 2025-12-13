@@ -741,6 +741,15 @@ export default function App() {
   </label>
 </div>
 
+              {adminMode && (
+  <AdminFinalizeMatchPanel
+    apiBaseUrl={apiBaseUrl}
+    token={token}
+    tournamentId={currentTournament?.id}
+  />
+)}
+
+              
               {matches.map(m => {
                 const pred = predictions[m.id] || {
                   home: '',
