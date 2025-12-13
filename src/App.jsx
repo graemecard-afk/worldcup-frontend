@@ -162,25 +162,21 @@ function AdminFinalizeMatchPanel({ apiBaseUrl, token, tournamentId, matches }) {
       return setStatus('Scores must be whole numbers (0 or more).');
     }
 
-    setSaving(true);
-    try {
-      await apiPost(`/matches/${matchId}/result`, {
-  home_goals: hg,
-  away_goals: ag,
-});
+   setSaving(true);
+try {
+  await apiPost(`/matches/${matchId}/result`, {
+    home_goals: hg,
+    away_goals: ag,
+  });
 
-
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(text || `Failed (${res.status})`);
-      }
-
-      setStatus('✅ Saved. Now refresh the page to see Actual + Points.');
-      setHomeGoals('');
-      setAwayGoals('');
-    } catch (e) {
-      setStatus(`❌ Save failed: ${e.message}`);
-    } finally {
+  setStatus('✅ Saved. Now refresh the page to see Actual + Points.');
+  setHomeGoals('');
+  setAwayGoals('');
+} catch (e) {
+  setStatus(`❌ Save failed: ${e.message}`);
+} finally {
+  setSaving(false);
+}
       setSaving(false);
     }
   }
