@@ -742,10 +742,9 @@ export default function App() {
 </div>
 
               {adminMode && (
-  <AdminFinalizeMatchPanel
-    apiBaseUrl={" "}
-    token={token}
-    tournamentId={currentTournament?.id}
+  <div style={{ padding: 12, border: '2px dashed red' }}>
+    Admin panel placeholder
+  </div>
   />
 )}
 
