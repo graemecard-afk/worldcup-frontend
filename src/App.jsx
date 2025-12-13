@@ -745,7 +745,6 @@ export default function App() {
   <div style={{ padding: 12, border: '2px dashed red' }}>
     Admin panel placeholder
   </div>
-  />
 )}
 
               
