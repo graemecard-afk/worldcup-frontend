@@ -756,6 +756,8 @@ export default function App() {
     apiBaseUrl={''}
     token={user?.token}
     tournamentId={currentTournament?.id}
+    matches={matches}
+
   />
 )}
 
