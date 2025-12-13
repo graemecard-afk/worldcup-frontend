@@ -761,7 +761,7 @@ export default function App() {
              {adminMode && (
   <AdminFinalizeMatchPanel
     apiBaseUrl={''}
-    token={user?.token}
+    token={auth.token}
     tournamentId={currentTournament?.id}
     matches={matches}
 
