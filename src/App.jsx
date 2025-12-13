@@ -143,7 +143,7 @@ function computeGroupTables(matches, predictions) {
 
   return result;
 }
-function AdminFinalizeMatchPanel({ apiBaseUrl, token, tournamentId }) {
+function AdminFinalizeMatchPanel({ apiBaseUrl, token, tournamentId, matches }) {
   const [matchId, setMatchId] = useState('');
   const [homeGoals, setHomeGoals] = useState('');
   const [awayGoals, setAwayGoals] = useState('');
@@ -193,15 +193,25 @@ function AdminFinalizeMatchPanel({ apiBaseUrl, token, tournamentId }) {
       <div style={{ fontWeight: 700, marginBottom: 8 }}>Admin: Finalise Match Result</div>
 
       <div style={{ display: 'grid', gap: 8, maxWidth: 520 }}>
+
         <label>
-          Match ID (for now)
-          <input
-            value={matchId}
-            onChange={(e) => setMatchId(e.target.value)}
-            placeholder="e.g. 123"
-            style={{ width: '100%' }}
-          />
-        </label>
+  Match
+  <select
+    value={matchId}
+    onChange={(e) => setMatchId(e.target.value)}
+    style={{ width: '100%' }}
+  >
+    <option value="">— Select a match —</option>
+    {(matches || []).map((m) => (
+      <option key={m.id} value={m.id}>
+        {(m.home_team_name || m.home_team || 'Home')} vs {(m.away_team_name || m.away_team || 'Away')}
+        {m.kickoff_utc ? ` — ${new Date(m.kickoff_utc).toLocaleString()}` : ''}
+        {m.result_finalized ? ' ✅ finalised' : ''}
+      </option>
+    ))}
+  </select>
+</label>
+
 
         <div style={{ display: 'flex', gap: 8 }}>
           <label style={{ flex: 1 }}>
