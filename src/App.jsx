@@ -165,7 +165,9 @@ export default function App() {
   const [matches, setMatches] = useState([]);
   const [loadingData, setLoadingData] = useState(false);
   const [dataError, setDataError] = useState('');
-  const [adminMode, setAdminMode] = React.useState(false);
+  const [adminMode, setAdminMode] = useState(false);
+ 
+
 
 
   // predictions: { [matchId]: { home: string, away: string, status: 'idle'|'dirty'|'saving'|'saved'|'error' } }
