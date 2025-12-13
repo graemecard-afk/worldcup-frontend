@@ -224,9 +224,16 @@ function AdminFinalizeMatchPanel({ apiBaseUrl, token, tournamentId, matches }) {
           </label>
         </div>
 
-        <button onClick={saveResult} disabled={saving || !token || !tournamentId}>
+        <button onClick={saveResult} disabled={saving || !token }>
           {saving ? 'Saving…' : 'Save Result'}
         </button>
+        
+        {!token ? (
+  <div style={{ fontSize: 12, opacity: 0.8 }}>
+    Login required (no auth token found).
+  </div>
+) : null}
+
 
         {status ? <div style={{ whiteSpace: 'pre-wrap' }}>{status}</div> : null}
       </div>
