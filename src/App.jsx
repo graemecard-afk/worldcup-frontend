@@ -169,9 +169,15 @@ try {
     away_goals: ag,
   });
 
-  setStatus('✅ Saved. Now refresh the page to see Actual + Points.');
-  setHomeGoals('');
-  setAwayGoals('');
+setStatus('✅ Saved. Refreshing to calculate points…');
+setHomeGoals('');
+setAwayGoals('');
+
+// Force a refresh so the app refetches matches + predictions
+setTimeout(() => {
+  window.location.reload();
+}, 400);
+  
 } catch (e) {
   setStatus(`❌ Save failed: ${e.message}`);
 } finally {
