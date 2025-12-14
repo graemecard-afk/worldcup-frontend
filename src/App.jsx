@@ -143,7 +143,7 @@ function computeGroupTables(matches, predictions) {
 
   return result;
 }
-function AdminFinalizeMatchPanel({ apiBaseUrl, token, tournamentId, matches }) {
+function AdminFinalizeMatchPanel({ apiBaseUrl, token, tournamentId, matches, onAfterSave }) {
   const [matchId, setMatchId] = useState('');
   const [homeGoals, setHomeGoals] = useState('');
   const [awayGoals, setAwayGoals] = useState('');
@@ -174,7 +174,8 @@ try {
   setAwayGoals('');
 
   // Re-fetch matches + predictions so points appear
-  await loadTournamentAndMatches();
+  if (onAfterSave) await onAfterSave();
+
 
   setStatus('✅ Saved. Points updated.');
 } catch (e) {
