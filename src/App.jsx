@@ -344,6 +344,7 @@ export default function App() {
         setLoadingData(false);
         return;
       }
+      
 
       const first = ts[0];
       setCurrentTournament(first);
@@ -369,6 +370,10 @@ export default function App() {
   points: p.points ?? null,
           };
         });
+
+
+
+        
         setPredictions(map);
       } catch (err) {
         console.error(
@@ -384,6 +389,18 @@ export default function App() {
       setLoadingData(false);
     }
   }
+
+  async function loadLeaderboard(tournamentId) {
+  if (!tournamentId) return;
+  try {
+    const rows = await apiGet(`/leaderboard/${tournamentId}`);
+    return rows;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
 
   function handleLogout() {
     setAuthToken(null);
