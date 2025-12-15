@@ -761,6 +761,8 @@ export default function App() {
     token={getStoredToken()}
     tournamentId={currentTournament?.id}
     matches={matches}
+    onAfterSave={loadTournamentAndMatches}
+
 
   />
 )}
