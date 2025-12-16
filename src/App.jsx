@@ -149,6 +149,8 @@ function AdminFinalizeMatchPanel({ apiBaseUrl, token, tournamentId, matches, onA
   const [awayGoals, setAwayGoals] = useState('');
   const [status, setStatus] = useState('');
   const [saving, setSaving] = useState(false);
+  const [activePage, setActivePage] = useState('Dashboard');
+
 
   async function saveResult() {
     setStatus('');
