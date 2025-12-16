@@ -498,7 +498,7 @@ export default function App() {
       }));
     }
   }
-useEffect(() => { if (leaderboardRows.length) console.log('leaderboardRows', leaderboardRows); }, [leaderboardRows]);
+
 
   if (loadingUser) {
     return (
