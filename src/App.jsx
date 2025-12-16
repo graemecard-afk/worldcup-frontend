@@ -511,6 +511,7 @@ export default function App() {
   const rows = await loadLeaderboard(currentTournament?.id);
   setLeaderboardRows(rows || []);
 }}
+onNavLeaderboard={() => setCurrentView('leaderboard')}
 
       >
         <FrostedCard theme={theme}>
@@ -523,12 +524,18 @@ export default function App() {
 
   if (!user) {
     return (
-      <Screen
-        user={null}
-        onLogout={null}
-        theme={theme}
-        onToggleTheme={toggleTheme}
-      >
+      
+  user={null}
+  onLogout={null}
+  theme={theme}
+  onToggleTheme={toggleTheme}
+  onShowLeaderboard={async () => {
+    const rows = await loadLeaderboard(currentTournament?.id);
+    setLeaderboardRows(rows || []);
+  }}
+  onNavLeaderboard={() => setCurrentView('leaderboard')}
+>
+
         <FrostedCard theme={theme}>
           <TitleRow />
           <Sub>Sign in to start making predictions with your mates.</Sub>
@@ -654,6 +661,10 @@ export default function App() {
       theme={theme}
       onToggleTheme={toggleTheme}
       onNavLeaderboard={() => setCurrentView('leaderboard')}
+      onShowLeaderboard={async () => {
+  const rows = await loadLeaderboard(currentTournament?.id);
+  setLeaderboardRows(rows || []);
+}}
     >
       <FrostedCard theme={theme}>
         <div
