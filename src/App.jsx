@@ -149,8 +149,7 @@ function AdminFinalizeMatchPanel({ apiBaseUrl, token, tournamentId, matches, onA
   const [awayGoals, setAwayGoals] = useState('');
   const [status, setStatus] = useState('');
   const [saving, setSaving] = useState(false);
-  const [activePage, setActivePage] = useState('Dashboard');
-  const [leaderboardRows, setLeaderboardRows] = useState([]);
+  
 
 
 
@@ -247,7 +246,8 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [authError, setAuthError] = useState('');
   const [loadingUser, setLoadingUser] = useState(true);
-
+  const [leaderboardRows, setLeaderboardRows] = useState([]);
+  const [currentView, setCurrentView] = useState('main');
   const [theme, setTheme] = useState('dark'); // 'dark' | 'light'
 
   const [form, setForm] = useState({
@@ -653,6 +653,7 @@ export default function App() {
       onLogout={handleLogout}
       theme={theme}
       onToggleTheme={toggleTheme}
+      onNavLeaderboard={() => setCurrentView('leaderboard')}
     >
       <FrostedCard theme={theme}>
         <div
@@ -1192,7 +1193,7 @@ export default function App() {
 
 // ===== Layout & UI helpers =====
 
-function Screen({ children, user, onLogout, theme, onToggleTheme, onShowLeaderboard}) {
+function Screen({ children, user, onLogout, theme, onToggleTheme, onShowLeaderboard, onNavLeaderboard}) {
   const [navOpen, setNavOpen] = useState(false);
   const [avatarOpen, setAvatarOpen] = useState(false);
 
@@ -1435,6 +1436,7 @@ function Screen({ children, user, onLogout, theme, onToggleTheme, onShowLeaderbo
                 key={item}
                 onClick={() => {
     if (item === 'Leaderboard') {
+       onNavLeaderboard && onNavLeaderboard();
       onShowLeaderboard && onShowLeaderboard();
 
 
