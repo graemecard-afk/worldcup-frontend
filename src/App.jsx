@@ -1423,6 +1423,12 @@ function Screen({ children, user, onLogout, theme, onToggleTheme }) {
             item => (
               <div
                 key={item}
+                onClick={() => {
+    if (item === 'Leaderboard') {
+      setActivePage('leaderboard');
+      loadLeaderboard(currentTournament?.id);
+    }
+  }}
                 style={{
                   padding: '6px 8px',
                   borderRadius: '8px',
