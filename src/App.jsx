@@ -504,6 +504,7 @@ export default function App() {
         onLogout={handleLogout}
         theme={theme}
         onToggleTheme={toggleTheme}
+        onShowLeaderboard={() => loadLeaderboard(currentTournament?.id)}
       >
         <FrostedCard theme={theme}>
           <TitleRow />
@@ -1184,7 +1185,7 @@ export default function App() {
 
 // ===== Layout & UI helpers =====
 
-function Screen({ children, user, onLogout, theme, onToggleTheme }) {
+function Screen({ children, user, onLogout, theme, onToggleTheme, onShowLeaderboard}) {
   const [navOpen, setNavOpen] = useState(false);
   const [avatarOpen, setAvatarOpen] = useState(false);
 
@@ -1427,7 +1428,8 @@ function Screen({ children, user, onLogout, theme, onToggleTheme }) {
                 key={item}
                 onClick={() => {
     if (item === 'Leaderboard') {
-      alert('Leaderboard clicked');
+      onShowLeaderboard && onShowLeaderboard();
+
 
     }
   }}
