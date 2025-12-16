@@ -1427,8 +1427,8 @@ function Screen({ children, user, onLogout, theme, onToggleTheme }) {
                 key={item}
                 onClick={() => {
     if (item === 'Leaderboard') {
-      setActivePage('leaderboard');
-      loadLeaderboard(currentTournament?.id);
+      alert('Leaderboard clicked');
+
     }
   }}
                 style={{
