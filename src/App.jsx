@@ -150,6 +150,8 @@ function AdminFinalizeMatchPanel({ apiBaseUrl, token, tournamentId, matches, onA
   const [status, setStatus] = useState('');
   const [saving, setSaving] = useState(false);
   const [activePage, setActivePage] = useState('Dashboard');
+  const [leaderboardRows, setLeaderboardRows] = useState([]);
+
 
 
   async function saveResult() {
@@ -496,6 +498,7 @@ export default function App() {
       }));
     }
   }
+useEffect(() => { if (leaderboardRows.length) console.log('leaderboardRows', leaderboardRows); }, [leaderboardRows]);
 
   if (loadingUser) {
     return (
@@ -504,7 +507,11 @@ export default function App() {
         onLogout={handleLogout}
         theme={theme}
         onToggleTheme={toggleTheme}
-        onShowLeaderboard={() => loadLeaderboard(currentTournament?.id)}
+       onShowLeaderboard={async () => {
+  const rows = await loadLeaderboard(currentTournament?.id);
+  setLeaderboardRows(rows || []);
+}}
+
       >
         <FrostedCard theme={theme}>
           <TitleRow />
