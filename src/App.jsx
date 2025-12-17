@@ -706,7 +706,7 @@ if (currentView === 'leaderboard') {
               {leaderboardRows.map((r, i) => (
                 <tr key={i}>
                   <td>{r.username || r.name || 'Player'}</td>
-                  <td style={{ textAlign: 'right' }}>{r.points}</td>
+                  <td style={{ textAlign: 'right' }}>{r.total_points ?? 0 }</td>
                 </tr>
               ))}
             </tbody>
