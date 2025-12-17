@@ -678,6 +678,42 @@ async function refreshMatchesAndPredictions() {
       </Screen>
     );
   }
+// ===== LEADERBOARD VIEW =====
+if (currentView === 'leaderboard') {
+  return (
+    <Screen
+      user={user}
+      onLogout={handleLogout}
+      theme={theme}
+      onToggleTheme={toggleTheme}
+      onShowLeaderboard={async () => {
+        setCurrentView('leaderboard');
+        const rows = await loadLeaderboard(currentTournament?.id);
+        setLeaderboardRows(rows || []);
+      }}
+    >
+      <FrostedCard theme={theme}>
+        <TitleRow />
+        <h3 style={{ marginTop: 12 }}>Leaderboard</h3>
+
+        {leaderboardRows.length === 0 ? (
+          <p style={{ opacity: 0.8 }}>No leaderboard data yet.</p>
+        ) : (
+          <table style={{ width: '100%', marginTop: 12 }}>
+            <tbody>
+              {leaderboardRows.map((r, i) => (
+                <tr key={i}>
+                  <td>{r.username || r.name || 'Player'}</td>
+                  <td style={{ textAlign: 'right' }}>{r.points}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </FrostedCard>
+    </Screen>
+  );
+}
 
   // Logged-in view
   return (
