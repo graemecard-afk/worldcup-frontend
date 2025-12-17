@@ -423,6 +423,8 @@ async function refreshMatchesAndPredictions() {
   if (!tournamentId) return;
   try {
     const rows = await apiGet(`/leaderboard/${tournamentId}`);
+    console.log('LEADERBOARD rows:', rows);
+
     return rows;
   } catch (err) {
     console.error(err);
