@@ -348,7 +348,8 @@ export default function App() {
         setLoadingData(false);
         return;
       }
-      
+ 
+     
 
       const first = ts[0];
       setCurrentTournament(first);
@@ -393,6 +394,30 @@ export default function App() {
       setLoadingData(false);
     }
   }
+async function refreshMatchesAndPredictions() {
+  if (!currentTournament?.id) return;
+
+  const ms = await apiGet(`/matches/${currentTournament.id}`);
+  setMatches(ms || []);
+
+  const ps = await apiGet(`/predictions/tournament/${currentTournament.id}`);
+  const map = {};
+  (ps || []).forEach(p => {
+    map[p.match_id] = {
+      home:
+        p.predicted_home_goals === null || p.predicted_home_goals === undefined
+          ? ''
+          : String(p.predicted_home_goals),
+      away:
+        p.predicted_away_goals === null || p.predicted_away_goals === undefined
+          ? ''
+          : String(p.predicted_away_goals),
+      status: 'saved',
+      points: p.points ?? null,
+    };
+  });
+  setPredictions(map);
+}
 
   async function loadLeaderboard(tournamentId) {
   if (!tournamentId) return;
@@ -503,17 +528,17 @@ export default function App() {
   if (loadingUser) {
     return (
       <Screen
-        user={user}
-        onLogout={handleLogout}
-        theme={theme}
-        onToggleTheme={toggleTheme}
-       onShowLeaderboard={async () => {
-  const rows = await loadLeaderboard(currentTournament?.id);
-  setLeaderboardRows(rows || []);
-}}
-onNavLeaderboard={() => setCurrentView('leaderboard')}
+  user={user}
+  onLogout={handleLogout}
+  theme={theme}
+  onToggleTheme={toggleTheme}
+  onShowLeaderboard={async () => {
+    setCurrentView('leaderboard');
+    const rows = await loadLeaderboard(currentTournament?.id);
+    setLeaderboardRows(rows || []);
+  }}
+>
 
-      >
         <FrostedCard theme={theme}>
           <TitleRow />
           <Sub>Loading your session…</Sub>
@@ -524,17 +549,18 @@ onNavLeaderboard={() => setCurrentView('leaderboard')}
 
   if (!user) {
     return (
-      
-  user={null}
-  onLogout={null}
-  theme={theme}
-  onToggleTheme={toggleTheme}
-  onShowLeaderboard={async () => {
-    const rows = await loadLeaderboard(currentTournament?.id);
-    setLeaderboardRows(rows || []);
-  }}
-  onNavLeaderboard={() => setCurrentView('leaderboard')}
->
+  <Screen
+    user={null}
+    onLogout={null}
+    theme={theme}
+    onToggleTheme={toggleTheme}
+    onShowLeaderboard={async () => {
+      setCurrentView('leaderboard');
+      const rows = await loadLeaderboard(currentTournament?.id);
+      setLeaderboardRows(rows || []);
+    }}
+  >
+
 
         <FrostedCard theme={theme}>
           <TitleRow />
@@ -660,11 +686,12 @@ onNavLeaderboard={() => setCurrentView('leaderboard')}
       onLogout={handleLogout}
       theme={theme}
       onToggleTheme={toggleTheme}
-      onNavLeaderboard={() => setCurrentView('leaderboard')}
       onShowLeaderboard={async () => {
+  setCurrentView('leaderboard');
   const rows = await loadLeaderboard(currentTournament?.id);
   setLeaderboardRows(rows || []);
 }}
+
     >
       <FrostedCard theme={theme}>
         <div
@@ -800,7 +827,7 @@ onNavLeaderboard={() => setCurrentView('leaderboard')}
     token={getStoredToken()}
     tournamentId={currentTournament?.id}
     matches={matches}
-    onAfterSave={loadTournamentAndMatches}
+    onAfterSave={refreshMatchesAndPredictions}
 
 
   />
@@ -1204,7 +1231,7 @@ onNavLeaderboard={() => setCurrentView('leaderboard')}
 
 // ===== Layout & UI helpers =====
 
-function Screen({ children, user, onLogout, theme, onToggleTheme, onShowLeaderboard, onNavLeaderboard}) {
+function Screen({ children, user, onLogout, theme, onToggleTheme, onShowLeaderboard }) {
   const [navOpen, setNavOpen] = useState(false);
   const [avatarOpen, setAvatarOpen] = useState(false);
 
@@ -1446,25 +1473,22 @@ function Screen({ children, user, onLogout, theme, onToggleTheme, onShowLeaderbo
               <div
                 key={item}
                 onClick={() => {
-    if (item === 'Leaderboard') {
-       onNavLeaderboard && onNavLeaderboard();
-      onShowLeaderboard && onShowLeaderboard();
+  setNavOpen(false);
 
-
-    }
-  }}
+  if (item === 'Leaderboard') {
+    onShowLeaderboard?.();
+  } else {
+    // For now we just close the menu; the other pages are placeholders.
+    // (Later, when you add real pages, this is where you'll setCurrentView(item))
+  }
+}}
                 style={{
                   padding: '6px 8px',
                   borderRadius: '8px',
-                  cursor: 'default',
+                  cursor: 'pointer',
                   opacity: 0.9,
                   marginBottom: '4px',
-                  background:
-                    item === 'Dashboard'
-                      ? isDark
-                        ? 'rgba(30,64,175,0.7)'
-                        : 'rgba(191,219,254,0.9)'
-                      : 'transparent',
+                  background:'transparent',
                 }}
               >
                 {item}
