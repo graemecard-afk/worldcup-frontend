@@ -1515,9 +1515,13 @@ function Screen({ children, user, onLogout, theme, onToggleTheme, onShowLeaderbo
 
   if (item === 'Leaderboard') {
     onShowLeaderboard?.();
-  } else {
-    // For now we just close the menu; the other pages are placeholders.
-    // (Later, when you add real pages, this is where you'll setCurrentView(item))
+    return;
+  }
+
+  // For now, everything else goes back to the main dashboard view
+  // (Later we’ll route these properly)
+  if (typeof setCurrentView === 'function') {
+    setCurrentView('main');
   }
 }}
                 style={{
