@@ -1518,8 +1518,7 @@ function Screen({
           ))}
 
           <p style={{ marginTop: '10px', fontSize: '0.8rem', opacity: 0.7 }}>
-            (Links are placeholders – we can wire them up once we add those
-            pages.)
+            (Only the Dashboard and Leaderboard links currently work.)
           </p>
         </div>
       )}
