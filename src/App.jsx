@@ -696,22 +696,7 @@ if (currentView === 'leaderboard') {
     >
       <FrostedCard theme={theme}>
         <TitleRow />
-        <h3 style={{ marginTop: 12 }}>Leaderboard</h3>
-
-        {leaderboardRows.length === 0 ? (
-          <p style={{ opacity: 0.8 }}>No leaderboard data yet.</p>
-        ) : (
-          <table style={{ width: '100%', marginTop: 12 }}>
-            <tbody>
-              {leaderboardRows.map((r, i) => (
-                <tr key={i}>
-                  <td>{r.username || r.name || 'Player'}</td>
-                  <td style={{ textAlign: 'right' }}>{r.total_points ?? 0 }</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+        <LeaderboardTable rows={leaderboardRows} theme={theme} />
       </FrostedCard>
     </Screen>
   );
@@ -1564,6 +1549,58 @@ function Screen({ children, user, onLogout, theme, onToggleTheme, onShowLeaderbo
     </div>
   );
 }
+function LeaderboardTable({ rows = [], theme = 'dark' }) {
+  const isDark = theme === 'dark';
+
+  const sorted = [...(rows || [])].sort((a, b) => {
+    const ap = Number(a?.total_points ?? 0);
+    const bp = Number(b?.total_points ?? 0);
+    if (bp !== ap) return bp - ap;
+    return String(a?.name ?? '').localeCompare(String(b?.name ?? ''));
+  });
+
+  return (
+    <div style={{ marginTop: 14, textAlign: 'left' }}>
+      <h3 style={{ margin: '10px 0 8px', fontSize: '1rem' }}>Leaderboard</h3>
+
+      {sorted.length === 0 ? (
+        <p style={{ marginTop: 0, opacity: 0.8 }}>No leaderboard data yet.</p>
+      ) : (
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
+          <thead>
+            <tr style={{ opacity: 0.85 }}>
+              <th style={{ textAlign: 'left', padding: '6px 6px' }}>Rank</th>
+              <th style={{ textAlign: 'left', padding: '6px 6px' }}>Name</th>
+              <th style={{ textAlign: 'right', padding: '6px 6px' }}>Group Stage Points</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sorted.map((r, idx) => (
+              <tr
+                key={r.user_id || `${r.name}-${idx}`}
+                style={{
+                  borderTop: isDark
+                    ? '1px solid rgba(148,163,184,0.25)'
+                    : '1px solid rgba(15,23,42,0.12)',
+                }}
+              >
+                <td style={{ padding: '8px 6px', width: 60 }}>{idx + 1}</td>
+                <td style={{ padding: '8px 6px' }}>{r.name || r.username || '—'}</td>
+                <td style={{ padding: '8px 6px', textAlign: 'right', fontWeight: 700 }}>
+                  {Number(r.total_points ?? 0)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+}
+
+
+
+
 function StatusBadge({ status, theme }) {
   const isDark = theme === 'dark';
 
