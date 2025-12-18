@@ -534,12 +534,10 @@ async function refreshMatchesAndPredictions() {
   onLogout={handleLogout}
   theme={theme}
   onToggleTheme={toggleTheme}
-  onShowLeaderboard={async () => {
-    setCurrentView('leaderboard');
-    const rows = await loadLeaderboard(currentTournament?.id);
-    setLeaderboardRows(rows || []);
-  }}
+  currentView={currentView}
+  onNavigate={navigate}
 >
+
 
         <FrostedCard theme={theme}>
           <TitleRow />
@@ -552,16 +550,12 @@ async function refreshMatchesAndPredictions() {
   if (!user) {
     return (
   <Screen
-    user={null}
-    onLogout={null}
-    theme={theme}
-    onToggleTheme={toggleTheme}
-    onShowLeaderboard={async () => {
-      setCurrentView('leaderboard');
-      const rows = await loadLeaderboard(currentTournament?.id);
-      setLeaderboardRows(rows || []);
-    }}
-  >
+  user={null}
+  onLogout={null}
+  theme={theme}
+  onToggleTheme={toggleTheme}
+>
+
 
 
         <FrostedCard theme={theme}>
@@ -684,16 +678,14 @@ async function refreshMatchesAndPredictions() {
 if (currentView === 'leaderboard') {
   return (
     <Screen
-      user={user}
-      onLogout={handleLogout}
-      theme={theme}
-      onToggleTheme={toggleTheme}
-      onShowLeaderboard={async () => {
-        setCurrentView('leaderboard');
-        const rows = await loadLeaderboard(currentTournament?.id);
-        setLeaderboardRows(rows || []);
-      }}
-    >
+  user={user}
+  onLogout={handleLogout}
+  theme={theme}
+  onToggleTheme={toggleTheme}
+  currentView={currentView}
+  onNavigate={navigate}
+>
+
       <FrostedCard theme={theme}>
         <TitleRow />
         <LeaderboardTable rows={leaderboardRows} theme={theme} />
@@ -705,17 +697,14 @@ if (currentView === 'leaderboard') {
   // Logged-in view
   return (
     <Screen
-      user={user}
-      onLogout={handleLogout}
-      theme={theme}
-      onToggleTheme={toggleTheme}
-      onShowLeaderboard={async () => {
-  setCurrentView('leaderboard');
-  const rows = await loadLeaderboard(currentTournament?.id);
-  setLeaderboardRows(rows || []);
-}}
+  user={user}
+  onLogout={handleLogout}
+  theme={theme}
+  onToggleTheme={toggleTheme}
+  currentView={currentView}
+  onNavigate={navigate}
+>
 
-    >
       <FrostedCard theme={theme}>
         <div
           style={{
@@ -1254,7 +1243,15 @@ if (currentView === 'leaderboard') {
 
 // ===== Layout & UI helpers =====
 
-function Screen({ children, user, onLogout, theme, onToggleTheme, onShowLeaderboard }) {
+function Screen({
+  children,
+  user,
+  onLogout,
+  theme,
+  onToggleTheme,
+  currentView,
+  onNavigate,
+}) {
   const [navOpen, setNavOpen] = useState(false);
   const [avatarOpen, setAvatarOpen] = useState(false);
 
@@ -1274,6 +1271,14 @@ function Screen({ children, user, onLogout, theme, onToggleTheme, onShowLeaderbo
         .slice(0, 2)
         .join('')
     : '';
+
+  const navItems = [
+    { label: 'Dashboard', view: 'main' },
+    { label: 'Group Stage', view: 'groups' },
+    { label: 'Knockouts', view: 'knockouts' },
+    { label: 'Leaderboard', view: 'leaderboard' },
+    { label: 'Rules', view: 'rules' },
+  ];
 
   return (
     <div
@@ -1299,9 +1304,7 @@ function Screen({ children, user, onLogout, theme, onToggleTheme, onShowLeaderbo
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          background: isDark
-            ? 'rgba(0,0,0,0.55)'
-            : 'rgba(15,23,42,0.12)',
+          background: isDark ? 'rgba(0,0,0,0.55)' : 'rgba(15,23,42,0.12)',
           backdropFilter: 'blur(8px)',
           color: isDark ? '#fefefe' : '#0f172a',
           fontSize: '1.05rem',
@@ -1341,13 +1344,7 @@ function Screen({ children, user, onLogout, theme, onToggleTheme, onShowLeaderbo
           )}
         </div>
 
-        <div
-          style={{
-            textAlign: 'center',
-            flex: 1,
-            pointerEvents: 'none',
-          }}
-        >
+        <div style={{ textAlign: 'center', flex: 1, pointerEvents: 'none' }}>
           <span style={{ whiteSpace: 'nowrap' }}>
             🏆 Graeme&apos;s World Cup Predictor Pool 2026
           </span>
@@ -1463,7 +1460,7 @@ function Screen({ children, user, onLogout, theme, onToggleTheme, onShowLeaderbo
         </div>
       </div>
 
-      {/* SIDE NAV SHELL (for future multi-page nav) */}
+      {/* SIDE NAV */}
       {user && navOpen && (
         <div
           style={{
@@ -1482,53 +1479,37 @@ function Screen({ children, user, onLogout, theme, onToggleTheme, onShowLeaderbo
             fontSize: '0.9rem',
           }}
         >
-          <div
-            style={{
-              marginBottom: '8px',
-              fontWeight: 600,
-              opacity: 0.85,
-            }}
-          >
+          <div style={{ marginBottom: '8px', fontWeight: 600, opacity: 0.85 }}>
             Navigation
           </div>
-          {['Dashboard', 'Group Stage', 'Knockouts', 'Leaderboard', 'Rules'].map(
-            item => (
-              <div
-                key={item}
-                onClick={() => {
-  setNavOpen(false);
 
-  if (item === 'Leaderboard') {
-    onShowLeaderboard?.();
-    return;
-  }
+          {navItems.map(({ label, view }) => (
+            <div
+              key={view}
+              onClick={() => {
+                setNavOpen(false);
+                onNavigate?.(view);
+              }}
+              style={{
+                padding: '6px 8px',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                marginBottom: '4px',
+                background:
+                  currentView === view
+                    ? isDark
+                      ? 'rgba(255,255,255,0.08)'
+                      : 'rgba(15,23,42,0.08)'
+                    : 'transparent',
+                opacity: currentView === view ? 1 : 0.9,
+                fontWeight: currentView === view ? 700 : 500,
+              }}
+            >
+              {label}
+            </div>
+          ))}
 
-  // For now, everything else goes back to the main dashboard view
-  // (Later we’ll route these properly)
-  if (typeof setCurrentView === 'function') {
-    setCurrentView('main');
-  }
-}}
-                style={{
-                  padding: '6px 8px',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  opacity: 0.9,
-                  marginBottom: '4px',
-                  background:'transparent',
-                }}
-              >
-                {item}
-              </div>
-            )
-          )}
-          <p
-            style={{
-              marginTop: '10px',
-              fontSize: '0.8rem',
-              opacity: 0.7,
-            }}
-          >
+          <p style={{ marginTop: '10px', fontSize: '0.8rem', opacity: 0.7 }}>
             (Links are placeholders – we can wire them up once we add those
             pages.)
           </p>
@@ -1549,6 +1530,7 @@ function Screen({ children, user, onLogout, theme, onToggleTheme, onShowLeaderbo
     </div>
   );
 }
+
 function LeaderboardTable({ rows = [], theme = 'dark' }) {
   const isDark = theme === 'dark';
 
