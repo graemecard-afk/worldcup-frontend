@@ -769,8 +769,7 @@ if (currentView === 'leaderboard') {
                 opacity: 0.9,
               }}
             >
-              Get your predictions in before kick-off and see who tops the
-              table in your pool.
+              Get your predictions in at least 2h before kick-off, after which time they will be locked. See if you can outwit your mates!
             </p>
           </div>
         </div>
