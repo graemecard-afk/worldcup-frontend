@@ -526,6 +526,14 @@ async function refreshMatchesAndPredictions() {
     }
   }
 
+const navigate = async (view) => {
+  setCurrentView(view);
+
+  if (view === 'leaderboard') {
+    const rows = await loadLeaderboard(currentTournament?.id);
+    setLeaderboardRows(rows || []);
+  }
+};
 
   if (loadingUser) {
     return (
