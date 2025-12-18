@@ -1542,42 +1542,103 @@ function Screen({
 function LeaderboardTable({ rows = [], theme = 'dark' }) {
   const isDark = theme === 'dark';
 
-  const sorted = [...(rows || [])].sort((a, b) => {
-    const ap = Number(a?.total_points ?? 0);
-    const bp = Number(b?.total_points ?? 0);
-    if (bp !== ap) return bp - ap;
-    return String(a?.name ?? '').localeCompare(String(b?.name ?? ''));
+  // 1) Normalise + compute columns (knockouts are placeholder for now)
+  const normalised = (rows || []).map(r => {
+    const name = r?.name || r?.username || '—';
+    const groupStagePoints = Number(r?.total_points ?? 0);
+    const knockoutPoints = 0; // placeholder
+    const grandTotal = groupStagePoints + knockoutPoints;
+
+    return {
+      ...r,
+      _name: name,
+      _groupStagePoints: groupStagePoints,
+      _knockoutPoints: knockoutPoints,
+      _grandTotal: grandTotal,
+    };
+  });
+
+  // 2) Sort once (Group Stage desc, then name asc)
+  normalised.sort((a, b) => {
+    if (b._groupStagePoints !== a._groupStagePoints)
+      return b._groupStagePoints - a._groupStagePoints;
+    return String(a._name).localeCompare(String(b._name));
+  });
+
+  // 3) Rank once (competition ranking: 1,2,2,4 when ties)
+  let lastPoints = null;
+  let currentRank = 0;
+
+  const ranked = normalised.map((r, idx) => {
+    if (lastPoints === null || r._groupStagePoints !== lastPoints) {
+      currentRank = idx + 1;
+      lastPoints = r._groupStagePoints;
+    }
+    return {
+      ...r,
+      _rankGroupStage: currentRank,
+      _overallRank: '', // placeholder for later
+    };
   });
 
   return (
     <div style={{ marginTop: 14, textAlign: 'left' }}>
       <h3 style={{ margin: '10px 0 8px', fontSize: '1rem' }}>Leaderboard</h3>
 
-      {sorted.length === 0 ? (
+      {ranked.length === 0 ? (
         <p style={{ marginTop: 0, opacity: 0.8 }}>No leaderboard data yet.</p>
       ) : (
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
+        <table
+          style={{
+            width: '100%',
+            borderCollapse: 'collapse',
+            fontSize: '0.9rem',
+          }}
+        >
           <thead>
             <tr style={{ opacity: 0.85 }}>
-              <th style={{ textAlign: 'left', padding: '6px 6px' }}>Rank</th>
+              <th style={{ textAlign: 'left', padding: '6px 6px', width: 90 }}>
+                Rank (GS)
+              </th>
               <th style={{ textAlign: 'left', padding: '6px 6px' }}>Name</th>
-              <th style={{ textAlign: 'right', padding: '6px 6px' }}>Group Stage Points</th>
+              <th style={{ textAlign: 'right', padding: '6px 6px', width: 140 }}>
+                Group Stage
+              </th>
+              <th style={{ textAlign: 'right', padding: '6px 6px', width: 120 }}>
+                Knockouts
+              </th>
+              <th style={{ textAlign: 'right', padding: '6px 6px', width: 130 }}>
+                Grand Total
+              </th>
+              <th style={{ textAlign: 'right', padding: '6px 6px', width: 120 }}>
+                Overall Rank
+              </th>
             </tr>
           </thead>
+
           <tbody>
-            {sorted.map((r, idx) => (
+            {ranked.map((r, idx) => (
               <tr
-                key={r.user_id || `${r.name}-${idx}`}
+                key={r.user_id || `${r._name}-${idx}`}
                 style={{
                   borderTop: isDark
                     ? '1px solid rgba(148,163,184,0.25)'
                     : '1px solid rgba(15,23,42,0.12)',
                 }}
               >
-                <td style={{ padding: '8px 6px', width: 60 }}>{idx + 1}</td>
-                <td style={{ padding: '8px 6px' }}>{r.name || r.username || '—'}</td>
+                <td style={{ padding: '8px 6px' }}>{r._rankGroupStage}</td>
+                <td style={{ padding: '8px 6px' }}>{r._name}</td>
                 <td style={{ padding: '8px 6px', textAlign: 'right', fontWeight: 700 }}>
-                  {Number(r.total_points ?? 0)}
+                  {r._groupStagePoints}
+                </td>
+                <td style={{ padding: '8px 6px', textAlign: 'right' }}>
+                  {r._knockoutPoints}
+                </td>
+                <td style={{ padding: '8px 6px', textAlign: 'right', fontWeight: 700 }}>
+                  {r._grandTotal}
+                </td>
+                <td style={{ padding: '8px 6px', textAlign: 'right', opacity: 0.7 }}>
+                  {r._overallRank}
                 </td>
               </tr>
             ))}
@@ -1587,8 +1648,6 @@ function LeaderboardTable({ rows = [], theme = 'dark' }) {
     </div>
   );
 }
-
-
 
 
 function StatusBadge({ status, theme }) {
