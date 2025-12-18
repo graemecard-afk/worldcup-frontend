@@ -244,6 +244,14 @@ try {
 export default function App() {
   const [mode, setMode] = useState('login'); // 'login' or 'register'
   const [user, setUser] = useState(null);
+  const ADMIN_EMAILS = [
+  'graeme.card@gmail.com', // <-- replace with YOUR login email
+];
+
+const isAdmin = ADMIN_EMAILS.includes(
+  (user?.email || '').toLowerCase()
+);
+
   const [authError, setAuthError] = useState('');
   const [loadingUser, setLoadingUser] = useState(true);
   const [leaderboardRows, setLeaderboardRows] = useState([]);
