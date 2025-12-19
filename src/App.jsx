@@ -1257,15 +1257,28 @@ function Screen({
 }) {
   const [navOpen, setNavOpen] = useState(false);
   const [avatarOpen, setAvatarOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const isDark = theme === 'dark';
+  const textColor = isDark ? '#e5e7eb' : '#0f172a';
+
+  // robust mobile detection (updates on resize/rotate)
+  useEffect(() => {
+    const update = () => setIsMobile(window.innerWidth < 520);
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+
+  // close popovers on view change
+  useEffect(() => {
+    setAvatarOpen(false);
+    setNavOpen(false);
+  }, [currentView]);
 
   const bgImage = isDark
     ? `linear-gradient(120deg, rgba(15,23,42,0.9), rgba(8,47,73,0.85)), url(${STADIUM_BG})`
     : `url(${STADIUM_BG})`;
-
-  const textColor = isDark ? '#e5e7eb' : '#0f172a';
-const isMobile = typeof window !== 'undefined' && window.innerWidth < 480;
 
   const initials = user?.name
     ? user.name
@@ -1284,6 +1297,21 @@ const isMobile = typeof window !== 'undefined' && window.innerWidth < 480;
     { label: 'Rules', view: 'rules' },
   ];
 
+  const topBarBtnStyle = {
+    height: 36,
+    borderRadius: 10,
+    border: '1px solid rgba(148,163,184,0.5)',
+    background: isDark ? 'rgba(15,23,42,0.85)' : 'rgba(255,255,255,0.9)',
+    color: isDark ? '#e5e7eb' : '#0f172a',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    padding: '0 10px',
+    fontSize: '0.95rem',
+    fontWeight: 700,
+  };
+
   return (
     <div
       style={{
@@ -1293,7 +1321,7 @@ const isMobile = typeof window !== 'undefined' && window.innerWidth < 480;
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         color: textColor,
-        paddingTop: '80px', // space for top bar
+        paddingTop: 72,
         position: 'relative',
       }}
     >
@@ -1304,168 +1332,113 @@ const isMobile = typeof window !== 'undefined' && window.innerWidth < 480;
           top: 0,
           left: 0,
           width: '100%',
-          height: '60px',
+          height: 60,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           background: isDark ? 'rgba(0,0,0,0.55)' : 'rgba(15,23,42,0.12)',
           backdropFilter: 'blur(8px)',
-          color: isDark ? '#fefefe' : '#0f172a',
-          fontSize: '1.05rem',
-          fontWeight: 600,
-          letterSpacing: '0.03em',
           borderBottom: '1px solid rgba(255,255,255,0.12)',
           zIndex: 50,
           padding: '0 14px',
           boxSizing: 'border-box',
+          gap: 10,
         }}
       >
-       
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          {user && (
+        {/* LEFT: hamburger on mobile */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 60 }}>
+          {user && isMobile && (
             <button
               onClick={() => setNavOpen(o => !o)}
-              style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '999px',
-                border: 'none',
-                background: isDark
-                  ? 'rgba(15,23,42,0.9)'
-                  : 'rgba(255,255,255,0.8)',
-                color: isDark ? '#e5e7eb' : '#0f172a',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                boxShadow: isDark
-                  ? '0 3px 8px rgba(15,23,42,0.8)'
-                  : '0 3px 8px rgba(148,163,184,0.6)',
-              }}
-              aria-label="Open navigation"
+              style={{ ...topBarBtnStyle, width: 40, padding: 0 }}
+              aria-label="Menu"
+              type="button"
             >
               ☰
             </button>
           )}
         </div>
 
+        {/* CENTER: title */}
         <div style={{ textAlign: 'center', flex: 1, pointerEvents: 'none' }}>
-          <span style={{ whiteSpace: 'nowrap' }}>
+          <span style={{ whiteSpace: 'nowrap', fontWeight: 700 }}>
             🏆 Graeme&apos;s World Cup Predictor Pool 2026
           </span>
         </div>
 
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            justifyContent: 'flex-end',
-          }}
-        >
-          {isMobile && (
-  <button
-    onClick={() => setNavOpen(o => !o)}
-    style={{
-      width: '36px',
-      height: '36px',
-      borderRadius: '10px',
-      border: '1px solid rgba(148,163,184,0.5)',
-      background: isDark ? 'rgba(15,23,42,0.85)' : 'rgba(255,255,255,0.9)',
-      color: isDark ? '#e5e7eb' : '#0f172a',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      cursor: 'pointer',
-      fontSize: '1.1rem',
-      fontWeight: 700,
-    }}
-    aria-label="Menu"
-  >
-    ☰
-  </button>
-)}
-
+        {/* RIGHT: desktop controls OR nothing on mobile */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 120, justifyContent: 'flex-end' }}>
           {!isMobile && (
-          <button
-            onClick={onToggleTheme}
-            style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '999px',
-              border: 'none',
-              background: isDark
-                ? 'rgba(15,23,42,0.9)'
-                : 'rgba(255,255,255,0.9)',
-              color: isDark ? '#fbbf24' : '#0f172a',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              fontSize: '1rem',
-            }}
-            aria-label="Toggle colour theme"
-          >
-            {isDark ? '☀️' : '🌙'}
-          </button>)}
+            <button
+              onClick={onToggleTheme}
+              style={{ ...topBarBtnStyle, width: 40, padding: 0 }}
+              aria-label="Toggle colour theme"
+              type="button"
+            >
+              {isDark ? '☀️' : '🌙'}
+            </button>
+          )}
 
           {user && !isMobile && (
             <div style={{ position: 'relative' }}>
               <button
                 onClick={() => setAvatarOpen(o => !o)}
                 style={{
-                  width: '32px',
-                  height: '32px',
-                  borderRadius: '999px',
+                  ...topBarBtnStyle,
+                  width: 40,
+                  padding: 0,
+                  borderRadius: 999,
                   border: '1px solid rgba(148,163,184,0.7)',
-                  background: isDark
-                    ? 'rgba(15,23,42,0.95)'
-                    : 'rgba(255,255,255,0.95)',
-                  color: isDark ? '#e5e7eb' : '#0f172a',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  fontSize: '0.8rem',
-                  fontWeight: 700,
                 }}
                 aria-label="User menu"
+                type="button"
               >
                 {initials || 'U'}
               </button>
-              </div>)}
 
               {avatarOpen && (
                 <div
                   style={{
                     position: 'absolute',
-                    top: '40px',
+                    top: 46,
                     right: 0,
-                    background: isDark
-                      ? 'rgba(15,23,42,0.95)'
-                      : 'rgba(248,250,252,0.98)',
-                    borderRadius: '10px',
-                    border: '1px solid rgba(148,163,184,0.7)',
-                    minWidth: '200px',
-                    boxShadow: '0 12px 30px rgba(0,0,0,0.6)',
-                    padding: '8px 10px',
-                    fontSize: '0.85rem',
+                    background: isDark ? 'rgba(15,23,42,0.95)' : 'rgba(255,255,255,0.98)',
+                    color: isDark ? '#e5e7eb' : '#0f172a',
+                    borderRadius: 12,
+                    border: '1px solid rgba(148,163,184,0.5)',
+                    minWidth: 210,
+                    boxShadow: '0 12px 30px rgba(0,0,0,0.35)',
+                    padding: 10,
                     zIndex: 60,
                   }}
                 >
-                  <div
-                    style={{
-                      marginBottom: '6px',
-                      opacity: 0.9,
-                      paddingBottom: '4px',
-                      borderBottom: '1px solid rgba(148,163,184,0.4)',
-                    }}
-                  >
-                    Logged in as
-                    <br />
-                    <strong>{user.name}</strong>
+                  <div style={{ fontSize: '0.85rem', opacity: 0.9, marginBottom: 8 }}>
+                    Logged in as<br />
+                    <strong>{user?.name || 'User'}</strong>
                   </div>
+
+                  <button
+                    onClick={() => {
+                      setAvatarOpen(false);
+                      onToggleTheme();
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '8px 10px',
+                      borderRadius: 10,
+                      border: '1px solid rgba(148,163,184,0.4)',
+                      background: 'transparent',
+                      color: 'inherit',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      marginBottom: 8,
+                      fontWeight: 600,
+                    }}
+                    type="button"
+                  >
+                    {isDark ? 'Light mode' : 'Dark mode'}
+                  </button>
+
                   <button
                     onClick={() => {
                       setAvatarOpen(false);
@@ -1473,14 +1446,16 @@ const isMobile = typeof window !== 'undefined' && window.innerWidth < 480;
                     }}
                     style={{
                       width: '100%',
-                      padding: '6px 8px',
-                      borderRadius: '8px',
+                      padding: '8px 10px',
+                      borderRadius: 10,
                       border: 'none',
                       background: '#ef4444',
                       color: '#f9fafb',
                       cursor: 'pointer',
-                      fontWeight: 600,
+                      textAlign: 'left',
+                      fontWeight: 700,
                     }}
+                    type="button"
                   >
                     Log out
                   </button>
@@ -1490,13 +1465,117 @@ const isMobile = typeof window !== 'undefined' && window.innerWidth < 480;
           )}
         </div>
       </div>
-    
 
+      {/* MOBILE DRAWER */}
+      {user && isMobile && navOpen && (
+        <>
+          {/* overlay */}
+          <div
+            onClick={() => setNavOpen(false)}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              background: 'rgba(0,0,0,0.35)',
+              zIndex: 55,
+            }}
+          />
 
-          <p style={{ marginTop: '10px', fontSize: '0.8rem', opacity: 0.7 }}>
-            (Only the Dashboard and Leaderboard links currently work.)
-          </p>
-        </div>
+          {/* drawer */}
+          <div
+            style={{
+              position: 'fixed',
+              top: 60,
+              left: 0,
+              bottom: 0,
+              width: '78%',
+              maxWidth: 320,
+              background: isDark ? 'rgba(15,23,42,0.97)' : 'rgba(255,255,255,0.97)',
+              color: isDark ? '#e5e7eb' : '#0f172a',
+              borderRight: '1px solid rgba(148,163,184,0.25)',
+              zIndex: 56,
+              padding: 12,
+              boxSizing: 'border-box',
+              overflowY: 'auto',
+            }}
+          >
+            <div style={{ fontWeight: 800, marginBottom: 10 }}>Menu</div>
+
+            {navItems.map(({ label, view }) => (
+              <button
+                key={view}
+                onClick={() => {
+                  if (onNavigate) onNavigate(view);
+                  setNavOpen(false);
+                }}
+                style={{
+                  width: '100%',
+                  padding: '10px 12px',
+                  marginBottom: 8,
+                  borderRadius: 12,
+                  border: '1px solid rgba(148,163,184,0.25)',
+                  background:
+                    currentView === view
+                      ? isDark
+                        ? 'rgba(255,255,255,0.08)'
+                        : 'rgba(15,23,42,0.08)'
+                      : 'transparent',
+                  color: 'inherit',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  fontWeight: currentView === view ? 800 : 600,
+                }}
+                type="button"
+              >
+                {label}
+              </button>
+            ))}
+
+            <div style={{ height: 12 }} />
+
+            <button
+              onClick={() => {
+                onToggleTheme();
+                setNavOpen(false);
+              }}
+              style={{
+                width: '100%',
+                padding: '10px 12px',
+                marginBottom: 10,
+                borderRadius: 12,
+                border: '1px solid rgba(148,163,184,0.25)',
+                background: 'transparent',
+                color: 'inherit',
+                cursor: 'pointer',
+                textAlign: 'left',
+                fontWeight: 700,
+              }}
+              type="button"
+            >
+              {isDark ? 'Light mode' : 'Dark mode'}
+            </button>
+
+            <button
+              onClick={() => {
+                setNavOpen(false);
+                if (onLogout) onLogout();
+              }}
+              style={{
+                width: '100%',
+                padding: '10px 12px',
+                borderRadius: 12,
+                border: 'none',
+                background: '#ef4444',
+                color: '#f9fafb',
+                cursor: 'pointer',
+                textAlign: 'left',
+                fontWeight: 800,
+              }}
+              type="button"
+            >
+              Log out
+            </button>
+          </div>
+        </>
       )}
 
       {/* PAGE CONTENT */}
@@ -1505,7 +1584,7 @@ const isMobile = typeof window !== 'undefined' && window.innerWidth < 480;
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: '16px',
+          padding: 16,
         }}
       >
         {children}
@@ -1513,6 +1592,7 @@ const isMobile = typeof window !== 'undefined' && window.innerWidth < 480;
     </div>
   );
 }
+
 
 function LeaderboardTable({ rows = [], theme = 'dark' }) {
   const isDark = theme === 'dark';
