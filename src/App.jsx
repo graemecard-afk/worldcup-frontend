@@ -882,10 +882,16 @@ if (currentView === 'leaderboard') {
                       }}
                     >
                       <span>
-                        <strong>{m.home_team}</strong> vs{' '}
-                        <strong>{m.away_team}</strong>
-                        {m.group_name ? ` – ${m.group_name}` : ''}
-                      </span>
+  <div>
+    <strong>{m.home_team}</strong> vs <strong>{m.away_team}</strong>
+  </div>
+  {m.group_name ? (
+    <div style={{ fontSize: '0.75rem', opacity: 0.75, marginTop: 2 }}>
+      {m.group_name}
+    </div>
+  ) : null}
+</span>
+
                       <span style={{ opacity: 0.8, whiteSpace: 'nowrap' }}>
                         {formatKickoff(m.kickoff_utc)}
                       </span>
