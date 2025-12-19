@@ -1543,7 +1543,7 @@ const isMobile = typeof window !== 'undefined' && window.innerWidth < 480;
           )}
         </div>
       </div>
-
+)}
       {/* SIDE NAV */}
       {user && navOpen && (
         <div
