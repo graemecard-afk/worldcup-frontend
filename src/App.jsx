@@ -1491,54 +1491,7 @@ const isMobile = typeof window !== 'undefined' && window.innerWidth < 480;
         </div>
       </div>
     
-      {/* SIDE NAV */}
-      {user && navOpen && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 60,
-            left: 0,
-            width: '220px',
-            bottom: 0,
-            background: isDark
-              ? 'rgba(15,23,42,0.98)'
-              : 'rgba(248,250,252,0.98)',
-            borderRight: '1px solid rgba(148,163,184,0.5)',
-            boxShadow: '4px 0 18px rgba(0,0,0,0.6)',
-            padding: '12px 10px',
-            zIndex: 40,
-            fontSize: '0.9rem',
-          }}
-        >
-          <div style={{ marginBottom: '8px', fontWeight: 600, opacity: 0.85 }}>
-            Navigation
-          </div>
 
-          {navItems.map(({ label, view }) => (
-            <div
-              key={view}
-              onClick={() => {
-                setNavOpen(false);
-                onNavigate?.(view);
-              }}
-              style={{
-                padding: '6px 8px',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                marginBottom: '4px',
-                background:
-                  currentView === view
-                    ? isDark
-                      ? 'rgba(255,255,255,0.08)'
-                      : 'rgba(15,23,42,0.08)'
-                    : 'transparent',
-                opacity: currentView === view ? 1 : 0.9,
-                fontWeight: currentView === view ? 700 : 500,
-              }}
-            >
-              {label}
-            </div>
-          ))}
 
           <p style={{ marginTop: '10px', fontSize: '0.8rem', opacity: 0.7 }}>
             (Only the Dashboard and Leaderboard links currently work.)
