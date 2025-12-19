@@ -1270,11 +1270,13 @@ function Screen({
     return () => window.removeEventListener('resize', update);
   }, []);
 
-  // close popovers on view change
-  useEffect(() => {
-    setAvatarOpen(false);
-    setNavOpen(false);
-  }, [currentView]);
+ // close popovers on view change (guarded to avoid instant close)
+useEffect(() => {
+  if (avatarOpen) setAvatarOpen(false);
+  if (navOpen) setNavOpen(false);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [currentView]);
+
 
   const bgImage = isDark
     ? `linear-gradient(120deg, rgba(15,23,42,0.9), rgba(8,47,73,0.85)), url(${STADIUM_BG})`
