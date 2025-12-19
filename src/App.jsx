@@ -1347,7 +1347,7 @@ function Screen({
       >
         {/* LEFT: hamburger on mobile */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 60 }}>
-          {user && isMobile && (
+          {user && (
             <button
               onClick={() => setNavOpen(o => !o)}
               style={{ ...topBarBtnStyle, width: 40, padding: 0 }}
