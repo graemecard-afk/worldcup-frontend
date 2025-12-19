@@ -1339,7 +1339,8 @@ function Screen({
           background: isDark ? 'rgba(0,0,0,0.55)' : 'rgba(15,23,42,0.12)',
           backdropFilter: 'blur(8px)',
           borderBottom: '1px solid rgba(255,255,255,0.12)',
-          zIndex: 50,
+          zIndex: 5000,
+          pointerEvents: 'auto',
           padding: '0 14px',
           boxSizing: 'border-box',
           gap: 10,
@@ -1350,7 +1351,14 @@ function Screen({
           {user && (
             <button
               onClick={() => setNavOpen(o => !o)}
-              style={{ ...topBarBtnStyle, width: 40, padding: 0 }}
+              style={{
+  ...topBarBtnStyle,
+  width: 40,
+  padding: 0,
+  position: 'relative',
+  zIndex: 5001,
+  pointerEvents: 'auto',
+}}
               aria-label="Menu"
               type="button"
             >
