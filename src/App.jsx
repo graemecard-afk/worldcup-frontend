@@ -1265,6 +1265,7 @@ function Screen({
     : `url(${STADIUM_BG})`;
 
   const textColor = isDark ? '#e5e7eb' : '#0f172a';
+const isMobile = typeof window !== 'undefined' && window.innerWidth < 480;
 
   const initials = user?.name
     ? user.name
@@ -1319,6 +1320,61 @@ function Screen({
           boxSizing: 'border-box',
         }}
       >
+        {isMobile && navOpen && (
+  <div
+    style={{
+      position: 'fixed',
+      top: '60px',
+      right: '10px',
+      background: isDark ? 'rgba(15,23,42,0.95)' : 'rgba(255,255,255,0.95)',
+      color: isDark ? '#e5e7eb' : '#0f172a',
+      borderRadius: '12px',
+      padding: '8px',
+      boxShadow: '0 10px 25px rgba(0,0,0,0.25)',
+      zIndex: 60,
+      minWidth: '160px',
+    }}
+  >
+    <button
+      onClick={() => {
+        onToggleTheme();
+        setNavOpen(false);
+      }}
+      style={{
+        width: '100%',
+        padding: '8px 10px',
+        background: 'transparent',
+        border: 'none',
+        textAlign: 'left',
+        cursor: 'pointer',
+        color: 'inherit',
+      }}
+    >
+      {isDark ? 'Light mode' : 'Dark mode'}
+    </button>
+
+    {user && (
+      <button
+        onClick={() => {
+          setNavOpen(false);
+          onLogout();
+        }}
+        style={{
+          width: '100%',
+          padding: '8px 10px',
+          background: 'transparent',
+          border: 'none',
+          textAlign: 'left',
+          cursor: 'pointer',
+          color: 'inherit',
+        }}
+      >
+        Log out
+      </button>
+    )}
+  </div>
+)}
+
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           {user && (
             <button
@@ -1361,6 +1417,30 @@ function Screen({
             justifyContent: 'flex-end',
           }}
         >
+          {isMobile && (
+  <button
+    onClick={() => setNavOpen(o => !o)}
+    style={{
+      width: '36px',
+      height: '36px',
+      borderRadius: '10px',
+      border: '1px solid rgba(148,163,184,0.5)',
+      background: isDark ? 'rgba(15,23,42,0.85)' : 'rgba(255,255,255,0.9)',
+      color: isDark ? '#e5e7eb' : '#0f172a',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      cursor: 'pointer',
+      fontSize: '1.1rem',
+      fontWeight: 700,
+    }}
+    aria-label="Menu"
+  >
+    ☰
+  </button>
+)}
+
+          {!isMobile && (
           <button
             onClick={onToggleTheme}
             style={{
@@ -1381,9 +1461,9 @@ function Screen({
             aria-label="Toggle colour theme"
           >
             {isDark ? '☀️' : '🌙'}
-          </button>
+          </button>)}
 
-          {user && (
+          {user && !isMobile && (
             <div style={{ position: 'relative' }}>
               <button
                 onClick={() => setAvatarOpen(o => !o)}
@@ -1407,6 +1487,7 @@ function Screen({
               >
                 {initials || 'U'}
               </button>
+              </div>)}
 
               {avatarOpen && (
                 <div
