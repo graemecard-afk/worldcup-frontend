@@ -1082,14 +1082,7 @@ if (currentView === 'leaderboard') {
                       }}
                     >
                       <strong>{groupName}</strong>
-                      <span
-                        style={{
-                          fontSize: '0.75rem',
-                          opacity: 0.8,
-                        }}
-                      >
-                        P, W, D, L, GF, GA, GD, Pts
-                      </span>
+                      
                     </div>
 
                     <table
