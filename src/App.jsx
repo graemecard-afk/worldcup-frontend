@@ -1477,7 +1477,7 @@ useEffect(() => {
       </div>
 
       {/* MOBILE DRAWER */}
-      {user && isMobile && navOpen && (
+      {user && navOpen && (
         <>
           {/* overlay */}
           <div
