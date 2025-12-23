@@ -1,130 +1,136 @@
 import React from "react";
 
 /**
- * Auth page (UI only).
- * App.jsx keeps the logic: mode state, form state, submit handler, error state.
- *
- * Props:
- * - theme: 'dark' | 'light'
- * - mode: 'login' | 'register'
- * - setMode: fn(nextMode)
- * - form: object (e.g. { username, password })
- * - setForm: fn(nextForm)
- * - authError: string
- * - onSubmit: fn(event)
+ * Auth page — extracted from App.jsx verbatim.
+ * UI-only. All state + handlers stay in App.jsx.
  */
-export default function Auth({
+export default function AuthPage({
   theme = "dark",
-  mode = "login",
+  mode,
   setMode,
   form,
   setForm,
   authError,
+  setAuthError,
   onSubmit,
 }) {
-  const isDark = String(theme).toLowerCase() === "dark";
-
-  const tabStyle = isActive => ({
-    padding: "8px 12px",
-    borderRadius: 10,
-    border: `1px solid ${
-      isDark ? "rgba(255,255,255,0.18)" : "rgba(0,0,0,0.18)"
-    }`,
-    background: isActive
-      ? isDark
-        ? "rgba(255,255,255,0.12)"
-        : "rgba(0,0,0,0.06)"
-      : "transparent",
-    cursor: "pointer",
-    fontWeight: 700,
-  });
-
-  const inputStyle = {
-    width: "100%",
-    padding: "10px 12px",
-    borderRadius: 12,
-    border: `1px solid ${
-      isDark ? "rgba(255,255,255,0.18)" : "rgba(0,0,0,0.18)"
-    }`,
-    background: isDark ? "rgba(0,0,0,0.25)" : "rgba(255,255,255,0.9)",
-    color: isDark ? "white" : "black",
-    outline: "none",
-  };
-
-  const buttonStyle = {
-    width: "100%",
-    padding: "10px 12px",
-    borderRadius: 12,
-    border: `1px solid ${
-      isDark ? "rgba(255,255,255,0.18)" : "rgba(0,0,0,0.18)"
-    }`,
-    background: isDark ? "rgba(255,255,255,0.10)" : "rgba(0,0,0,0.06)",
-    color: isDark ? "white" : "black",
-    cursor: "pointer",
-    fontWeight: 800,
-    marginTop: 10,
-  };
-
-  const activeLogin = mode === "login";
-  const activeRegister = mode === "register";
-
   return (
-    <div>
-      <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-        <button
-          type="button"
-          style={tabStyle(activeLogin)}
-          onClick={() => setMode && setMode("login")}
+    <>
+      <div
+        style={{
+          display: "flex",
+          gap: "8px",
+          marginBottom: "18px",
+          marginTop: "10px",
+        }}
+      >
+        <TabButton
+          active={mode === "login"}
+          onClick={() => {
+            setMode("login");
+            setAuthError("");
+          }}
         >
           Login
-        </button>
-        <button
-          type="button"
-          style={tabStyle(activeRegister)}
-          onClick={() => setMode && setMode("register")}
+        </TabButton>
+
+        <TabButton
+          active={mode === "register"}
+          onClick={() => {
+            setMode("register");
+            setAuthError("");
+          }}
         >
           Register
-        </button>
+        </TabButton>
       </div>
 
-      <form onSubmit={onSubmit}>
-        <div style={{ display: "grid", gap: 10 }}>
-          <label>
-            <div style={{ fontSize: 13, opacity: 0.85, marginBottom: 6 }}>
-              Username
-            </div>
+      <form onSubmit={onSubmit} style={{ textAlign: "left" }}>
+        {mode === "register" && (
+          <Field label="Name">
             <input
-              style={inputStyle}
-              value={form?.username || ""}
-              onChange={e => setForm && setForm({ ...(form || {}), username: e.target.value })}
-              autoComplete="username"
+              type="text"
+              value={form.name}
+              onChange={e =>
+                setForm(f => ({ ...f, name: e.target.value }))
+              }
+              required
             />
-          </label>
+          </Field>
+        )}
 
-          <label>
-            <div style={{ fontSize: 13, opacity: 0.85, marginBottom: 6 }}>
-              Password
-            </div>
-            <input
-              style={inputStyle}
-              type="password"
-              value={form?.password || ""}
-              onChange={e => setForm && setForm({ ...(form || {}), password: e.target.value })}
-              autoComplete={activeRegister ? "new-password" : "current-password"}
-            />
-          </label>
+        <Field label="Email">
+          <input
+            type="email"
+            value={form.email}
+            onChange={e =>
+              setForm(f => ({ ...f, email: e.target.value }))
+            }
+            required
+          />
+        </Field>
 
-          {authError ? (
-            <div style={{ fontSize: 13, opacity: 0.95 }}>
-              {authError}
-            </div>
-          ) : null}
+        <Field label="Password">
+          <input
+            type="password"
+            value={form.password}
+            onChange={e =>
+              setForm(f => ({ ...f, password: e.target.value }))
+            }
+            required
+          />
+        </Field>
 
-          <button type="submit" style={buttonStyle}>
-            {activeRegister ? "Create account" : "Sign in"}
-          </button>
-        </div>
+        {mode === "register" && (
+          <>
+            <Field label="Timezone (for future local kick-off times)">
+              <input
+                type="text"
+                value={form.timezone}
+                onChange={e =>
+                  setForm(f => ({ ...f, timezone: e.target.value }))
+                }
+              />
+            </Field>
+
+            <Field label="Pool code (required to join this pool)">
+              <input
+                type="text"
+                value={form.poolCode}
+                onChange={e =>
+                  setForm(f => ({ ...f, poolCode: e.target.value }))
+                }
+                required
+              />
+            </Field>
+          </>
+        )}
+
+        {authError && (
+          <p style={{ color: "#fecaca", fontSize: "0.85rem" }}>
+            {authError}
+          </p>
+        )}
+
+        <button
+          type="submit"
+          style={{
+            marginTop: "12px",
+            width: "100%",
+            padding: "10px 12px",
+            borderRadius: "999px",
+            border: "none",
+            background:
+              "linear-gradient(135deg, #22c55e 0%, #16a34a 40%, #22c55e 100%)",
+            color: "#0b1120",
+            fontWeight: 700,
+            cursor: "pointer",
+            boxShadow: "0 8px 20px rgba(16,185,129,0.35)",
+          }}
+        >
+          {mode === "login" ? "Log in" : "Create account"}
+        </button>
       </form>
-    </div>
+    </>
   );
 }
