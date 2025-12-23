@@ -1606,7 +1606,7 @@ useEffect(() => {
 }
 
 
-function LeaderboardTable({ rows = [], theme = 'dark' }) {
+function LeaderboardTable_OLD({ rows = [], theme = 'dark' }) {
   const isDark = theme === 'dark';
 
   // 1) Normalise + compute columns (knockouts are placeholder for now)
