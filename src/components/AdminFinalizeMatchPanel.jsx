@@ -1,164 +1,121 @@
-import React from "react";
+import React, { useState } from "react";
+import { apiPost } from "../api";
 
 /**
- * AdminFinalizeMatchPanel
+ * OPTION A VERSION
+ * ----------------
+ * This component MATCHES existing App.jsx usage exactly.
  *
- * Pure UI component for the admin "finalise match" widget.
- * Keep all business logic (api calls, admin checks, reloads) in App.jsx for now.
+ * App.jsx uses:
+ * <AdminFinalizeMatchPanel
+ *   apiBaseUrl={''}
+ *   token={getStoredToken()}
+ *   tournamentId={currentTournament?.id}
+ *   matches={matches}
+ *   onAfterSave={refreshMatchesAndPredictions}
+ * />
  *
- * Props are intentionally flexible so you can wire it up with minimal changes.
+ * No App.jsx changes required.
  */
 export default function AdminFinalizeMatchPanel({
-  theme = "dark",
-
-  // Data
+  apiBaseUrl = "",
+  token,
+  tournamentId,
   matches = [],
-
-  // Controlled inputs
-  selectedMatchId,
-  onSelectMatch, // (matchId: string|number) => void
-  homeGoals,
-  onChangeHomeGoals, // (value: string) => void
-  awayGoals,
-  onChangeAwayGoals, // (value: string) => void
-
-  // Actions / state
-  onSave, // () => void | Promise<void>
-  saving = false,
-  status = "",
-
-  // Optional
-  title = "Admin: Finalise a match",
+  onAfterSave,
 }) {
-  const isDark = String(theme).toLowerCase() === "dark";
-
-  const cardStyle = {
-    marginTop: 16,
-    padding: 12,
-    borderRadius: 12,
-    border: `1px solid ${isDark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.12)"}`,
-    background: isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.03)",
-  };
-
-  const labelStyle = { display: "block", fontSize: 13, opacity: 0.9, marginBottom: 6 };
-  const rowStyle = { display: "flex", gap: 8, alignItems: "flex-end", flexWrap: "wrap" };
-
-  const inputStyle = {
-    width: 110,
-    padding: "8px 10px",
-    borderRadius: 10,
-    border: `1px solid ${isDark ? "rgba(255,255,255,0.16)" : "rgba(0,0,0,0.16)"}`,
-    background: isDark ? "rgba(0,0,0,0.25)" : "rgba(255,255,255,0.9)",
-    color: isDark ? "white" : "black",
-    outline: "none",
-  };
-
-  const selectStyle = {
-    minWidth: 280,
-    maxWidth: 520,
-    flex: 1,
-    padding: "8px 10px",
-    borderRadius: 10,
-    border: `1px solid ${isDark ? "rgba(255,255,255,0.16)" : "rgba(0,0,0,0.16)"}`,
-    background: isDark ? "rgba(0,0,0,0.25)" : "rgba(255,255,255,0.9)",
-    color: isDark ? "white" : "black",
-    outline: "none",
-  };
-
-  const buttonStyle = {
-    padding: "9px 12px",
-    borderRadius: 10,
-    border: `1px solid ${isDark ? "rgba(255,255,255,0.18)" : "rgba(0,0,0,0.18)"}`,
-    background: isDark ? "rgba(255,255,255,0.10)" : "rgba(0,0,0,0.06)",
-    color: isDark ? "white" : "black",
-    cursor: saving ? "not-allowed" : "pointer",
-    opacity: saving ? 0.6 : 1,
-    fontWeight: 600,
-    whiteSpace: "nowrap",
-  };
+  const [matchId, setMatchId] = useState("");
+  const [homeGoals, setHomeGoals] = useState("");
+  const [awayGoals, setAwayGoals] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [status, setStatus] = useState("");
 
   function formatMatchLabel(m) {
-    // Try to match common match shapes without assuming your exact schema.
-    const home = m?.home_team ?? m?.homeTeam ?? m?.home ?? "";
-    const away = m?.away_team ?? m?.awayTeam ?? m?.away ?? "";
+    const home = m?.home_team ?? "";
+    const away = m?.away_team ?? "";
     const stage = m?.stage ?? "";
-    const group = m?.group_name ?? m?.groupName ?? "";
-    const kickoff = m?.kickoff_utc ?? m?.kickoffUtc ?? m?.kickoff ?? "";
-
-    const left = [stage, group].filter(Boolean).join(" • ");
-    const teams = [home, away].filter(Boolean).join(" vs ");
-    const when = kickoff ? ` — ${kickoff}` : "";
-    return `${left ? left + " — " : ""}${teams || "Match"}${when}`;
+    const group = m?.group_name ?? "";
+    return `${stage}${group ? " " + group : ""}: ${home} vs ${away}`;
   }
 
-  const hasMatches = Array.isArray(matches) && matches.length > 0;
+  async function handleSave() {
+    if (!matchId) {
+      setStatus("❌ Please select a match");
+      return;
+    }
+
+    const hg = Number(homeGoals);
+    const ag = Number(awayGoals);
+
+    if (!Number.isInteger(hg) || !Number.isInteger(ag)) {
+      setStatus("❌ Enter valid goal numbers");
+      return;
+    }
+
+    setSaving(true);
+    setStatus("");
+
+    try {
+      await apiPost(`/matches/${matchId}/result`, {
+        home_goals: hg,
+        away_goals: ag,
+      });
+
+      setStatus("✅ Saved. Refreshing data…");
+      setHomeGoals("");
+      setAwayGoals("");
+      setMatchId("");
+
+      if (onAfterSave) {
+        await onAfterSave();
+      }
+    } catch (e) {
+      setStatus(`❌ Save failed: ${e.message}`);
+    } finally {
+      setSaving(false);
+    }
+  }
 
   return (
-    <div style={cardStyle}>
-      <div style={{ fontWeight: 700, marginBottom: 10 }}>{title}</div>
+    <div style={{ marginTop: 16 }}>
+      <h3>Admin: Finalise match</h3>
 
-      <div style={{ marginBottom: 10 }}>
-        <label style={labelStyle}>Select match</label>
+      <div style={{ marginBottom: 8 }}>
         <select
-          style={selectStyle}
-          value={selectedMatchId ?? ""}
-          onChange={e => onSelectMatch && onSelectMatch(e.target.value)}
-          disabled={!hasMatches || saving}
+          value={matchId}
+          onChange={e => setMatchId(e.target.value)}
+          disabled={saving}
         >
-          <option value="">{hasMatches ? "Choose a match…" : "No matches loaded"}</option>
-          {hasMatches &&
-            matches.map((m, idx) => {
-              const id = m?.id ?? m?.match_id ?? m?.matchId ?? idx;
-              return (
-                <option key={String(id)} value={String(id)}>
-                  {formatMatchLabel(m)}
-                </option>
-              );
-            })}
+          <option value="">Select match…</option>
+          {matches.map(m => (
+            <option key={m.id} value={m.id}>
+              {formatMatchLabel(m)}
+            </option>
+          ))}
         </select>
       </div>
 
-      <div style={rowStyle}>
-        <label style={{ ...labelStyle, marginBottom: 0 }}>
-          Home goals
-          <input
-            style={inputStyle}
-            inputMode="numeric"
-            placeholder="0"
-            value={homeGoals ?? ""}
-            onChange={e => onChangeHomeGoals && onChangeHomeGoals(e.target.value)}
-            disabled={saving}
-          />
-        </label>
-
-        <label style={{ ...labelStyle, marginBottom: 0 }}>
-          Away goals
-          <input
-            style={inputStyle}
-            inputMode="numeric"
-            placeholder="0"
-            value={awayGoals ?? ""}
-            onChange={e => onChangeAwayGoals && onChangeAwayGoals(e.target.value)}
-            disabled={saving}
-          />
-        </label>
-
-        <button
-          type="button"
-          style={buttonStyle}
-          onClick={() => onSave && onSave()}
+      <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+        <input
+          type="number"
+          placeholder="Home"
+          value={homeGoals}
+          onChange={e => setHomeGoals(e.target.value)}
           disabled={saving}
-          title={saving ? "Saving…" : "Save final result"}
-        >
-          {saving ? "Saving…" : "Save result"}
+        />
+        <input
+          type="number"
+          placeholder="Away"
+          value={awayGoals}
+          onChange={e => setAwayGoals(e.target.value)}
+          disabled={saving}
+        />
+        <button onClick={handleSave} disabled={saving}>
+          {saving ? "Saving…" : "Save"}
         </button>
       </div>
 
-      {status ? (
-        <div style={{ marginTop: 10, fontSize: 13, opacity: 0.95, whiteSpace: "pre-wrap" }}>
-          {status}
-        </div>
-      ) : null}
+      {status && <div>{status}</div>}
     </div>
   );
 }
