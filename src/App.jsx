@@ -146,7 +146,7 @@ function computeGroupTables(matches, predictions) {
 
   return result;
 }
-function AdminFinalizeMatchPanel({ apiBaseUrl, token, tournamentId, matches, onAfterSave }) {
+function AdminFinalizeMatchPanel_OLD({ apiBaseUrl, token, tournamentId, matches, onAfterSave }) {
   const [matchId, setMatchId] = useState('');
   const [homeGoals, setHomeGoals] = useState('');
   const [awayGoals, setAwayGoals] = useState('');
