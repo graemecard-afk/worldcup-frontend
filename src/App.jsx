@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { apiGet, apiPost, setAuthToken, getStoredToken } from './api.js';
 import LeaderboardTable from "./components/LeaderboardTable";
+import AdminFinalizeMatchPanel from "./components/AdminFinalizeMatchPanel";
 
 
 const STADIUM_BG = '/wc-background.png';
