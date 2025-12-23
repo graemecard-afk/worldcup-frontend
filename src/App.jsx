@@ -708,7 +708,7 @@ if (currentView === 'leaderboard') {
 
       <FrostedCard theme={theme}>
         <TitleRow />
-        <LeaderboardPage theme={theme} rows={ranked} />
+       <LeaderboardPage theme={theme} rows={leaderboardRows} />
       </FrostedCard>
     </Screen>
   );
