@@ -3,8 +3,7 @@ import { apiGet, apiPost, setAuthToken, getStoredToken } from './api.js';
 import LeaderboardTable from "./components/LeaderboardTable";
 import AdminFinalizeMatchPanel from "./components/AdminFinalizeMatchPanel";
 import LeaderboardPage from "./pages/Leaderboard";
-
-
+import AuthPage from "./pages/Auth";
 
 const STADIUM_BG = '/wc-background.png';
 const BALL_IMAGE =
