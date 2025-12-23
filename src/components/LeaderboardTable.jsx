@@ -5,105 +5,173 @@ function toNumber(v) {
   return Number.isFinite(n) ? n : 0;
 }
 
+function pickFirst(row, keys, fallback = null) {
+  for (const k of keys) {
+    if (row && row[k] != null) return row[k];
+  }
+  return fallback;
+}
+
 function pickName(row) {
+  // Prefer your existing computed field
   return (
-    row?.username ||
-    row?.name ||
-    row?.player ||
-    row?.display_name ||
-    row?.displayName ||
+    pickFirst(row, ["_name", "username", "name", "player", "display_name", "displayName"]) ||
     "Player"
   );
 }
 
-function pickPoints(row) {
-  // Common variants we've seen across apps/backends
-  return (
-    toNumber(row?.points_total) ||
-    toNumber(row?.total_points) ||
-    toNumber(row?.totalPoints) ||
-    toNumber(row?.points) ||
-    toNumber(row?.score) ||
-    0
-  );
+function pickGroupStagePoints(row) {
+  // Prefer your existing computed field
+  const v = pickFirst(row, [
+    "_groupStagePoints",
+    "group_stage_points",
+    "groupStagePoints",
+    "gs_points",
+    "group_points",
+    "groupPoints",
+    "points_group_stage",
+  ], 0);
+  return toNumber(v);
 }
 
-function hasAny(rows, keyCandidates) {
-  return rows.some(r => keyCandidates.some(k => r && r[k] != null));
+function pickKnockoutPoints(row) {
+  // Prefer your existing computed field
+  const v = pickFirst(row, [
+    "_knockoutPoints",
+    "knockout_points",
+    "knockoutPoints",
+    "ko_points",
+    "knockouts_points",
+    "points_knockouts",
+  ], 0);
+  return toNumber(v);
 }
 
-function readFirstPresent(row, keyCandidates) {
-  for (const k of keyCandidates) {
-    if (row && row[k] != null) return row[k];
-  }
-  return null;
+function pickGrandTotal(row) {
+  // Prefer your existing computed field
+  const v = pickFirst(row, [
+    "_grandTotal",
+    "grand_total",
+    "grandTotal",
+    "total_points",
+    "totalPoints",
+    "points_total",
+    "points",
+    "score",
+  ]);
+  if (v != null) return toNumber(v);
+  return pickGroupStagePoints(row) + pickKnockoutPoints(row);
 }
 
-function computeRankedRows(rows) {
-  const safeRows = Array.isArray(rows) ? rows.filter(Boolean) : [];
+function pickRankGroupStage(row) {
+  const v = pickFirst(row, [
+    "_rankGroupStage",
+    "rank_gs",
+    "gs_rank",
+    "group_stage_rank",
+    "groupStageRank",
+  ]);
+  return v == null ? null : toNumber(v);
+}
 
-  // Sort by points DESC, then name ASC (stable-ish display)
-  const sorted = [...safeRows].sort((a, b) => {
-    const pa = pickPoints(a);
-    const pb = pickPoints(b);
-    if (pb !== pa) return pb - pa;
-    const na = String(pickName(a)).toLowerCase();
-    const nb = String(pickName(b)).toLowerCase();
-    return na.localeCompare(nb);
-  });
+function pickOverallRank(row) {
+  const v = pickFirst(row, [
+    "_overallRank",
+    "overall_rank",
+    "overallRank",
+    "rank_overall",
+    "rank",
+  ]);
+  return v == null ? null : toNumber(v);
+}
 
+function computeRankBy(rows, valueFn) {
   // Competition ranking with ties (1,2,2,4...)
+  const sorted = [...rows].sort((a, b) => valueFn(b) - valueFn(a));
+  const ranksByKey = new Map();
+
   let rank = 0;
   let index = 0;
-  let lastPoints = null;
+  let lastVal = null;
 
-  return sorted.map(r => {
+  for (const r of sorted) {
     index += 1;
-    const pts = pickPoints(r);
-    if (lastPoints === null || pts !== lastPoints) {
+    const v = valueFn(r);
+    if (lastVal === null || v !== lastVal) {
       rank = index;
-      lastPoints = pts;
+      lastVal = v;
     }
-    return { ...r, __rank: rank, __points: pts, __name: pickName(r) };
-  });
+    ranksByKey.set(r.__key, rank);
+  }
+  return ranksByKey;
 }
 
-export default function LeaderboardTable({ rows, theme }) {
-  const ranked = computeRankedRows(rows);
+export default function LeaderboardTable({ rows = [], theme = "dark" }) {
+  const isDark = String(theme).toLowerCase() === "dark";
+  const safe = Array.isArray(rows) ? rows.filter(Boolean) : [];
 
-  const isDark = String(theme || "").toLowerCase() === "dark";
+  // Normalize but KEEP your precomputed fields
+  const normalized = safe.map((r, i) => {
+    const key = String(r?.user_id ?? r?.userId ?? r?.id ?? r?._name ?? r?.username ?? i);
+
+    const name = pickName(r);
+    const gs = pickGroupStagePoints(r);
+    const ko = pickKnockoutPoints(r);
+    const total = pickGrandTotal(r);
+
+    const rankGSProvided = pickRankGroupStage(r);
+    const rankOverallProvided = pickOverallRank(r);
+
+    return {
+      ...r,
+      __key: key,
+      __name: name,
+      __gs: gs,
+      __ko: ko,
+      __total: total,
+      __rankGSProvided: rankGSProvided,
+      __rankOverallProvided: rankOverallProvided,
+    };
+  });
+
+  // Compute ranks only as fallback
+  const gsRanks = computeRankBy(normalized, r => r.__gs);
+  const overallRanks = computeRankBy(normalized, r => r.__total);
+
+  // Display order: use provided overall rank if present; otherwise computed
+  const display = [...normalized].sort((a, b) => {
+    const ra = a.__rankOverallProvided ?? overallRanks.get(a.__key) ?? 999999;
+    const rb = b.__rankOverallProvided ?? overallRanks.get(b.__key) ?? 999999;
+    if (ra !== rb) return ra - rb;
+    if (b.__total !== a.__total) return b.__total - a.__total;
+    return String(a.__name).localeCompare(String(b.__name));
+  });
 
   const tableStyle = {
     width: "100%",
-    marginTop: 12,
     borderCollapse: "collapse",
-    fontSize: 14,
+    fontSize: "0.9rem",
+    marginTop: 12,
   };
 
-  const thStyle = {
-    textAlign: "left",
-    padding: "10px 8px",
+  const thBase = {
+    opacity: 0.85,
+    padding: "6px 6px",
     borderBottom: `1px solid ${isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.12)"}`,
-    opacity: 0.9,
-    fontWeight: 600,
     whiteSpace: "nowrap",
   };
 
-  const tdStyle = {
-    padding: "10px 8px",
-    borderBottom: `1px solid ${isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)"}`,
+  const tdBase = {
+    padding: "8px 6px",
+    borderTop: isDark
+      ? "1px solid rgba(148,163,184,0.25)"
+      : "1px solid rgba(15,23,42,0.12)",
     verticalAlign: "top",
   };
 
   const mono = { fontVariantNumeric: "tabular-nums" };
 
-  // Optional columns (only show if any data exists)
-  const showExact = hasAny(ranked, ["exact", "exact_hits", "exactHits"]);
-  const showOutcome = hasAny(ranked, ["outcome", "outcome_hits", "outcomeHits"]);
-  const showSpread = hasAny(ranked, ["spread", "spread_hits", "spreadHits"]);
-  const showGoals = hasAny(ranked, ["goals", "goals_hits", "goalsHits"]);
-
-  if (!ranked.length) {
+  if (!display.length) {
     return <p style={{ opacity: 0.8, marginTop: 12 }}>No leaderboard data yet.</p>;
   }
 
@@ -111,41 +179,35 @@ export default function LeaderboardTable({ rows, theme }) {
     <div style={{ width: "100%", overflowX: "auto" }}>
       <table style={tableStyle}>
         <thead>
-          <tr>
-            <th style={{ ...thStyle, width: 60 }}>Rank</th>
-            <th style={thStyle}>Player</th>
-            <th style={{ ...thStyle, width: 90 }}>Points</th>
-            {showExact && <th style={{ ...thStyle, width: 80 }}>Exact</th>}
-            {showOutcome && <th style={{ ...thStyle, width: 90 }}>Outcome</th>}
-            {showSpread && <th style={{ ...thStyle, width: 80 }}>Spread</th>}
-            {showGoals && <th style={{ ...thStyle, width: 80 }}>Goals</th>}
+          <tr style={{ opacity: 0.85 }}>
+            <th style={{ ...thBase, textAlign: "left", width: 90 }}>Rank (GS)</th>
+            <th style={{ ...thBase, textAlign: "left" }}>Name</th>
+            <th style={{ ...thBase, textAlign: "right", width: 140 }}>Group Stage</th>
+            <th style={{ ...thBase, textAlign: "right", width: 120 }}>Knockouts</th>
+            <th style={{ ...thBase, textAlign: "right", width: 130 }}>Grand Total</th>
+            <th style={{ ...thBase, textAlign: "right", width: 120 }}>Overall Rank</th>
           </tr>
         </thead>
 
         <tbody>
-          {ranked.map((r, i) => {
-            const zebraBg =
-              i % 2 === 0
-                ? "transparent"
-                : isDark
-                  ? "rgba(255,255,255,0.03)"
-                  : "rgba(0,0,0,0.03)";
-
-            const exactVal = readFirstPresent(r, ["exact", "exact_hits", "exactHits"]);
-            const outcomeVal = readFirstPresent(r, ["outcome", "outcome_hits", "outcomeHits"]);
-            const spreadVal = readFirstPresent(r, ["spread", "spread_hits", "spreadHits"]);
-            const goalsVal = readFirstPresent(r, ["goals", "goals_hits", "goalsHits"]);
+          {display.map((r, idx) => {
+            const rankGS = r.__rankGSProvided ?? gsRanks.get(r.__key);
+            const rankOverall = r.__rankOverallProvided ?? overallRanks.get(r.__key);
 
             return (
-              <tr key={r?.id ?? r?.user_id ?? r?.userId ?? i} style={{ background: zebraBg }}>
-                <td style={{ ...tdStyle, ...mono }}>{r.__rank}</td>
-                <td style={tdStyle}>{r.__name}</td>
-                <td style={{ ...tdStyle, ...mono, fontWeight: 700 }}>{r.__points}</td>
-
-                {showExact && <td style={{ ...tdStyle, ...mono }}>{exactVal ?? "-"}</td>}
-                {showOutcome && <td style={{ ...tdStyle, ...mono }}>{outcomeVal ?? "-"}</td>}
-                {showSpread && <td style={{ ...tdStyle, ...mono }}>{spreadVal ?? "-"}</td>}
-                {showGoals && <td style={{ ...tdStyle, ...mono }}>{goalsVal ?? "-"}</td>}
+              <tr key={r.user_id || `${r.__name}-${idx}`}>
+                <td style={{ ...tdBase, textAlign: "left", ...mono }}>{rankGS}</td>
+                <td style={{ ...tdBase, textAlign: "left" }}>{r.__name}</td>
+                <td style={{ ...tdBase, textAlign: "right", fontWeight: 700, ...mono }}>
+                  {r.__gs}
+                </td>
+                <td style={{ ...tdBase, textAlign: "right", ...mono }}>{r.__ko}</td>
+                <td style={{ ...tdBase, textAlign: "right", fontWeight: 700, ...mono }}>
+                  {r.__total}
+                </td>
+                <td style={{ ...tdBase, textAlign: "right", opacity: 0.7, ...mono }}>
+                  {rankOverall}
+                </td>
               </tr>
             );
           })}
