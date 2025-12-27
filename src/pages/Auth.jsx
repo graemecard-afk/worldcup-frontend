@@ -1,4 +1,6 @@
 import React from "react";
+import TabButton from '../components/TabButton';
+
 
 /**
  * Auth page — extracted from App.jsx verbatim.
