@@ -1702,6 +1702,32 @@ function FrostedCard({ children, theme = 'dark' }) {
     </div>
   );
 }
+function TabButton({ active, onClick, children, theme, style }) {
+  const isDark = theme === 'dark';
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      style={{
+        padding: '8px 12px',
+        borderRadius: 12,
+        border: isDark ? '1px solid rgba(255,255,255,0.14)' : '1px solid rgba(0,0,0,0.14)',
+        background: active
+          ? isDark
+            ? 'rgba(255,255,255,0.10)'
+            : 'rgba(0,0,0,0.08)'
+          : 'transparent',
+        color: 'inherit',
+        cursor: 'pointer',
+        fontWeight: active ? 800 : 600,
+        ...style,
+      }}
+    >
+      {children}
+    </button>
+  );
+}
 
 
 function TitleRow() {
