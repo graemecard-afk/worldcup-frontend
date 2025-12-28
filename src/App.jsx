@@ -4,6 +4,8 @@ import LeaderboardTable from "./components/LeaderboardTable";
 import AdminFinalizeMatchPanel from "./components/AdminFinalizeMatchPanel";
 import LeaderboardPage from "./pages/Leaderboard";
 import AuthPage from "./pages/Auth";
+import NavDrawer from './components/NavDrawer';
+
 
 const STADIUM_BG = '/wc-background.png';
 const BALL_IMAGE =
@@ -1384,116 +1386,16 @@ useEffect(() => {
       </div>
 
       {/* MOBILE DRAWER */}
-      {user && navOpen && (
-        <>
-          {/* overlay */}
-          <div
-            onClick={() => setNavOpen(false)}
-            style={{
-              position: 'fixed',
-              inset: 0,
-              background: 'rgba(0,0,0,0.35)',
-              zIndex: 55,
-            }}
-          />
-
-          {/* drawer */}
-          <div
-            style={{
-              position: 'fixed',
-              top: 60,
-              left: 0,
-              bottom: 0,
-              width: '78%',
-              maxWidth: 320,
-              background: isDark ? 'rgba(15,23,42,0.97)' : 'rgba(255,255,255,0.97)',
-              color: isDark ? '#e5e7eb' : '#0f172a',
-              borderRight: '1px solid rgba(148,163,184,0.25)',
-              zIndex: 56,
-              padding: 12,
-              boxSizing: 'border-box',
-              overflowY: 'auto',
-            }}
-          >
-            <div style={{ fontWeight: 800, marginBottom: 10 }}>Menu</div>
-
-            {navItems.map(({ label, view }) => (
-              <button
-                key={view}
-                onClick={() => {
-                  if (onNavigate) onNavigate(view);
-                  setNavOpen(false);
-                }}
-                style={{
-                  width: '100%',
-                  padding: '10px 12px',
-                  marginBottom: 8,
-                  borderRadius: 12,
-                  border: '1px solid rgba(148,163,184,0.25)',
-                  background:
-                    currentView === view
-                      ? isDark
-                        ? 'rgba(255,255,255,0.08)'
-                        : 'rgba(15,23,42,0.08)'
-                      : 'transparent',
-                  color: 'inherit',
-                  cursor: 'pointer',
-                  textAlign: 'left',
-                  fontWeight: currentView === view ? 800 : 600,
-                }}
-                type="button"
-              >
-                {label}
-              </button>
-            ))}
-
-            <div style={{ height: 12 }} />
-
-            <button
-              onClick={() => {
-                onToggleTheme();
-                setNavOpen(false);
-              }}
-              style={{
-                width: '100%',
-                padding: '10px 12px',
-                marginBottom: 10,
-                borderRadius: 12,
-                border: '1px solid rgba(148,163,184,0.25)',
-                background: 'transparent',
-                color: 'inherit',
-                cursor: 'pointer',
-                textAlign: 'left',
-                fontWeight: 700,
-              }}
-              type="button"
-            >
-              {isDark ? 'Light mode' : 'Dark mode'}
-            </button>
-
-            <button
-              onClick={() => {
-                setNavOpen(false);
-                if (onLogout) onLogout();
-              }}
-              style={{
-                width: '100%',
-                padding: '10px 12px',
-                borderRadius: 12,
-                border: 'none',
-                background: '#ef4444',
-                color: '#f9fafb',
-                cursor: 'pointer',
-                textAlign: 'left',
-                fontWeight: 800,
-              }}
-              type="button"
-            >
-              Log out
-            </button>
-          </div>
-        </>
-      )}
+      <NavDrawer
+  user={user}
+  theme={theme}
+  isOpen={!!user && !!navOpen}
+  onClose={() => setNavOpen(false)}
+  items={navItems}
+  currentView={currentView}
+  onNavigate={onNavigate}
+  onLogout={onLogout}
+/>
 
       {/* PAGE CONTENT */}
       <div
