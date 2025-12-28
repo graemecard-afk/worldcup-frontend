@@ -5,6 +5,8 @@ import AdminFinalizeMatchPanel from "./components/AdminFinalizeMatchPanel";
 import LeaderboardPage from "./pages/Leaderboard";
 import AuthPage from "./pages/Auth";
 import NavDrawer from './components/NavDrawer';
+import TopBar from './components/TopBar';
+
 
 
 const STADIUM_BG = '/wc-background.png';
@@ -1236,27 +1238,15 @@ useEffect(() => {
         position: 'relative',
       }}
     >
-      {/* TOP BAR */}
-      <div
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: 60,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          background: isDark ? 'rgba(0,0,0,0.55)' : 'rgba(15,23,42,0.12)',
-          backdropFilter: 'blur(8px)',
-          borderBottom: '1px solid rgba(255,255,255,0.12)',
-          zIndex: 5000,
-          pointerEvents: 'auto',
-          padding: '0 14px',
-          boxSizing: 'border-box',
-          gap: 10,
-        }}
-      >
+      <TopBar
+  user={user}
+  theme={theme}
+  onToggleTheme={onToggleTheme}
+  onToggleNav={() => setNavOpen(v => !v)}
+  avatarOpen={avatarOpen}
+  setAvatarOpen={setAvatarOpen}
+/>
+
         {/* LEFT: hamburger on mobile */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 60 }}>
           {user && (
