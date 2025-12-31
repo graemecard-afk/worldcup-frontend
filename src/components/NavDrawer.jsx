@@ -23,6 +23,7 @@ export default function NavDrawer({
   currentView,
   onNavigate,
   onLogout,
+  onToggleTheme,
 }) {
   // ESC to close (UI-only convenience; safe)
   useEffect(() => {
