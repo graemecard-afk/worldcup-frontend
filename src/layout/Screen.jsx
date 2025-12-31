@@ -11,6 +11,7 @@ export default function Screen({
   onToggleTheme,
   currentView,
   onNavigate,
+  stadiumBg,
 }) {
   const [navOpen, setNavOpen] = useState(false);
   const [avatarOpen, setAvatarOpen] = useState(false);
@@ -36,8 +37,8 @@ useEffect(() => {
 
 
   const bgImage = isDark
-    ? `linear-gradient(120deg, rgba(15,23,42,0.9), rgba(8,47,73,0.85)), url(${STADIUM_BG})`
-    : `url(${STADIUM_BG})`;
+    ? `linear-gradient(120deg, rgba(15,23,42,0.9), rgba(8,47,73,0.85)), url(${stadiumBg})`
+    : `url(${stadiumBg})`;
 
   const initials = user?.name
     ? user.name
