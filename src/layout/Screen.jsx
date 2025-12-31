@@ -244,6 +244,8 @@ useEffect(() => {
   currentView={currentView}
   onNavigate={onNavigate}
   onLogout={onLogout}
+  onToggleTheme={onToggleTheme}
+
 />
 
       {/* PAGE CONTENT */}
