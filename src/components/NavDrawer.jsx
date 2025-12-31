@@ -173,6 +173,24 @@ export default function NavDrawer({
         </div>
 
         <div style={navListStyle}>
+          <button
+  type="button"
+  onClick={() => onToggleTheme?.()}
+  style={{
+    width: '100%',
+    padding: '10px 12px',
+    borderRadius: 12,
+    border: '1px solid rgba(255,255,255,0.12)',
+    background: 'rgba(255,255,255,0.06)',
+    color: theme === 'dark' ? '#f9fafb' : '#0f172a',
+    cursor: 'pointer',
+    fontWeight: 700,
+    marginBottom: 12,
+  }}
+>
+  {theme === 'dark' ? 'Switch to Light' : 'Switch to Dark'}
+</button>
+
           {items.map(it => {
             const active = it.view === currentView;
             return (
