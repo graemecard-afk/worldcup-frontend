@@ -559,6 +559,7 @@ const navigate = async (view) => {
   onToggleTheme={toggleTheme}
   currentView={currentView}
   onNavigate={navigate}
+  stadiumBg={STADIUM_BG}
 >
 
 
@@ -577,6 +578,7 @@ const navigate = async (view) => {
   onLogout={null}
   theme={theme}
   onToggleTheme={toggleTheme}
+  stadiumBg={STADIUM_BG}
 >
 
 
@@ -610,6 +612,7 @@ if (currentView === 'leaderboard') {
   onToggleTheme={toggleTheme}
   currentView={currentView}
   onNavigate={navigate}
+  stadiumBg={STADIUM_BG}
 >
 
       <FrostedCard theme={theme}>
@@ -629,6 +632,7 @@ if (currentView === 'leaderboard') {
   onToggleTheme={toggleTheme}
   currentView={currentView}
   onNavigate={navigate}
+  stadiumBg={STADIUM_BG}
 >
 
       <FrostedCard theme={theme}>
