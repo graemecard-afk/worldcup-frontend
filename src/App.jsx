@@ -17,7 +17,12 @@ const BALL_IMAGE =
 const POOL_CODE = 'GRAEME-2026';
 
 function isMatchLocked(match) {
-  if (!match || !match.kickoff_utc) return false;
+  if (!match) return false;
+
+  // If admin has finalized the result, always lock it.
+  if (match.result_finalized) return true;
+
+  if (!match.kickoff_utc) return false;
 
   const kickoff = new Date(match.kickoff_utc);
   if (Number.isNaN(kickoff.getTime())) return false;
