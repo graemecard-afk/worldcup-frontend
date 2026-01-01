@@ -622,6 +622,28 @@ if (currentView === 'leaderboard') {
     </Screen>
   );
 }
+// ===== PAYMENT DETAILS VIEW =====
+if (currentView === 'payments') {
+  return (
+    <Screen
+      user={user}
+      onLogout={handleLogout}
+      theme={theme}
+      onToggleTheme={toggleTheme}
+      currentView={currentView}
+      onNavigate={navigate}
+      stadiumBg={STADIUM_BG}
+    >
+      <FrostedCard theme={theme}>
+        <TitleRow />
+        <div style={{ padding: 16 }}>
+          <h3>Payment details</h3>
+          <p>This page is coming soon.</p>
+        </div>
+      </FrostedCard>
+    </Screen>
+  );
+}
 
   // Logged-in view
   return (
