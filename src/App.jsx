@@ -644,6 +644,28 @@ if (currentView === 'payments') {
     </Screen>
   );
 }
+// ===== RULES VIEW =====
+if (currentView === 'rules') {
+  return (
+    <Screen
+      user={user}
+      onLogout={handleLogout}
+      theme={theme}
+      onToggleTheme={toggleTheme}
+      currentView={currentView}
+      onNavigate={navigate}
+      stadiumBg={STADIUM_BG}
+    >
+      <FrostedCard theme={theme}>
+        <TitleRow />
+        <div style={{ padding: 16 }}>
+          <h3>Rules</h3>
+          <p>The tournament rules will be shown here.</p>
+        </div>
+      </FrostedCard>
+    </Screen>
+  );
+}
 
   // Logged-in view
   return (
