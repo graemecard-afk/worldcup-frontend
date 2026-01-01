@@ -88,9 +88,9 @@ export default function AdminFinalizeMatchPanel({
         >
           <option value="">Select match…</option>
           {matches.map(m => (
-            <option key={m.id} value={m.id}>
-              {formatMatchLabel(m)}
-            </option>
+  <option key={m.id} value={m.id} disabled={!!m.result_finalized}>
+    {formatMatchLabel(m)}{m.result_finalized ? ' (Finalized)' : ''}
+  </option>
           ))}
         </select>
       </div>
