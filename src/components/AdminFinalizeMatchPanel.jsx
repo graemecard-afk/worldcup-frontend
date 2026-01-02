@@ -137,7 +137,7 @@ const selectedMatch = matches.find(m => String(m.id) === String(matchId));
           onChange={e => setAwayGoals(e.target.value)}
           disabled={saving || selectedMatch?.result_finalized}
         />
-        <button onClick={handleSave} disabled={saving}>
+        <button onClick={handleSave} disabled={saving || selectedMatch?.result_finalized}>
   {saving ? "Saving…" : "Save"}
 </button>
 
