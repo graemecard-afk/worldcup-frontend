@@ -101,6 +101,7 @@ async function handleUnfinalise() {
     setSaving(false);
   }
 }
+const selectedMatch = matches.find(m => String(m.id) === String(matchId));
 
   return (
     <div style={{ marginTop: 16 }}>
