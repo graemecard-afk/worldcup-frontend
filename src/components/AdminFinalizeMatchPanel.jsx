@@ -75,6 +75,32 @@ export default function AdminFinalizeMatchPanel({
       setSaving(false);
     }
   }
+async function handleUnfinalise() {
+  if (!matchId) {
+    setStatus("❌ Please select a match");
+    return;
+  }
+
+  setSaving(true);
+  setStatus("");
+
+  try {
+    await apiPost(`/matches/${matchId}/unfinalise`);
+
+    setStatus("✅ Match unfinalised. Refreshing data…");
+    setHomeGoals("");
+    setAwayGoals("");
+    setMatchId("");
+
+    if (onAfterSave) {
+      await onAfterSave();
+    }
+  } catch (e) {
+    setStatus(`❌ Unfinalise failed: ${e.message}`);
+  } finally {
+    setSaving(false);
+  }
+}
 
   return (
     <div style={{ marginTop: 16 }}>
