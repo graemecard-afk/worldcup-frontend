@@ -111,8 +111,17 @@ export default function AdminFinalizeMatchPanel({
           disabled={saving}
         />
         <button onClick={handleSave} disabled={saving}>
-          {saving ? "Saving…" : "Save"}
-        </button>
+  {saving ? "Saving…" : "Save"}
+</button>
+
+<button
+  onClick={handleUnfinalise}
+  disabled={saving || !matchId}
+  style={{ marginLeft: 8 }}
+>
+  Unfinalise
+</button>
+
       </div>
 
       {status && <div>{status}</div>}
