@@ -128,14 +128,14 @@ const selectedMatch = matches.find(m => String(m.id) === String(matchId));
           placeholder="Home"
           value={homeGoals}
           onChange={e => setHomeGoals(e.target.value)}
-          disabled={saving}
+          disabled={saving || selectedMatch?.result_finalized}
         />
         <input
           type="number"
           placeholder="Away"
           value={awayGoals}
           onChange={e => setAwayGoals(e.target.value)}
-          disabled={saving}
+          disabled={saving || selectedMatch?.result_finalized}
         />
         <button onClick={handleSave} disabled={saving}>
   {saving ? "Saving…" : "Save"}
