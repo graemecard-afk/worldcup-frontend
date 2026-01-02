@@ -143,7 +143,7 @@ const selectedMatch = matches.find(m => String(m.id) === String(matchId));
 
 <button
   onClick={handleUnfinalise}
-  disabled={saving || !matchId}
+  disabled={saving || !selectedMatch || !selectedMatch.result_finalized}
   style={{ marginLeft: 8 }}
 >
   Unfinalise
