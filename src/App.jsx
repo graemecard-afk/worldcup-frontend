@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { apiGet, apiPost, setAuthToken, getStoredToken } from './api.js';
+import { apiGet, apiPost, setAuthToken, getStoredToken } from './api/client.js';
 import LeaderboardTable from "./components/LeaderboardTable";
 import AdminFinalizeMatchPanel from "./components/AdminFinalizeMatchPanel";
 import LeaderboardPage from "./pages/Leaderboard";
