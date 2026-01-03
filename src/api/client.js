@@ -5,7 +5,12 @@
 export function getStoredToken() {
   return localStorage.getItem('wc_token');
 }
+import { setAuthToken as legacySetAuthToken } from '../api.js';
 
 // Still sourced from legacy module for now (we'll migrate these later).
-export { apiGet, apiPost, setAuthToken } from '../api.js';
+export { apiGet, apiPost } from '../api.js';
+
+export function setAuthToken(token) {
+  legacySetAuthToken(token);
+}
 
