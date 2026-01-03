@@ -26,11 +26,26 @@ export async function apiGet(path) {
   return res.json();
 }
 
-// Still coming from legacy for now
-import { setAuthToken as legacySetAuthToken, apiPost } from '../api.js';
+// Still calling legacy setter for now (it updates legacy module state too)
+import { setAuthToken as legacySetAuthToken } from '../api.js';
 
 export function setAuthToken(token) {
   legacySetAuthToken(token);
 }
 
-export { apiPost };
+export async function apiPost(path, body) {
+  const token = getStoredToken();
+
+  const res = await fetch(`${API_BASE}${path}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify(body ?? {}),
+  });
+
+  if (!res.ok) await handleError(res, 'POST', path);
+  return res.json();
+}
+
