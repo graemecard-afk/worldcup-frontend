@@ -26,12 +26,14 @@ export async function apiGet(path) {
   return res.json();
 }
 
-// Still calling legacy setter for now (it updates legacy module state too)
-import { setAuthToken as legacySetAuthToken } from '../api.js';
-
 export function setAuthToken(token) {
-  legacySetAuthToken(token);
+  if (token) {
+    localStorage.setItem('wc_token', token);
+  } else {
+    localStorage.removeItem('wc_token');
+  }
 }
+
 
 export async function apiPost(path, body) {
   const token = getStoredToken();
