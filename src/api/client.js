@@ -1,6 +1,6 @@
 // src/api/client.js
 // Phase 2 API seam.
-import { setAuthToken as legacySetAuthToken } from '../api.js';
+
 
 const API_BASE =
   (import.meta.env?.VITE_API_BASE_URL || 'https://worldcup-backend-s7ej.onrender.com')
@@ -33,9 +33,6 @@ export function setAuthToken(token) {
   } else {
     localStorage.removeItem('wc_token');
   }
-
-  // TEMP bridge: keep legacy module authToken in sync
-  legacySetAuthToken(token);
 }
 
 export async function apiPost(path, body) {
