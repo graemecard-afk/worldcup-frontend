@@ -39,15 +39,16 @@ function formatKickoff(isoString) {
   const d = new Date(isoString);
   if (Number.isNaN(d.getTime())) return '';
 
-  const day = String(d.getUTCDate()).padStart(2, '0');
-  const month = String(d.getUTCMonth() + 1).padStart(2, '0');
-  const year = d.getUTCFullYear();
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
 
-  const hours = String(d.getUTCHours()).padStart(2, '0');
-  const minutes = String(d.getUTCMinutes()).padStart(2, '0');
+  const hours = String(d.getHours()).padStart(2, '0');
+  const minutes = String(d.getMinutes()).padStart(2, '0');
 
   return `${day}-${month}-${year} KO ${hours}:${minutes}`;
 }
+
 
 function computeGroupTables(matches, predictions) {
   const tables = {};
