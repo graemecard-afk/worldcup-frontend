@@ -103,7 +103,7 @@ export default function DashboardPage({
             boxShadow: "0 6px 18px rgba(37,99,235,0.45)",
           }}
         >
-          Load Dummy Cup matches
+          Load Group Stage matches
         </button>
       </div>
 
@@ -517,8 +517,8 @@ export default function DashboardPage({
 
       {!loadingData && !dataError && matches.length === 0 && (
         <Sub>
-          Click <strong>Load Dummy Cup matches</strong> to fetch games from the
-          backend.
+          Click <strong>Load Group Stage matches</strong> to fetch games from the
+          server.
         </Sub>
       )}
     </>
