@@ -418,7 +418,9 @@ export default function DashboardPage({
                 overflowY: "auto",
               }}
             >
-              {Object.entries(groupTables).map(([groupName, teams]) => (
+              {Object.entries(groupTables)
+  .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true }))
+  .map(([groupName, teams]) => (
                 <div
                   key={groupName}
                   style={{
