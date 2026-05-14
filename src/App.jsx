@@ -295,7 +295,9 @@ const isAdmin = ADMIN_EMAILS.includes(
   // predictions: { [matchId]: { home: string, away: string, status: 'idle'|'dirty'|'saving'|'saved'|'error' } }
   const [predictions, setPredictions] = useState({});
   const visibleMatches = matches.filter(m =>
-  matchPhase === 'group' ? Boolean(m.group_name) : !m.group_name
+  matchPhase === 'group'
+    ? String(m.stage || '').startsWith('Matchday')
+    : !String(m.stage || '').startsWith('Matchday')
 );
 
 const groupTables = computeGroupTables(
