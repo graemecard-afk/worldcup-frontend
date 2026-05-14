@@ -1,4 +1,5 @@
 import React from "react";
+import { TEAM_FLAGS } from '../constants/teamFlags';
 
 export default function DashboardPage({
   // Data
@@ -195,8 +196,8 @@ export default function DashboardPage({
                   >
                     <span>
                       <div>
-                        <strong>{m.home_team}</strong> vs{" "}
-                        <strong>{m.away_team}</strong>
+                        <strong><img src={TEAM_FLAGS[m.home_team]} alt="" style={{ width: '16px', height: '12px', objectFit: 'cover', marginRight: '6px', verticalAlign: 'middle' }} />{m.home_team}</strong> vs{" "}
+<strong><img src={TEAM_FLAGS[m.away_team]} alt="" style={{ width: '16px', height: '12px', objectFit: 'cover', marginRight: '6px', verticalAlign: 'middle' }} />{m.away_team}</strong>
                       </div>
                       {m.group_name ? (
                         <div
@@ -481,7 +482,7 @@ export default function DashboardPage({
                     <tbody>
                       {teams.map(team => (
                         <tr key={team.team}>
-                          <td style={{ padding: "4px 0" }}>{team.team}</td>
+                          <td style={{ padding: "4px 0" }}><img src={TEAM_FLAGS[team.team]} alt="" style={{ width: '16px', height: '12px', objectFit: 'cover', marginRight: '6px', verticalAlign: 'middle' }} />{team.team}</td>
                           <td style={{ padding: "4px 0", textAlign: "center" }}>
                             {team.played}
                           </td>

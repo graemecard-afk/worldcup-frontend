@@ -6,6 +6,7 @@ import LeaderboardPage from "./pages/Leaderboard";
 import AuthPage from "./pages/Auth";
 import NavDrawer from './components/NavDrawer';
 import Screen from './layout/Screen';
+import { TEAM_FLAGS } from './constants/teamFlags';
 
 
 
@@ -848,7 +849,7 @@ if (currentView === 'rules') {
                     >
                       <span>
   <div>
-    <strong>{m.home_team}</strong> vs <strong>{m.away_team}</strong>
+    <strong><img src={TEAM_FLAGS[m.home_team]} alt="" style={{ width: '16px', height: '12px', objectFit: 'cover', marginRight: '6px', verticalAlign: 'middle' }} />{m.home_team}</strong> vs <strong><img src={TEAM_FLAGS[m.away_team]} alt="" style={{ width: '16px', height: '12px', objectFit: 'cover', marginRight: '6px', verticalAlign: 'middle' }} />{m.away_team}</strong>
   </div>
   {m.group_name ? (
     <div style={{ fontSize: '0.75rem', opacity: 0.75, marginTop: 2 }}>
@@ -1123,7 +1124,7 @@ if (currentView === 'rules') {
                       <tbody>
                         {teams.map(team => (
                           <tr key={team.team}>
-                            <td style={{ padding: '4px 0' }}>{team.team}</td>
+                            <td style={{ padding: '4px 0' }}><img src={TEAM_FLAGS[team.team]} alt="" style={{ width: '16px', height: '12px', objectFit: 'cover', marginRight: '6px', verticalAlign: 'middle' }} />{team.team}</td>
                             <td
                               style={{
                                 padding: '4px 0',
