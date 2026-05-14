@@ -7,6 +7,7 @@ import AuthPage from "./pages/Auth";
 import NavDrawer from './components/NavDrawer';
 import Screen from './layout/Screen';
 import { TEAM_FLAGS } from './constants/teamFlags';
+import MatchPhaseToggle from "./components/MatchPhaseToggle";
 
 
 
@@ -284,6 +285,7 @@ const isAdmin = ADMIN_EMAILS.includes(
   const [tournaments, setTournaments] = useState([]);
   const [currentTournament, setCurrentTournament] = useState(null);
   const [matches, setMatches] = useState([]);
+  const [matchPhase, setMatchPhase] = useState('group');
   const [loadingData, setLoadingData] = useState(false);
   const [dataError, setDataError] = useState('');
   
@@ -292,7 +294,14 @@ const isAdmin = ADMIN_EMAILS.includes(
 
   // predictions: { [matchId]: { home: string, away: string, status: 'idle'|'dirty'|'saving'|'saved'|'error' } }
   const [predictions, setPredictions] = useState({});
-  const groupTables = computeGroupTables(matches, predictions);
+  const visibleMatches = matches.filter(m =>
+  matchPhase === 'group' ? Boolean(m.group_name) : !m.group_name
+);
+
+const groupTables = computeGroupTables(
+  matchPhase === 'group' ? visibleMatches : [],
+  predictions
+);
 
   // On load, restore token and try /auth/me
   useEffect(() => {
@@ -740,24 +749,17 @@ if (currentView === 'rules') {
           </div>
         </div>
 
-        <div style={{ marginBottom: '16px' }}>
-          <button
-            onClick={loadTournamentAndMatches}
-            style={{
-              padding: '8px 12px',
-              borderRadius: '999px',
-              border: 'none',
-              background:
-                'linear-gradient(135deg, #3b82f6 0%, #2563eb 40%, #3b82f6 100%)',
-              color: '#f9fafb',
-              fontWeight: 600,
-              cursor: 'pointer',
-              boxShadow: '0 6px 18px rgba(37,99,235,0.45)',
-            }}
-          >
-            Load Group Stage matches
-          </button>
-        </div>
+                <MatchPhaseToggle
+  matchPhase={matchPhase}
+  onLoadGroup={() => {
+    setMatchPhase('group');
+    loadTournamentAndMatches();
+  }}
+  onLoadKnockout={() => {
+    setMatchPhase('knockout');
+    loadTournamentAndMatches();
+  }}
+/>
 
         {loadingData && <Sub>Loading tournament data…</Sub>}
         {dataError && (
@@ -773,10 +775,12 @@ if (currentView === 'rules') {
           </div>
         )}
 
-        {matches.length > 0 && (
+        {visibleMatches.length > 0 && (
           <div style={{ textAlign: 'left', marginTop: '8px' }}>
             <h3 style={{ marginBottom: '8px', fontSize: '1rem' }}>
-              Your group stage predictions
+              {matchPhase === 'group'
+  ? 'Your group stage predictions'
+  : 'Your knockout phase predictions'}
             </h3>
             <p
               style={{
@@ -994,7 +998,7 @@ if (currentView === 'rules') {
           </div>
         )}
 
-        {matches.length > 0 && (
+        {matchPhase === 'group' && visibleMatches.length > 0 && (
           <div style={{ textAlign: 'left', marginTop: '16px' }}>
             <h3 style={{ marginBottom: '8px', fontSize: '1rem' }}>
               Predicted group standings
