@@ -1,5 +1,5 @@
 import React from "react";
-import KnockoutMatchCard from "./KnockoutMatchCard";
+import KnockoutRound from "./KnockoutRound";
 
 const ROUND_ORDER = [
   "Round of 32",
@@ -36,37 +36,18 @@ export default function KnockoutBracket({
         }}
       >
         {matchesByRound.map(group => (
-          <div key={group.round}>
-            <h4 style={{ margin: "0 0 8px", fontSize: "0.85rem" }}>
-              {group.round}
-            </h4>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-              {group.matches.map(m => {
-                const pred = predictions[m.id] || {
-                  home: "",
-                  away: "",
-                  status: "idle",
-                };
-
-                const locked = isMatchLocked ? isMatchLocked(m) : false;
-
-                return (
-                  <KnockoutMatchCard
-                    key={m.id}
-                    match={m}
-                    pred={pred}
-                    locked={locked}
-                    theme={theme}
-                    formatKickoff={formatKickoff}
-                    handleScoreChange={handleScoreChange}
-                    savePrediction={savePrediction}
-                    StatusBadge={StatusBadge}
-                  />
-                );
-              })}
-            </div>
-          </div>
+          <KnockoutRound
+            key={group.round}
+            round={group.round}
+            matches={group.matches}
+            predictions={predictions}
+            theme={theme}
+            formatKickoff={formatKickoff}
+            isMatchLocked={isMatchLocked}
+            handleScoreChange={handleScoreChange}
+            savePrediction={savePrediction}
+            StatusBadge={StatusBadge}
+          />
         ))}
       </div>
     </div>
