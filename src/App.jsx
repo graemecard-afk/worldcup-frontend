@@ -823,7 +823,7 @@ if (currentView === 'rules') {
 
 
               
-              {matches.map(m => {
+              {visibleMatches.map(m => {
                 const pred = predictions[m.id] || {
                   home: '',
                   away: '',
