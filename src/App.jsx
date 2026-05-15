@@ -8,6 +8,7 @@ import NavDrawer from './components/NavDrawer';
 import Screen from './layout/Screen';
 import { TEAM_FLAGS } from './constants/teamFlags';
 import MatchPhaseToggle from "./components/MatchPhaseToggle";
+import KnockoutBracket from "./components/KnockoutBracket";
 
 
 
@@ -795,6 +796,18 @@ if (currentView === 'rules') {
               Enter scores and tap away from the field – your prediction will
               autosave for that match.
             </p>
+            {matchPhase === 'knockout' ? (
+              <KnockoutBracket
+  matches={visibleMatches}
+  predictions={predictions}
+  theme={theme}
+  formatKickoff={formatKickoff}
+  isMatchLocked={isMatchLocked}
+  handleScoreChange={handleScoreChange}
+  savePrediction={savePrediction}
+  StatusBadge={StatusBadge}
+/>
+            ) : (
             <div
               style={{
                 maxHeight: '280px',
@@ -997,6 +1010,7 @@ if (currentView === 'rules') {
                 );
               })}
             </div>
+            )}
           </div>
         )}
 
