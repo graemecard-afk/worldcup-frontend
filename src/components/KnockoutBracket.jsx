@@ -1,14 +1,7 @@
 import React from "react";
-import KnockoutRound from "./KnockoutRound";
-
-const ROUND_ORDER = [
-  "Round of 32",
-  "Round of 16",
-  "Quarter-final",
-  "Semi-final",
-  "Final",
-  "Third-place Play-off",
-];
+import KnockoutBracketLeft from "./KnockoutBracketLeft";
+import KnockoutBracketCenter from "./KnockoutBracketCenter";
+import KnockoutBracketRight from "./KnockoutBracketRight";
 
 export default function KnockoutBracket({
   matches = [],
@@ -20,35 +13,31 @@ export default function KnockoutBracket({
   savePrediction,
   StatusBadge,
 }) {
-  const matchesByRound = ROUND_ORDER.map(round => ({
-    round,
-    matches: matches.filter(m => m.stage === round),
-  })).filter(group => group.matches.length > 0);
+  const sharedProps = {
+    matches,
+    predictions,
+    theme,
+    formatKickoff,
+    isMatchLocked,
+    handleScoreChange,
+    savePrediction,
+    StatusBadge,
+  };
 
   return (
     <div style={{ overflowX: "auto", paddingBottom: "8px" }}>
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: `repeat(${matchesByRound.length}, minmax(210px, 1fr))`,
-          gap: "14px",
-          minWidth: "1120px",
+          gridTemplateColumns: "1fr 260px 1fr",
+          gap: "18px",
+          minWidth: "1180px",
+          alignItems: "center",
         }}
       >
-        {matchesByRound.map(group => (
-          <KnockoutRound
-            key={group.round}
-            round={group.round}
-            matches={group.matches}
-            predictions={predictions}
-            theme={theme}
-            formatKickoff={formatKickoff}
-            isMatchLocked={isMatchLocked}
-            handleScoreChange={handleScoreChange}
-            savePrediction={savePrediction}
-            StatusBadge={StatusBadge}
-          />
-        ))}
+        <KnockoutBracketLeft {...sharedProps} />
+        <KnockoutBracketCenter {...sharedProps} />
+        <KnockoutBracketRight {...sharedProps} />
       </div>
     </div>
   );
