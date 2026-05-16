@@ -25,7 +25,7 @@ export default function KnockoutMatchCard({
           theme === "dark"
             ? "rgba(15,23,42,0.9)"
             : "rgba(255,255,255,0.95)",
-      }}
+        minHeight: "215px",}}
     >
       <div
         style={{
