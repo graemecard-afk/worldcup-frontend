@@ -11,6 +11,8 @@ export default function KnockoutRound({
   handleScoreChange,
   savePrediction,
   StatusBadge,
+  cardGap = 10,
+  matchSpacing = {},
 }) {
   return (
     <div>
@@ -18,7 +20,13 @@ export default function KnockoutRound({
         {round}
       </h4>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: `${cardGap}px`,
+        }}
+      >
         {matches.map(m => {
           const pred = predictions[m.id] || {
             home: "",
@@ -29,17 +37,26 @@ export default function KnockoutRound({
           const locked = isMatchLocked ? isMatchLocked(m) : false;
 
           return (
-            <KnockoutMatchCard
+            <div
               key={m.id}
-              match={m}
-              pred={pred}
-              locked={locked}
-              theme={theme}
-              formatKickoff={formatKickoff}
-              handleScoreChange={handleScoreChange}
-              savePrediction={savePrediction}
-              StatusBadge={StatusBadge}
-            />
+              style={{
+                marginTop:
+                  matchSpacing[
+                    m.group_name ?? m.match_number ?? m.matchNumber ?? m.id
+                  ] || 0,
+              }}
+            >
+              <KnockoutMatchCard
+                match={m}
+                pred={pred}
+                locked={locked}
+                theme={theme}
+                formatKickoff={formatKickoff}
+                handleScoreChange={handleScoreChange}
+                savePrediction={savePrediction}
+                StatusBadge={StatusBadge}
+              />
+            </div>
           );
         })}
       </div>

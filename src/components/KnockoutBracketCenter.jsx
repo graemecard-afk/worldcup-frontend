@@ -43,20 +43,26 @@ export default function KnockoutBracketCenter({
           )
           .filter(Boolean);
 
-        return (
-          <KnockoutRound
-            key={group.round}
-            round={group.round}
-            matches={groupMatches}
-            predictions={predictions}
-            theme={theme}
-            formatKickoff={formatKickoff}
-            isMatchLocked={isMatchLocked}
-            handleScoreChange={handleScoreChange}
-            savePrediction={savePrediction}
-            StatusBadge={StatusBadge}
-          />
-        );
+                  const spacerTopByRound = {
+            Final: 280,
+            "Third-place Play-off": 0,
+          };
+
+          return (
+            <div key={group.round} style={{ paddingTop: spacerTopByRound[group.round] }}>
+              <KnockoutRound
+                round={group.round}
+                matches={groupMatches}
+                predictions={predictions}
+                theme={theme}
+                formatKickoff={formatKickoff}
+                isMatchLocked={isMatchLocked}
+                handleScoreChange={handleScoreChange}
+                savePrediction={savePrediction}
+                StatusBadge={StatusBadge}
+              />
+            </div>
+          );
       })}
     </div>
   );
