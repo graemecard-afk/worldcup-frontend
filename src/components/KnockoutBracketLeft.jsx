@@ -40,7 +40,8 @@ export default function KnockoutBracketLeft({
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: "repeat(4, minmax(190px, 1fr))",
+        position: "relative",
+        gridTemplateColumns: "190px 230px 230px 190px",
         gap: "14px",
         alignItems: "start",
                   backgroundImage:
@@ -68,6 +69,12 @@ export default function KnockoutBracketLeft({
                 key={group.round}
                 style={{
                   paddingTop: spacerTopByRound[group.round],
+paddingLeft:
+  group.round === "Round of 16"
+    ? "65px"
+    : group.round === "Quarter-final"
+    ? "40px"
+    : 0,
                   borderLeft: "1px dashed rgba(255,255,255,0.25)",
                 }}
               >
@@ -113,6 +120,67 @@ export default function KnockoutBracketLeft({
             </div>
           );
       })}
+              <div
+          style={{
+            position: "absolute",
+            left: "205px",
+            top: "155px",
+            width: "38px",
+            height: "3px",
+            background: "rgba(34,197,94,0.85)",
+            borderRadius: "2px",
+            pointerEvents: "none",
+          }}
+        />
+                <div
+          style={{
+            position: "absolute",
+            left: "243px",
+            top: "155px",
+            width: "3px",
+            height: "240px",
+            background: "rgba(34,197,94,0.85)",
+            borderRadius: "2px",
+            pointerEvents: "none",
+          }}
+        />
+                <div
+          style={{
+            position: "absolute",
+            left: "205px",
+            top: "395px",
+            width: "38px",
+            height: "3px",
+            background: "rgba(34,197,94,0.85)",
+            borderRadius: "2px",
+            pointerEvents: "none",
+          }}
+        />
+                <div
+          style={{
+            position: "absolute",
+            left: "243px",
+            top: "275px",
+            width: "24px",
+            height: "3px",
+            background: "rgba(34,197,94,0.85)",
+            borderRadius: "2px",
+            pointerEvents: "none",
+          }}
+        />
+                <div
+          style={{
+            position: "absolute",
+            left: "267px",
+            top: "269px",
+            width: 0,
+            height: 0,
+            borderTop: "7px solid transparent",
+            borderBottom: "7px solid transparent",
+            borderLeft: "12px solid rgba(34,197,94,0.95)",
+            pointerEvents: "none",
+          }}
+        />
     </div>
   );
 }
