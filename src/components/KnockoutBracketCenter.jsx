@@ -34,7 +34,7 @@ export default function KnockoutBracketCenter({
         display: "grid",
         gap: "18px",
         alignItems: "center",
-        paddingLeft: "120px",
+        paddingLeft: "135px",
       }}
     >
       {CENTER_LAYOUT.map(group => {
@@ -45,12 +45,51 @@ export default function KnockoutBracketCenter({
           .filter(Boolean);
 
                   const spacerTopByRound = {
-            Final: 280,
+            Final: 290,
             "Third-place Play-off": 0,
           };
 
           return (
             <div key={group.round} style={{ paddingTop: spacerTopByRound[group.round] }}>
+  {group.round === "Final" && groupMatches[0] && (
+    <div
+      style={{
+        marginBottom: "10px",
+        padding: "8px",
+        width: "190px",
+        borderRadius: "10px",
+        border: "1px solid rgba(59,130,246,0.55)",
+        background: "rgba(15,23,42,0.9)",
+        boxSizing: "border-box",
+      }}
+    >
+      <div style={{ fontSize: "0.75rem", opacity: 0.8, marginBottom: "6px" }}>
+        Champion:
+      </div>
+
+      <select
+        value={predictions[groupMatches[0].id]?.champion || ""}
+        disabled={isMatchLocked ? isMatchLocked(groupMatches[0]) : false}
+        onChange={e =>
+          handleScoreChange?.(groupMatches[0].id, "champion", e.target.value)
+        }
+        onBlur={() => savePrediction?.(groupMatches[0])}
+        style={{
+          width: "100%",
+          padding: "6px",
+          borderRadius: "6px",
+          border: "1px solid rgba(148,163,184,0.85)",
+          background: "rgba(15,23,42,0.95)",
+          color: "#e5e7eb",
+          fontSize: "0.8rem",
+        }}
+      >
+        <option value="">Select champion</option>
+        <option value={groupMatches[0].home_team}>{groupMatches[0].home_team}</option>
+        <option value={groupMatches[0].away_team}>{groupMatches[0].away_team}</option>
+      </select>
+    </div>
+  )}
               <KnockoutRound
                 round={group.round}
                 matches={groupMatches}
