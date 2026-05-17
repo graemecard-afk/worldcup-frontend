@@ -34,6 +34,7 @@ export default function KnockoutBracketCenter({
         display: "grid",
         gap: "18px",
         alignItems: "center",
+        paddingLeft: "120px",
       }}
     >
       {CENTER_LAYOUT.map(group => {

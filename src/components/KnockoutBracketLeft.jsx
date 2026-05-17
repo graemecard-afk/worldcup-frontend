@@ -74,6 +74,8 @@ paddingLeft:
     ? "65px"
     : group.round === "Quarter-final"
     ? "90px"
+    : group.round === "Semi-final"
+    ? "120px"
     : 0,
                   borderLeft: "1px dashed rgba(255,255,255,0.25)",
                 }}
@@ -103,7 +105,7 @@ paddingLeft:
                         }
                                               : group.round === "Semi-final"
                         ? {
-                            M101: 465,
+                            M101: 425,
                           }
                         : {}
                   }

@@ -16,9 +16,20 @@ export default function KnockoutRound({
 }) {
   return (
     <div>
-      <h4 style={{ margin: "0 0 8px", fontSize: "0.85rem" }}>
-        {round}
-      </h4>
+      <h4
+  style={{
+    margin: "0 0 8px",
+    fontSize: "0.85rem",
+    transform:
+      round === "Quarter-final"
+        ? "translateY(140px)"
+        : round === "Semi-final"
+        ? "translateY(420px)"
+        : "none",
+  }}
+>
+  {round}
+</h4>
 
       <div
         style={{
