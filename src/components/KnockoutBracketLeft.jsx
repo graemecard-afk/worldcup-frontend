@@ -73,7 +73,7 @@ paddingLeft:
   group.round === "Round of 16"
     ? "65px"
     : group.round === "Quarter-final"
-    ? "40px"
+    ? "90px"
     : 0,
                   borderLeft: "1px dashed rgba(255,255,255,0.25)",
                 }}
@@ -91,15 +91,15 @@ paddingLeft:
                                     matchSpacing={
                     group.round === "Round of 16"
                       ? {
-                          M89: 60,
+                          M89: 40,
                           M90: 150,
-                          M93: 160,
-                          M94: 170,
+                          M93: 130,
+                          M94: 140,
                         }
                       : group.round === "Quarter-final"
                       ? {
-                        M97: 200,  
-                        M98: 515,
+                        M97: 180, 
+                        M98: 475,
                         }
                                               : group.round === "Semi-final"
                         ? {
@@ -124,7 +124,7 @@ paddingLeft:
           style={{
             position: "absolute",
             left: "205px",
-            top: "155px",
+            top: "135px",
             width: "38px",
             height: "3px",
             background: "rgba(34,197,94,0.85)",
@@ -136,7 +136,7 @@ paddingLeft:
           style={{
             position: "absolute",
             left: "243px",
-            top: "155px",
+            top: "135px",
             width: "3px",
             height: "240px",
             background: "rgba(34,197,94,0.85)",
@@ -148,7 +148,7 @@ paddingLeft:
           style={{
             position: "absolute",
             left: "205px",
-            top: "395px",
+            top: "375px",
             width: "38px",
             height: "3px",
             background: "rgba(34,197,94,0.85)",
@@ -160,7 +160,7 @@ paddingLeft:
           style={{
             position: "absolute",
             left: "243px",
-            top: "275px",
+            top: "255px",
             width: "24px",
             height: "3px",
             background: "rgba(34,197,94,0.85)",
@@ -172,7 +172,7 @@ paddingLeft:
           style={{
             position: "absolute",
             left: "267px",
-            top: "269px",
+            top: "249px",
             width: 0,
             height: 0,
             borderTop: "7px solid transparent",
@@ -181,6 +181,311 @@ paddingLeft:
             pointerEvents: "none",
           }}
         />
+                <div
+          style={{
+            position: "absolute",
+            left: "205px",
+            top: "605px",
+            width: "38px",
+            height: "3px",
+            background: "rgba(34,197,94,0.85)",
+            borderRadius: "2px",
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            left: "243px",
+            top: "605px",
+            width: "3px",
+            height: "240px",
+            background: "rgba(34,197,94,0.85)",
+            borderRadius: "2px",
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            left: "205px",
+            top: "845px",
+            width: "38px",
+            height: "3px",
+            background: "rgba(34,197,94,0.85)",
+            borderRadius: "2px",
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            left: "243px",
+            top: "725px",
+            width: "24px",
+            height: "3px",
+            background: "rgba(34,197,94,0.85)",
+            borderRadius: "2px",
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            left: "267px",
+            top: "719px",
+            width: 0,
+            height: 0,
+            borderTop: "7px solid transparent",
+            borderBottom: "7px solid transparent",
+            borderLeft: "12px solid rgba(34,197,94,0.95)",
+            pointerEvents: "none",
+          }}
+        />
+                <div
+          style={{
+            position: "absolute",
+            left: "205px",
+            top: "1055px",
+            width: "38px",
+            height: "3px",
+            background: "rgba(34,197,94,0.85)",
+            borderRadius: "2px",
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            left: "243px",
+            top: "1055px",
+            width: "3px",
+            height: "240px",
+            background: "rgba(34,197,94,0.85)",
+            borderRadius: "2px",
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            left: "205px",
+            top: "1295px",
+            width: "38px",
+            height: "3px",
+            background: "rgba(34,197,94,0.85)",
+            borderRadius: "2px",
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            left: "243px",
+            top: "1175px",
+            width: "24px",
+            height: "3px",
+            background: "rgba(34,197,94,0.85)",
+            borderRadius: "2px",
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            left: "267px",
+            top: "1169px",
+            width: 0,
+            height: 0,
+            borderTop: "7px solid transparent",
+            borderBottom: "7px solid transparent",
+            borderLeft: "12px solid rgba(34,197,94,0.95)",
+            pointerEvents: "none",
+          }}
+        />
+                <div
+          style={{
+            position: "absolute",
+            left: "205px",
+            top: "1505px",
+            width: "38px",
+            height: "3px",
+            background: "rgba(34,197,94,0.85)",
+            borderRadius: "2px",
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            left: "243px",
+            top: "1505px",
+            width: "3px",
+            height: "240px",
+            background: "rgba(34,197,94,0.85)",
+            borderRadius: "2px",
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            left: "205px",
+            top: "1745px",
+            width: "38px",
+            height: "3px",
+            background: "rgba(34,197,94,0.85)",
+            borderRadius: "2px",
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            left: "243px",
+            top: "1625px",
+            width: "24px",
+            height: "3px",
+            background: "rgba(34,197,94,0.85)",
+            borderRadius: "2px",
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            left: "267px",
+            top: "1619px",
+            width: 0,
+            height: 0,
+            borderTop: "7px solid transparent",
+            borderBottom: "7px solid transparent",
+            borderLeft: "12px solid rgba(34,197,94,0.95)",
+            pointerEvents: "none",
+          }}
+        />
+                <div
+          style={{
+            position: "absolute",
+            left: "475px",
+            top: "255px",
+            width: "38px",
+            height: "3px",
+            background: "rgba(234,179,8,0.85)",
+            borderRadius: "2px",
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            left: "513px",
+            top: "255px",
+            width: "3px",
+            height: "470px",
+            background: "rgba(234,179,8,0.85)",
+            borderRadius: "2px",
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            left: "475px",
+            top: "725px",
+            width: "38px",
+            height: "3px",
+            background: "rgba(234,179,8,0.85)",
+            borderRadius: "2px",
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            left: "513px",
+            top: "505px",
+            width: "24px",
+            height: "3px",
+            background: "rgba(234,179,8,0.85)",
+            borderRadius: "2px",
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            left: "537px",
+            top: "499px",
+            width: 0,
+            height: 0,
+            borderTop: "7px solid transparent",
+            borderBottom: "7px solid transparent",
+            borderLeft: "12px solid rgba(234,179,8,0.95)",
+            pointerEvents: "none",
+          }}
+        />
+                  <div
+            style={{
+              position: "absolute",
+              left: "475px",
+              top: "1195px",
+              width: "38px",
+              height: "3px",
+              background: "rgba(234,179,8,0.85)",
+              borderRadius: "2px",
+              pointerEvents: "none",
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              left: "513px",
+              top: "1195px",
+              width: "3px",
+              height: "430px",
+              background: "rgba(234,179,8,0.85)",
+              borderRadius: "2px",
+              pointerEvents: "none",
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              left: "475px",
+              top: "1625px",
+              width: "38px",
+              height: "3px",
+              background: "rgba(234,179,8,0.85)",
+              borderRadius: "2px",
+              pointerEvents: "none",
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              left: "513px",
+              top: "1415px",
+              width: "24px",
+              height: "3px",
+              background: "rgba(234,179,8,0.85)",
+              borderRadius: "2px",
+              pointerEvents: "none",
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              left: "537px",
+              top: "1409px",
+              width: 0,
+              height: 0,
+              borderTop: "7px solid transparent",
+              borderBottom: "7px solid transparent",
+              borderLeft: "12px solid rgba(234,179,8,0.95)",
+              pointerEvents: "none",
+            }}
+          />
     </div>
   );
 }
