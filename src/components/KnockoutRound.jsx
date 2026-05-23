@@ -13,6 +13,7 @@ export default function KnockoutRound({
   StatusBadge,
   cardGap = 10,
   matchSpacing = {},
+  labelOffsetY = 0,
 }) {
   return (
     <div>
@@ -21,11 +22,13 @@ export default function KnockoutRound({
     margin: "0 0 8px",
     fontSize: "0.85rem",
     transform:
-      round === "Quarter-final"
-        ? "translateY(140px)"
-        : round === "Semi-final"
-        ? "translateY(420px)"
-        : "none",
+  labelOffsetY
+    ? `translateY(${labelOffsetY}px)`
+    : round === "Quarter-final"
+    ? "translateY(140px)"
+    : round === "Semi-final"
+    ? "translateY(420px)"
+    : "none",
   }}
 >
   {round}
@@ -51,7 +54,8 @@ export default function KnockoutRound({
             <div
               key={m.id}
               style={{
-                marginTop:
+              height: "230px",
+              marginTop:
                   matchSpacing[
                     m.group_name ?? m.match_number ?? m.matchNumber ?? m.id
                   ] || 0,

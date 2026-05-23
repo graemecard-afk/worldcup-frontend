@@ -92,29 +92,36 @@ export default function KnockoutMatchCard({
         />
       </div>
 
-      <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "6px", flexWrap: "wrap" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "44px 42px 8px 42px",
+            alignItems: "center",
+            columnGap: "6px",
+            rowGap: "6px",
+            marginBottom: "6px",
+          }}
+        >
           <span style={{ fontSize: "0.75rem", opacity: 0.8 }}>Act:</span>
-          <span style={{ width: "42px", padding: "4px 6px", borderRadius: "6px", border: "1px solid rgba(148,163,184,0.85)", background: "rgba(148,163,184,0.25)", fontSize: "0.8rem", fontWeight: 600, textAlign: "center" }}>
+          <span style={{ width: "42px", padding: "4px 6px", borderRadius: "6px", border: "1px solid rgba(148,163,184,0.85)", background: "rgba(148,163,184,0.25)", fontSize: "0.8rem", fontWeight: 600, textAlign: "center", boxSizing: "border-box" }}>
             {m.result_finalized ? (m.result_home_goals ?? "–") : "–"}
           </span>
           <span>:</span>
-          <span style={{ width: "42px", padding: "4px 6px", borderRadius: "6px", border: "1px solid rgba(148,163,184,0.85)", background: "rgba(148,163,184,0.25)", fontSize: "0.8rem", fontWeight: 600, textAlign: "center" }}>
+          <span style={{ width: "42px", padding: "4px 6px", borderRadius: "6px", border: "1px solid rgba(148,163,184,0.85)", background: "rgba(148,163,184,0.25)", fontSize: "0.8rem", fontWeight: 600, textAlign: "center", boxSizing: "border-box" }}>
             {m.result_finalized ? (m.result_away_goals ?? "–") : "–"}
           </span>
-        </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
           <span style={{ fontSize: "0.75rem", opacity: 0.8 }}>Pts:</span>
-          <span style={{ width: "48px", padding: "4px 6px", borderRadius: "6px", border: "1px solid rgba(148,163,184,0.85)", background: "rgba(148,163,184,0.25)", fontSize: "0.8rem", fontWeight: 700, textAlign: "center" }}>
+          <span style={{ width: "42px", padding: "4px 6px", borderRadius: "6px", border: "1px solid rgba(148,163,184,0.85)", background: "rgba(148,163,184,0.25)", fontSize: "0.8rem", fontWeight: 700, textAlign: "center", boxSizing: "border-box" }}>
             {pred.points === 0 || typeof pred.points === "number" ? pred.points : "–"}
           </span>
         </div>
-      </div>
 
-      {StatusBadge && (
-        <StatusBadge status={locked ? "locked" : pred.status} theme={theme} />
-      )}
+      <div style={{ minHeight: "28px" }}>
+  {StatusBadge && (
+    <StatusBadge status={locked ? "locked" : pred.status} theme={theme} />
+  )}
+</div>
     </div>
   );
 }
