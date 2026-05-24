@@ -94,14 +94,14 @@ paddingLeft:
                     group.round === "Round of 16"
                       ? {
                           M89: 55,
-                          M90: 155,
-                          M93: 155,
-                          M94: 155,
+                          M90: 210,
+                          M93: 365,
+                          M94: 520,
                         }
                       : group.round === "Quarter-final"
                       ? {
                         M97: 190, 
-                        M98: 510,
+                        M98: 700,
                         }
                                               : group.round === "Semi-final"
                         ? {

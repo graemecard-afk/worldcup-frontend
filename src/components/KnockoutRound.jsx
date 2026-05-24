@@ -15,33 +15,42 @@ export default function KnockoutRound({
   matchSpacing = {},
   labelOffsetY = 0,
 }) {
+  const CARD_SLOT_HEIGHT = 230;
+
   return (
     <div>
       <h4
-  style={{
-    margin: "0 0 8px",
-    fontSize: "0.85rem",
-    transform:
-  labelOffsetY
-    ? `translateY(${labelOffsetY}px)`
-    : round === "Quarter-final"
-    ? "translateY(140px)"
-    : round === "Semi-final"
-    ? "translateY(420px)"
-    : "none",
-  }}
->
-  {round}
-</h4>
+        style={{
+          margin: "0 0 8px",
+          fontSize: "0.85rem",
+          transform: labelOffsetY
+            ? `translateY(${labelOffsetY}px)`
+            : round === "Quarter-final"
+            ? "translateY(140px)"
+            : round === "Semi-final"
+            ? "translateY(420px)"
+            : "none",
+        }}
+      >
+        {round}
+      </h4>
 
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: `${cardGap}px`,
+          position: "relative",
+          minHeight:
+            matches.length > 0
+              ? `${Math.max(
+                  ...matches.map(m => {
+                    const key =
+                      m.group_name ?? m.match_number ?? m.matchNumber ?? m.id;
+                    return matchSpacing[key] || 0;
+                  })
+                ) + CARD_SLOT_HEIGHT}px`
+              : `${CARD_SLOT_HEIGHT}px`,
         }}
       >
-        {matches.map(m => {
+        {matches.map((m, index) => {
           const pred = predictions[m.id] || {
             home: "",
             away: "",
@@ -49,16 +58,17 @@ export default function KnockoutRound({
           };
 
           const locked = isMatchLocked ? isMatchLocked(m) : false;
+          const key = m.group_name ?? m.match_number ?? m.matchNumber ?? m.id;
+          const top = index * (CARD_SLOT_HEIGHT + cardGap) + (matchSpacing[key] || 0);
 
           return (
             <div
               key={m.id}
               style={{
-              height: "230px",
-              marginTop:
-                  matchSpacing[
-                    m.group_name ?? m.match_number ?? m.matchNumber ?? m.id
-                  ] || 0,
+                position: "absolute",
+                top: `${top}px`,
+                left: 0,
+                height: `${CARD_SLOT_HEIGHT}px`,
               }}
             >
               <KnockoutMatchCard

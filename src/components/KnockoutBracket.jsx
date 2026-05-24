@@ -29,7 +29,7 @@ export default function KnockoutBracket({
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "1fr 260px 1fr",
+          gridTemplateColumns: "1fr 360px 1fr",
           gap: "18px",
           minWidth: "1180px",
           alignItems: "center",

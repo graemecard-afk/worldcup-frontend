@@ -45,7 +45,7 @@ export default function KnockoutBracketCenter({
           .filter(Boolean);
 
                   const spacerTopByRound = {
-            Final: 295,
+            Final: 1095,
             "Third-place Play-off": 0,
           };
 
