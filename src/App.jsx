@@ -9,6 +9,7 @@ import Screen from './layout/Screen';
 import { TEAM_FLAGS } from './constants/teamFlags';
 import MatchPhaseToggle from "./components/MatchPhaseToggle";
 import KnockoutBracket from "./components/KnockoutBracket";
+import RulesPage from "./pages/RulesPage";
 
 
 
@@ -677,10 +678,7 @@ if (currentView === 'rules') {
     >
       <FrostedCard theme={theme}>
         <TitleRow />
-        <div style={{ padding: 16 }}>
-          <h3>Rules</h3>
-          <p>The tournament rules will be shown here.</p>
-        </div>
+       <RulesPage />
       </FrostedCard>
     </Screen>
   );
