@@ -10,6 +10,7 @@ import { TEAM_FLAGS } from './constants/teamFlags';
 import MatchPhaseToggle from "./components/MatchPhaseToggle";
 import KnockoutBracket from "./components/KnockoutBracket";
 import RulesPage from "./pages/RulesPage";
+import PaymentPage from "./pages/PaymentPage";
 
 
 
@@ -656,10 +657,7 @@ if (currentView === 'payments') {
     >
       <FrostedCard theme={theme}>
         <TitleRow />
-        <div style={{ padding: 16 }}>
-          <h3>Payment details</h3>
-          <p>This page is coming soon.</p>
-        </div>
+        <PaymentPage />
       </FrostedCard>
     </Screen>
   );

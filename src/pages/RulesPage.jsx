@@ -141,7 +141,33 @@ export default function RulesPage() {
         </li>
       </ol>
             <hr style={{ margin: "36px 0", opacity: 0.35 }} />
+      <p style={{ marginTop: 32 }}>
+        In order to get the 10 points for the correct spread, you need at
+        least one of the teams you predicted to{" "}
+        <strong>ACTUALLY play in that game</strong>.
+      </p>
 
+      <p>
+        Obviously in the knockout stages, games{" "}
+        <strong>AT THE END OF REGULATION TIME</strong> can end in ties, so if
+        you correctly predict the winner after extra time and/or a penalty
+        shoot-out, you can still get points for predicting the correct score
+        (maximum 40 points as above), plus the additional bonus points for the
+        correct advancing team.
+      </p>
+
+      <p style={{ marginTop: 24 }}>
+        Bonus points for correctly predicting the advancing team:
+      </p>
+
+      <ul>
+        <li><strong>Round of 32</strong> – 10 points</li>
+        <li><strong>Round of 16</strong> – 20 points</li>
+        <li><strong>Quarter-final</strong> – 40 points</li>
+        <li><strong>Semi-final</strong> – 80 points</li>
+        <li><strong>3rd place play-off</strong> – 120 points</li>
+        <li><strong>World Cup champion</strong> – 160 points</li>
+      </ul>
       <h2>Knockout scoring example</h2>
       <hr style={{ margin: "36px 0", opacity: 0.35 }} />
 

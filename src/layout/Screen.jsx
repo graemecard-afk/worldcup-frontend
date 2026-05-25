@@ -50,12 +50,12 @@ useEffect(() => {
     : '';
 
   const navItems = [
+    { label: 'Rules', view: 'rules' },
+    { label: 'Payment details', view: 'payments' },
     { label: 'Dashboard', view: 'main' },
     { label: 'Group Stage', view: 'groups' },
     { label: 'Knockouts', view: 'knockouts' },
     { label: 'Leaderboard', view: 'leaderboard' },
-    { label: 'Payment details', view: 'payments' },
-    { label: 'Rules', view: 'rules' },
   ];
 
   const topBarBtnStyle = {
