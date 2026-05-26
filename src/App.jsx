@@ -837,7 +837,7 @@ if (currentView === 'rules') {
     apiBaseUrl={''}
     token={getStoredToken()}
     tournamentId={currentTournament?.id}
-    matches={matches}
+    matches={visibleMatches}
     onAfterSave={refreshMatchesAndPredictions}
   />
 )}
