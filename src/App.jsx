@@ -793,18 +793,30 @@ if (currentView === 'rules') {
               Enter scores and tap away from the field – your prediction will
               autosave for that match.
             </p>
-            {matchPhase === 'knockout' ? (
-              <KnockoutBracket
-  matches={visibleMatches}
-  predictions={predictions}
-  theme={theme}
-  formatKickoff={formatKickoff}
-  isMatchLocked={isMatchLocked}
-  handleScoreChange={handleScoreChange}
-  savePrediction={savePrediction}
-  StatusBadge={StatusBadge}
-/>
-            ) : (
+                          {matchPhase === 'knockout' ? (
+                <>
+                  <KnockoutBracket
+                    matches={visibleMatches}
+                    predictions={predictions}
+                    theme={theme}
+                    formatKickoff={formatKickoff}
+                    isMatchLocked={isMatchLocked}
+                    handleScoreChange={handleScoreChange}
+                    savePrediction={savePrediction}
+                    StatusBadge={StatusBadge}
+                  />
+
+                  {isAdmin && (
+                    <AdminFinalizeMatchPanel
+                      apiBaseUrl={''}
+                      token={getStoredToken()}
+                      tournamentId={currentTournament?.id}
+                      matches={visibleMatches}
+                      onAfterSave={refreshMatchesAndPredictions}
+                    />
+                  )}
+                </>
+              ) : (
             <div
               style={{
                 maxHeight: '280px',
