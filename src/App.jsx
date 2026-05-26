@@ -264,7 +264,8 @@ export default function App() {
   const [mode, setMode] = useState('login'); // 'login' or 'register'
   const [user, setUser] = useState(null);
   const ADMIN_EMAILS = [
-  'graeme.card@gmail.com', // <-- replace with YOUR login email
+  'graeme.card@gmail.com',
+  'graeme.card@gdc.govt.nz', // <-- replace with YOUR login email
 ];
 
 const isAdmin = ADMIN_EMAILS.includes(
