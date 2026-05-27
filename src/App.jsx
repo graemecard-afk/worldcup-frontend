@@ -408,6 +408,7 @@ const groupTables = computeGroupTables(
     p.predicted_away_goals === null || p.predicted_away_goals === undefined
       ? ''
       : String(p.predicted_away_goals),
+      advancing: p.predicted_advancing_team || '',
   status: 'saved',
   points: p.points ?? null,
           };
@@ -494,7 +495,17 @@ async function refreshMatchesAndPredictions() {
       },
     }));
   }
-
+function handleAdvancingChange(matchId, value) {
+  setPredictions(prev => ({
+    ...prev,
+    [matchId]: {
+      ...prev[matchId],
+      advancing: value,
+      status: 'dirty',
+      points: prev[matchId]?.points ?? null,
+    },
+  }));
+}
   async function savePrediction(match) {
     if (!currentTournament) return;
     const entry = predictions[match.id] || {};
@@ -518,6 +529,7 @@ async function refreshMatchesAndPredictions() {
 
     const home = parseInt(entry.home, 10);
     const away = parseInt(entry.away, 10);
+    const advancing = entry.advancing || '';
 
     if (Number.isNaN(home) || Number.isNaN(away)) {
       setPredictions(prev => ({
@@ -542,6 +554,7 @@ async function refreshMatchesAndPredictions() {
       await apiPost(`/predictions/${match.id}`, {
         predicted_home_goals: home,
         predicted_away_goals: away,
+        predicted_advancing_team: advancing,
       });
 
       setPredictions(prev => ({
@@ -802,6 +815,7 @@ if (currentView === 'rules') {
                     formatKickoff={formatKickoff}
                     isMatchLocked={isMatchLocked}
                     handleScoreChange={handleScoreChange}
+                    handleAdvancingChange={handleAdvancingChange}
                     savePrediction={savePrediction}
                     StatusBadge={StatusBadge}
                   />

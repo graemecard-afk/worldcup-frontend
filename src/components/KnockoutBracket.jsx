@@ -10,6 +10,7 @@ export default function KnockoutBracket({
   formatKickoff,
   isMatchLocked,
   handleScoreChange,
+  handleAdvancingChange,
   savePrediction,
   StatusBadge,
 }) {
@@ -20,6 +21,7 @@ export default function KnockoutBracket({
     formatKickoff,
     isMatchLocked,
     handleScoreChange,
+    handleAdvancingChange,
     savePrediction,
     StatusBadge,
   };

@@ -39,6 +39,7 @@ export default function KnockoutBracketRight({
   formatKickoff,
   isMatchLocked,
   handleScoreChange,
+  handleAdvancingChange,
   savePrediction,
   StatusBadge,
 }) {
@@ -129,6 +130,7 @@ export default function KnockoutBracketRight({
               formatKickoff={formatKickoff}
               isMatchLocked={isMatchLocked}
               handleScoreChange={handleScoreChange}
+              handleAdvancingChange={handleAdvancingChange}
               savePrediction={savePrediction}
               StatusBadge={StatusBadge}
             />

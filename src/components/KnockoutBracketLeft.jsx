@@ -33,6 +33,7 @@ export default function KnockoutBracketLeft({
   formatKickoff,
   isMatchLocked,
   handleScoreChange,
+  handleAdvancingChange,
   savePrediction,
   StatusBadge,
 }) {
@@ -116,6 +117,7 @@ paddingLeft:
                 formatKickoff={formatKickoff}
                 isMatchLocked={isMatchLocked}
                 handleScoreChange={handleScoreChange}
+                handleAdvancingChange={handleAdvancingChange}
                 savePrediction={savePrediction}
                 StatusBadge={StatusBadge}
               />

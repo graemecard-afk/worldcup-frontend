@@ -9,6 +9,7 @@ export default function KnockoutRound({
   formatKickoff,
   isMatchLocked,
   handleScoreChange,
+  handleAdvancingChange,
   savePrediction,
   StatusBadge,
   cardGap = 10,
@@ -54,6 +55,7 @@ export default function KnockoutRound({
           const pred = predictions[m.id] || {
             home: "",
             away: "",
+            advancing: "",
             status: "idle",
           };
 
@@ -78,6 +80,7 @@ export default function KnockoutRound({
                 theme={theme}
                 formatKickoff={formatKickoff}
                 handleScoreChange={handleScoreChange}
+                handleAdvancingChange={handleAdvancingChange}
                 savePrediction={savePrediction}
                 StatusBadge={StatusBadge}
               />

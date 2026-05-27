@@ -7,10 +7,15 @@ export default function KnockoutMatchCard({
   theme,
   formatKickoff,
   handleScoreChange,
+  handleAdvancingChange,
   savePrediction,
   StatusBadge,
 }) {
   const m = match;
+  const requiresAdvancingSelection =
+  pred.home !== "" &&
+  pred.away !== "" &&
+  pred.home === pred.away;
 
   return (
     <div
@@ -91,6 +96,29 @@ export default function KnockoutMatchCard({
           }}
         />
       </div>
+      {requiresAdvancingSelection && (
+  <div style={{ marginBottom: "2px" }}>
+    <select
+      value={pred.advancing || ""}
+      disabled={locked}
+      onChange={e => handleAdvancingChange?.(m.id, e.target.value)}
+      onBlur={() => savePrediction?.(m)}
+      style={{
+        width: "100%",
+        padding: "2px 4px",
+        borderRadius: "6px",
+        border: "1px solid rgba(148,163,184,0.85)",
+        background: "rgba(15,23,42,0.95)",
+        color: "#e5e7eb",
+        fontSize: "0.68rem",
+      }}
+    >
+      <option value="">Winner if tied</option>
+      <option value={m.home_team}>{m.home_team}</option>
+      <option value={m.away_team}>{m.away_team}</option>
+    </select>
+  </div>
+)}
 
               <div
           style={{
