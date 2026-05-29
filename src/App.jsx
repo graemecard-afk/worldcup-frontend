@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { apiGet, apiPost, setAuthToken, getStoredToken } from './api/client.js';
 import LeaderboardTable from "./components/LeaderboardTable";
 import AdminFinalizeMatchPanel from "./components/AdminFinalizeMatchPanel";
+import AdminKnockoutTeamPanel from "./components/AdminKnockoutTeamPanel";
 import LeaderboardPage from "./pages/Leaderboard";
 import AuthPage from "./pages/Auth";
 import NavDrawer from './components/NavDrawer';
@@ -812,10 +813,18 @@ if (currentView === 'rules') {
               autosave for that match.
             </p>
                           {matchPhase === 'admin' ? (
-  <div style={{ padding: '12px', borderRadius: '12px', border: '1px solid rgba(148,163,184,0.35)' }}>
-    <h3>Admin</h3>
-    <p>Admin tools will go here.</p>
-  </div>
+ <div
+  style={{
+    padding: '12px',
+    borderRadius: '12px',
+    border: '1px solid rgba(148,163,184,0.35)',
+  }}
+>
+  <AdminKnockoutTeamPanel
+    matches={visibleMatches}
+    onAfterSave={refreshMatchesAndPredictions}
+  />
+</div>
 ) : matchPhase === 'knockout' ? (
                 <>
                   <KnockoutBracket
