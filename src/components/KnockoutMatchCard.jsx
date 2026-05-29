@@ -129,8 +129,8 @@ const displayAwayTeam =
       }}
     >
       <option value="">Winner if tied</option>
-      <option value={m.home_team}>{m.home_team}</option>
-      <option value={m.away_team}>{m.away_team}</option>
+      <option value={displayHomeTeam}>{displayHomeTeam}</option>
+<option value={displayAwayTeam}>{displayAwayTeam}</option>
     </select>
   </div>
 )}

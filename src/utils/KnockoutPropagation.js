@@ -81,10 +81,26 @@ export function buildPropagatedTeams(matches, predictions) {
       ? predictions[awayMatch.id]
       : null;
 
-    result[target] = {
-      homeTeam: getAdvancingTeam(homeMatch, homePrediction),
-      awayTeam: getAdvancingTeam(awayMatch, awayPrediction),
-    };
+    const homeDisplayMatch = homeMatch
+  ? {
+      ...homeMatch,
+      home_team: result[homeSource]?.homeTeam || homeMatch.home_team,
+      away_team: result[homeSource]?.awayTeam || homeMatch.away_team,
+    }
+  : null;
+
+const awayDisplayMatch = awayMatch
+  ? {
+      ...awayMatch,
+      home_team: result[awaySource]?.homeTeam || awayMatch.home_team,
+      away_team: result[awaySource]?.awayTeam || awayMatch.away_team,
+    }
+  : null;
+
+result[target] = {
+  homeTeam: getAdvancingTeam(homeDisplayMatch, homePrediction),
+  awayTeam: getAdvancingTeam(awayDisplayMatch, awayPrediction),
+};
   });
 
   return result;
