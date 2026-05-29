@@ -488,6 +488,7 @@ async function refreshMatchesAndPredictions() {
     setPredictions(prev => ({
       ...prev,
       [matchId]: {
+        ...prev[matchId],
         home: field === 'home' ? clean : prev[matchId]?.home ?? '',
         away: field === 'away' ? clean : prev[matchId]?.away ?? '',
         status: 'dirty',
