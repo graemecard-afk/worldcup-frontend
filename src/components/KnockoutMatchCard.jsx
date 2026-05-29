@@ -13,7 +13,11 @@ export default function KnockoutMatchCard({
   StatusBadge,
 }) {
   const m = match;
-  const requiresAdvancingSelection =
+  const isFinalOrThirdPlace =
+  m.stage === "Final" || m.stage === "Third-place Play-off";
+
+const requiresAdvancingSelection =
+  !isFinalOrThirdPlace &&
   pred.home !== "" &&
   pred.away !== "" &&
   pred.home === pred.away;

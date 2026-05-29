@@ -48,6 +48,25 @@ const finalClearWinner =
     : "";
 const championValue =
   finalClearWinner || finalPrediction.champion || "";
+  const thirdPlaceMatch = matches.find(m => getMatchNumber(m) === 103);
+const thirdPlaceTeams = thirdPlaceMatch ? propagatedTeams[103] : null;
+const thirdPlaceHomeTeam = thirdPlaceTeams?.homeTeam || thirdPlaceMatch?.home_team || "";
+const thirdPlaceAwayTeam = thirdPlaceTeams?.awayTeam || thirdPlaceMatch?.away_team || "";
+const thirdPlacePrediction = thirdPlaceMatch ? predictions[thirdPlaceMatch.id] || {} : {};
+const thirdPlaceHomeGoals = parseInt(thirdPlacePrediction.home, 10);
+const thirdPlaceAwayGoals = parseInt(thirdPlacePrediction.away, 10);
+const thirdPlaceHasScore =
+  !Number.isNaN(thirdPlaceHomeGoals) && !Number.isNaN(thirdPlaceAwayGoals);
+const thirdPlaceIsDraw =
+  thirdPlaceHasScore && thirdPlaceHomeGoals === thirdPlaceAwayGoals;
+const thirdPlaceClearWinner =
+  thirdPlaceHasScore && !thirdPlaceIsDraw
+    ? thirdPlaceHomeGoals > thirdPlaceAwayGoals
+      ? thirdPlaceHomeTeam
+      : thirdPlaceAwayTeam
+    : "";
+const thirdPlaceValue =
+  thirdPlaceClearWinner || thirdPlacePrediction.thirdPlace || "";
   return (
     <div
       style={{
@@ -141,8 +160,8 @@ const championValue =
         </div>
 
         <select
-          value={predictions[groupMatches[0].id]?.thirdPlace || ""}
-          disabled={isMatchLocked ? isMatchLocked(groupMatches[0]) : false}
+          value={thirdPlaceValue}
+          disabled={Boolean(thirdPlaceClearWinner) || (isMatchLocked ? isMatchLocked(groupMatches[0]) : false)}
           onChange={e =>
             handleScoreChange?.(groupMatches[0].id, "thirdPlace", e.target.value)
           }
@@ -158,8 +177,8 @@ const championValue =
           }}
         >
           <option value="">Select third place</option>
-          <option value={groupMatches[0].home_team}>{groupMatches[0].home_team}</option>
-          <option value={groupMatches[0].away_team}>{groupMatches[0].away_team}</option>
+         <option value={thirdPlaceHomeTeam}>{thirdPlaceHomeTeam}</option>
+         <option value={thirdPlaceAwayTeam}>{thirdPlaceAwayTeam}</option>
         </select>
       </div>
     )}

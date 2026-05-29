@@ -32,6 +32,30 @@ export function getAdvancingTeam(match, prediction) {
 
   return prediction.advancing || "";
 }
+export function getLosingTeam(match, prediction) {
+  if (!match || !prediction) return "";
+
+  const home = prediction.home;
+  const away = prediction.away;
+
+  if (home === "" || away === "") return "";
+
+  const homeGoals = parseInt(home, 10);
+  const awayGoals = parseInt(away, 10);
+
+  if (Number.isNaN(homeGoals) || Number.isNaN(awayGoals)) {
+    return "";
+  }
+
+  if (homeGoals > awayGoals) return match.away_team;
+  if (awayGoals > homeGoals) return match.home_team;
+
+  const winner = prediction.advancing || "";
+  if (winner === match.home_team) return match.away_team;
+  if (winner === match.away_team) return match.home_team;
+
+  return "";
+}
 export const KNOCKOUT_PROPAGATION = {
   89: [74, 77],
   90: [73, 75],
@@ -97,10 +121,17 @@ const awayDisplayMatch = awayMatch
     }
   : null;
 
-result[target] = {
-  homeTeam: getAdvancingTeam(homeDisplayMatch, homePrediction),
-  awayTeam: getAdvancingTeam(awayDisplayMatch, awayPrediction),
-};
+if (Number(target) === 103) {
+  result[target] = {
+    homeTeam: getLosingTeam(homeDisplayMatch, homePrediction),
+    awayTeam: getLosingTeam(awayDisplayMatch, awayPrediction),
+  };
+} else {
+  result[target] = {
+    homeTeam: getAdvancingTeam(homeDisplayMatch, homePrediction),
+    awayTeam: getAdvancingTeam(awayDisplayMatch, awayPrediction),
+  };
+}
   });
 
   return result;
