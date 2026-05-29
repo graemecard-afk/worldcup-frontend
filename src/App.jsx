@@ -769,11 +769,15 @@ if (currentView === 'rules') {
     setMatchPhase('group');
     loadTournamentAndMatches();
   }}
-  onLoadKnockout={() => {
-    setMatchPhase('knockout');
-    loadTournamentAndMatches();
-  }}
-/>
+     onLoadKnockout={() => {
+      setMatchPhase('knockout');
+      loadTournamentAndMatches();
+    }}
+    onLoadAdmin={() => {
+      setMatchPhase('admin');
+      loadTournamentAndMatches();
+    }}
+  />
 
         {loadingData && <Sub>Loading tournament data…</Sub>}
         {dataError && (
@@ -807,7 +811,12 @@ if (currentView === 'rules') {
               Enter scores and tap away from the field – your prediction will
               autosave for that match.
             </p>
-                          {matchPhase === 'knockout' ? (
+                          {matchPhase === 'admin' ? (
+  <div style={{ padding: '12px', borderRadius: '12px', border: '1px solid rgba(148,163,184,0.35)' }}>
+    <h3>Admin</h3>
+    <p>Admin tools will go here.</p>
+  </div>
+) : matchPhase === 'knockout' ? (
                 <>
                   <KnockoutBracket
                     matches={visibleMatches}
