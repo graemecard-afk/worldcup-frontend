@@ -27,6 +27,7 @@ export default function AdminFinalizeMatchPanel({
   const [matchId, setMatchId] = useState("");
   const [homeGoals, setHomeGoals] = useState("");
   const [awayGoals, setAwayGoals] = useState("");
+  const [actualAdvancingTeam, setActualAdvancingTeam] = useState("");
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState("");
 
@@ -51,7 +52,18 @@ export default function AdminFinalizeMatchPanel({
       setStatus("❌ Enter valid goal numbers");
       return;
     }
+let resultAdvancingTeam = null;
 
+if (isKnockoutMatch) {
+  if (hg > ag) resultAdvancingTeam = selectedMatch.home_team;
+  if (ag > hg) resultAdvancingTeam = selectedMatch.away_team;
+  if (hg === ag) resultAdvancingTeam = actualAdvancingTeam || null;
+}
+
+if (needsAdvancingTeam && !resultAdvancingTeam) {
+  setStatus("❌ Select the team that advanced");
+  return;
+}
     setSaving(true);
     setStatus("");
 
@@ -59,11 +71,13 @@ export default function AdminFinalizeMatchPanel({
       await apiPost(`/matches/${matchId}/result`, {
         home_goals: hg,
         away_goals: ag,
+        actual_advancing_team: resultAdvancingTeam,
       });
 
       setStatus("✅ Saved. Refreshing data…");
       setHomeGoals("");
       setAwayGoals("");
+      setActualAdvancingTeam("");
       setMatchId("");
 
       if (onAfterSave) {
@@ -90,6 +104,7 @@ async function handleUnfinalise() {
     setStatus("✅ Match unfinalised. Refreshing data…");
     setHomeGoals("");
     setAwayGoals("");
+    setActualAdvancingTeam("");
     setMatchId("");
 
     if (onAfterSave) {
@@ -102,6 +117,18 @@ async function handleUnfinalise() {
   }
 }
 const selectedMatch = matches.find(m => String(m.id) === String(matchId));
+const knockoutStages = [
+  "Round of 32",
+  "Round of 16",
+  "Quarter-final",
+  "Semi-final",
+  "Third-place Play-off",
+  "Final",
+];
+
+const isKnockoutMatch = selectedMatch && knockoutStages.includes(selectedMatch.stage);
+const isDraw = homeGoals !== "" && awayGoals !== "" && Number(homeGoals) === Number(awayGoals);
+const needsAdvancingTeam = isKnockoutMatch && isDraw;
 
   return (
     <div style={{ marginTop: 16 }}>
@@ -137,6 +164,17 @@ const selectedMatch = matches.find(m => String(m.id) === String(matchId));
           onChange={e => setAwayGoals(e.target.value)}
           disabled={saving || selectedMatch?.result_finalized}
         />
+        {needsAdvancingTeam && selectedMatch && (
+  <select
+    value={actualAdvancingTeam}
+    onChange={e => setActualAdvancingTeam(e.target.value)}
+    disabled={saving || selectedMatch?.result_finalized}
+  >
+    <option value="">Advanced…</option>
+    <option value={selectedMatch.home_team}>{selectedMatch.home_team}</option>
+    <option value={selectedMatch.away_team}>{selectedMatch.away_team}</option>
+  </select>
+)}
         <button onClick={handleSave} disabled={saving || selectedMatch?.result_finalized}>
   {saving ? "Saving…" : "Save"}
 </button>
