@@ -5,6 +5,7 @@ export default function KnockoutRound({
   round,
   matches = [],
   predictions = {},
+  propagatedTeams = {},
   theme,
   formatKickoff,
   isMatchLocked,
@@ -76,6 +77,7 @@ export default function KnockoutRound({
               <KnockoutMatchCard
                 match={m}
                 pred={pred}
+                propagatedTeams={propagatedTeams}
                 locked={locked}
                 theme={theme}
                 formatKickoff={formatKickoff}

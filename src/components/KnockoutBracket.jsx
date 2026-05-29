@@ -2,6 +2,7 @@ import React from "react";
 import KnockoutBracketLeft from "./KnockoutBracketLeft";
 import KnockoutBracketCenter from "./KnockoutBracketCenter";
 import KnockoutBracketRight from "./KnockoutBracketRight";
+import { buildPropagatedTeams } from "../utils/KnockoutPropagation";
 
 export default function KnockoutBracket({
   matches = [],
@@ -14,9 +15,11 @@ export default function KnockoutBracket({
   savePrediction,
   StatusBadge,
 }) {
+  const propagatedTeams = buildPropagatedTeams(matches, predictions);
   const sharedProps = {
     matches,
     predictions,
+    propagatedTeams,
     theme,
     formatKickoff,
     isMatchLocked,

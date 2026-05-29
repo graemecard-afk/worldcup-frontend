@@ -3,6 +3,7 @@ import React from "react";
 export default function KnockoutMatchCard({
   match,
   pred,
+  propagatedTeams = {},
   locked,
   theme,
   formatKickoff,
@@ -16,6 +17,18 @@ export default function KnockoutMatchCard({
   pred.home !== "" &&
   pred.away !== "" &&
   pred.home === pred.away;
+  const matchNumber =
+  Number(String(m.group_name ?? "").match(/\d+/)?.[0]) || null;
+
+const propagated = matchNumber
+  ? propagatedTeams[matchNumber]
+  : null;
+
+const displayHomeTeam =
+  propagated?.homeTeam || m.home_team;
+
+const displayAwayTeam =
+  propagated?.awayTeam || m.away_team;
 
   return (
     <div
@@ -49,9 +62,11 @@ export default function KnockoutMatchCard({
         <span>{formatKickoff ? formatKickoff(m.kickoff_utc) : ""}</span>
       </div>
 
-      <div style={{ fontWeight: 700 }}>{m.home_team}</div>
+      <div style={{ fontWeight: 700 }}>{displayHomeTeam}</div>
       <div style={{ opacity: 0.7, fontSize: "0.75rem" }}>v</div>
-      <div style={{ fontWeight: 700, marginBottom: "8px" }}>{m.away_team}</div>
+      <div style={{ fontWeight: 700, marginBottom: "8px" }}>
+  {displayAwayTeam}
+</div>
 
       <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "6px" }}>
         <span style={{ fontSize: "0.75rem", opacity: 0.8 }}>Score:</span>

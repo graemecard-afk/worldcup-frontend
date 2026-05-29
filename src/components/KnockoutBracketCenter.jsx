@@ -21,6 +21,7 @@ function getMatchNumber(match) {
 export default function KnockoutBracketCenter({
   matches = [],
   predictions = {},
+  propagatedTeams = {},
   theme = "dark",
   formatKickoff,
   isMatchLocked,
@@ -96,6 +97,7 @@ export default function KnockoutBracketCenter({
                 round={group.round}
                 matches={groupMatches}
                 predictions={predictions}
+                propagatedTeams={propagatedTeams}
                 theme={theme}
                 formatKickoff={formatKickoff}
                 isMatchLocked={isMatchLocked}
