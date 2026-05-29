@@ -30,6 +30,24 @@ export default function KnockoutBracketCenter({
   savePrediction,
   StatusBadge,
 }) {
+  const finalMatch = matches.find(m => getMatchNumber(m) === 104);
+const finalTeams = finalMatch ? propagatedTeams[104] : null;
+const finalHomeTeam = finalTeams?.homeTeam || finalMatch?.home_team || "";
+const finalAwayTeam = finalTeams?.awayTeam || finalMatch?.away_team || "";
+const finalPrediction = finalMatch ? predictions[finalMatch.id] || {} : {};
+const finalHomeGoals = parseInt(finalPrediction.home, 10);
+const finalAwayGoals = parseInt(finalPrediction.away, 10);
+const finalHasScore =
+  !Number.isNaN(finalHomeGoals) && !Number.isNaN(finalAwayGoals);
+const finalIsDraw = finalHasScore && finalHomeGoals === finalAwayGoals;
+const finalClearWinner =
+  finalHasScore && !finalIsDraw
+    ? finalHomeGoals > finalAwayGoals
+      ? finalHomeTeam
+      : finalAwayTeam
+    : "";
+const championValue =
+  finalClearWinner || finalPrediction.champion || "";
   return (
     <div
       style={{
@@ -70,8 +88,8 @@ export default function KnockoutBracketCenter({
       </div>
 
       <select
-        value={predictions[groupMatches[0].id]?.champion || ""}
-        disabled={isMatchLocked ? isMatchLocked(groupMatches[0]) : false}
+        value={championValue}
+        disabled={Boolean(finalClearWinner) || (isMatchLocked ? isMatchLocked(groupMatches[0]) : false)}
         onChange={e =>
           handleScoreChange?.(groupMatches[0].id, "champion", e.target.value)
         }
@@ -87,8 +105,8 @@ export default function KnockoutBracketCenter({
         }}
       >
         <option value="">Select champion</option>
-        <option value={groupMatches[0].home_team}>{groupMatches[0].home_team}</option>
-        <option value={groupMatches[0].away_team}>{groupMatches[0].away_team}</option>
+        <option value={finalHomeTeam}>{finalHomeTeam}</option>
+<option value={finalAwayTeam}>{finalAwayTeam}</option>
       </select>
     </div>
   )}
