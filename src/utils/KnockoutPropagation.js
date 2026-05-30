@@ -56,6 +56,21 @@ export function getLosingTeam(match, prediction) {
 
   return "";
 }
+export function getActualAdvancingTeam(match) {
+  if (!match || !match.result_finalized) return "";
+
+  if (match.actual_advancing_team) return match.actual_advancing_team;
+
+  const homeGoals = Number(match.result_home_goals);
+  const awayGoals = Number(match.result_away_goals);
+
+  if (Number.isNaN(homeGoals) || Number.isNaN(awayGoals)) return "";
+
+  if (homeGoals > awayGoals) return match.home_team;
+  if (awayGoals > homeGoals) return match.away_team;
+
+  return "";
+}
 export const KNOCKOUT_PROPAGATION = {
   89: [74, 77],
   90: [73, 75],
@@ -132,6 +147,36 @@ if (Number(target) === 103) {
     awayTeam: getAdvancingTeam(awayDisplayMatch, awayPrediction),
   };
 }
+  });
+
+  return result;
+}
+export function buildActualPropagatedTeams(matches) {
+  const result = {};
+
+  const matchesByNumber = {};
+
+  matches.forEach(match => {
+    const num = getMatchNumber(match);
+
+    if (num !== null) {
+      matchesByNumber[num] = match;
+    }
+  });
+
+  Object.entries(KNOCKOUT_PROPAGATION).forEach(([target, sources]) => {
+    const [homeSource, awaySource] = sources;
+
+    const homeMatch = matchesByNumber[homeSource];
+    const awayMatch = matchesByNumber[awaySource];
+
+    const homeTeam = getActualAdvancingTeam(homeMatch);
+    const awayTeam = getActualAdvancingTeam(awayMatch);
+
+    result[target] = {
+      homeTeam,
+      awayTeam,
+    };
   });
 
   return result;

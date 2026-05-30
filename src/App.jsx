@@ -10,6 +10,7 @@ import Screen from './layout/Screen';
 import { TEAM_FLAGS } from './constants/teamFlags';
 import MatchPhaseToggle from "./components/MatchPhaseToggle";
 import KnockoutBracket from "./components/KnockoutBracket";
+import { buildActualPropagatedTeams } from "./utils/KnockoutPropagation";
 import RulesPage from "./pages/RulesPage";
 import PaymentPage from "./pages/PaymentPage";
 
@@ -305,6 +306,10 @@ const isAdmin = ADMIN_EMAILS.includes(
     : !String(m.stage || '').startsWith('Matchday')
 );
 
+    const actualPropagatedTeams =
+  matchPhase === 'knockout'
+    ? buildActualPropagatedTeams(visibleMatches)
+    : {};
 const groupTables = computeGroupTables(
   matchPhase === 'group' ? visibleMatches : [],
   predictions
@@ -845,6 +850,7 @@ if (currentView === 'rules') {
                       token={getStoredToken()}
                       tournamentId={currentTournament?.id}
                       matches={visibleMatches}
+                      actualPropagatedTeams={actualPropagatedTeams}
                       onAfterSave={refreshMatchesAndPredictions}
                     />
                   )}
@@ -871,6 +877,7 @@ if (currentView === 'rules') {
     token={getStoredToken()}
     tournamentId={currentTournament?.id}
     matches={visibleMatches}
+    actualPropagatedTeams={actualPropagatedTeams}
     onAfterSave={refreshMatchesAndPredictions}
   />
 )}

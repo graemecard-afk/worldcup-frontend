@@ -23,6 +23,7 @@ export default function AdminFinalizeMatchPanel({
   tournamentId,
   matches = [],
   onAfterSave,
+  actualPropagatedTeams = {},
 }) {
   const [matchId, setMatchId] = useState("");
   const [homeGoals, setHomeGoals] = useState("");
@@ -31,14 +32,22 @@ export default function AdminFinalizeMatchPanel({
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState("");
 
-  function formatMatchLabel(m) {
-    const home = m?.home_team ?? "";
-    const away = m?.away_team ?? "";
-    const stage = m?.stage ?? "";
-    const group = m?.group_name ?? "";
-    return `${stage}${group ? " " + group : ""}: ${home} vs ${away}`;
-  }
+ function formatMatchLabel(m) {
+  const matchNumber =
+    Number(String(m?.group_name ?? "").match(/\d+/)?.[0]) || null;
 
+  const propagated = matchNumber
+   ? actualPropagatedTeams[matchNumber]
+    : null;
+
+  const home = propagated?.homeTeam || m?.home_team || "";
+  const away = propagated?.awayTeam || m?.away_team || "";
+
+  const stage = m?.stage ?? "";
+  const group = m?.group_name ?? "";
+
+  return `${stage}${group ? " " + group : ""}: ${home} vs ${away}`;
+}
   async function handleSave() {
     if (!matchId) {
       setStatus("❌ Please select a match");
@@ -55,8 +64,8 @@ export default function AdminFinalizeMatchPanel({
 let resultAdvancingTeam = null;
 
 if (isKnockoutMatch) {
-  if (hg > ag) resultAdvancingTeam = selectedMatch.home_team;
-  if (ag > hg) resultAdvancingTeam = selectedMatch.away_team;
+ if (hg > ag) resultAdvancingTeam = selectedHomeTeam;
+if (ag > hg) resultAdvancingTeam = selectedAwayTeam;
   if (hg === ag) resultAdvancingTeam = actualAdvancingTeam || null;
 }
 
@@ -127,6 +136,15 @@ const knockoutStages = [
 ];
 
 const isKnockoutMatch = selectedMatch && knockoutStages.includes(selectedMatch.stage);
+const selectedMatchNumber =
+  Number(String(selectedMatch?.group_name ?? "").match(/\d+/)?.[0]) || null;
+
+const selectedPropagated = selectedMatchNumber
+  ? actualPropagatedTeams[selectedMatchNumber]
+  : null;
+
+const selectedHomeTeam = selectedPropagated?.homeTeam || selectedMatch?.home_team || "";
+const selectedAwayTeam = selectedPropagated?.awayTeam || selectedMatch?.away_team || "";
 const isDraw = homeGoals !== "" && awayGoals !== "" && Number(homeGoals) === Number(awayGoals);
 const needsAdvancingTeam = isKnockoutMatch && isDraw;
 
@@ -171,8 +189,8 @@ const needsAdvancingTeam = isKnockoutMatch && isDraw;
     disabled={saving || selectedMatch?.result_finalized}
   >
     <option value="">Advanced…</option>
-    <option value={selectedMatch.home_team}>{selectedMatch.home_team}</option>
-    <option value={selectedMatch.away_team}>{selectedMatch.away_team}</option>
+    <option value={selectedHomeTeam}>{selectedHomeTeam}</option>
+    <option value={selectedAwayTeam}>{selectedAwayTeam}</option>
   </select>
 )}
         <button onClick={handleSave} disabled={saving || selectedMatch?.result_finalized}>
