@@ -456,6 +456,7 @@ async function refreshMatchesAndPredictions() {
         p.predicted_away_goals === null || p.predicted_away_goals === undefined
           ? ''
           : String(p.predicted_away_goals),
+          advancing: p.predicted_advancing_team || '',
       status: 'saved',
       points: p.points ?? null,
     };
@@ -513,9 +514,12 @@ function handleAdvancingChange(matchId, value) {
     },
   }));
 }
-  async function savePrediction(match) {
+  async function savePrediction(match, override = {}) {
     if (!currentTournament) return;
-    const entry = predictions[match.id] || {};
+    const entry = {
+  ...(predictions[match.id] || {}),
+  ...override,
+};
 
     // If either field is empty, don't try to save yet
     if (
@@ -537,6 +541,16 @@ function handleAdvancingChange(matchId, value) {
     const home = parseInt(entry.home, 10);
     const away = parseInt(entry.away, 10);
     const advancing = entry.advancing || '';
+    if (home === away && !advancing) {
+  setPredictions(prev => ({
+    ...prev,
+    [match.id]: {
+      ...prev[match.id],
+      status: 'dirty',
+    },
+  }));
+  return;
+}
 
     if (Number.isNaN(home) || Number.isNaN(away)) {
       setPredictions(prev => ({

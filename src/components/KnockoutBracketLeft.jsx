@@ -30,6 +30,7 @@ export default function KnockoutBracketLeft({
   matches = [],
   predictions = {},
   propagatedTeams = {},
+  actualWinnersByMatchNumber = {},
   theme = "dark",
   formatKickoff,
   isMatchLocked,
@@ -37,6 +38,7 @@ export default function KnockoutBracketLeft({
   handleAdvancingChange,
   savePrediction,
   StatusBadge,
+  
 }) {
   return (
     <div
@@ -115,6 +117,7 @@ paddingLeft:
                 matches={groupMatches}
                 predictions={predictions}
                 propagatedTeams={propagatedTeams}
+                actualWinnersByMatchNumber={actualWinnersByMatchNumber}
                 theme={theme}
                 formatKickoff={formatKickoff}
                 isMatchLocked={isMatchLocked}

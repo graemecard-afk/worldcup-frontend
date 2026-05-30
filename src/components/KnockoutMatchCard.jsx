@@ -1,9 +1,10 @@
 import React from "react";
-
+import { KNOCKOUT_PROPAGATION } from "../utils/KnockoutPropagation";
 export default function KnockoutMatchCard({
   match,
   pred,
   propagatedTeams = {},
+  actualWinnersByMatchNumber = {},
   locked,
   theme,
   formatKickoff,
@@ -33,7 +34,26 @@ const displayHomeTeam =
 
 const displayAwayTeam =
   propagated?.awayTeam || m.away_team;
+const sourceMatches = matchNumber
+  ? KNOCKOUT_PROPAGATION[matchNumber]
+  : null;
 
+const homeSourceMatch = sourceMatches?.[0] || null;
+const awaySourceMatch = sourceMatches?.[1] || null;
+
+const actualHomeTeam = homeSourceMatch
+  ? actualWinnersByMatchNumber[homeSourceMatch] || ""
+  : "";
+
+const actualAwayTeam = awaySourceMatch
+  ? actualWinnersByMatchNumber[awaySourceMatch] || ""
+  : "";
+
+function renderTeamLine(predictedTeam, actualTeam) {
+  if (!actualTeam) return predictedTeam;
+  if (predictedTeam === actualTeam) return `✓ ${predictedTeam}`;
+  return `❌ ${predictedTeam} → ${actualTeam}`;
+}
   return (
     <div
       style={{
@@ -66,10 +86,31 @@ const displayAwayTeam =
         <span>{formatKickoff ? formatKickoff(m.kickoff_utc) : ""}</span>
       </div>
 
-      <div style={{ fontWeight: 700 }}>{displayHomeTeam}</div>
+      <div
+  style={{
+    fontWeight: 700,
+    color: actualHomeTeam
+      ? displayHomeTeam === actualHomeTeam
+        ? "#22c55e"
+        : "#ef4444"
+      : undefined,
+  }}
+>
+  {renderTeamLine(displayHomeTeam, actualHomeTeam)}
+</div>
       <div style={{ opacity: 0.7, fontSize: "0.75rem" }}>v</div>
-      <div style={{ fontWeight: 700, marginBottom: "8px" }}>
-  {displayAwayTeam}
+      <div
+  style={{
+    fontWeight: 700,
+    marginBottom: "8px",
+    color: actualAwayTeam
+      ? displayAwayTeam === actualAwayTeam
+        ? "#22c55e"
+        : "#ef4444"
+      : undefined,
+  }}
+>
+  {renderTeamLine(displayAwayTeam, actualAwayTeam)}
 </div>
 
       <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "6px" }}>
@@ -120,8 +161,12 @@ const displayAwayTeam =
     <select
       value={pred.advancing || ""}
       disabled={locked}
-      onChange={e => handleAdvancingChange?.(m.id, e.target.value)}
-      onBlur={() => savePrediction?.(m)}
+      onChange={e => {
+  const value = e.target.value;
+  handleAdvancingChange?.(m.id, value);
+  savePrediction?.(m, { advancing: value });
+}}
+      onBlur={undefined}
       style={{
         width: "100%",
         padding: "2px 4px",

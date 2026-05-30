@@ -71,6 +71,19 @@ export function getActualAdvancingTeam(match) {
 
   return "";
 }
+export function buildActualWinnersByMatchNumber(matches) {
+  const result = {};
+
+  matches.forEach(match => {
+    const num = getMatchNumber(match);
+
+    if (num !== null) {
+      result[num] = getActualAdvancingTeam(match);
+    }
+  });
+
+  return result;
+}
 export const KNOCKOUT_PROPAGATION = {
   89: [74, 77],
   90: [73, 75],

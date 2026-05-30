@@ -22,6 +22,7 @@ export default function KnockoutBracketCenter({
   matches = [],
   predictions = {},
   propagatedTeams = {},
+  actualWinnersByMatchNumber = {},
   theme = "dark",
   formatKickoff,
   isMatchLocked,
@@ -135,6 +136,7 @@ const thirdPlaceValue =
                 matches={groupMatches}
                 predictions={predictions}
                 propagatedTeams={propagatedTeams}
+                actualWinnersByMatchNumber={actualWinnersByMatchNumber}
                 theme={theme}
                 formatKickoff={formatKickoff}
                 isMatchLocked={isMatchLocked}

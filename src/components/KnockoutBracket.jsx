@@ -2,7 +2,10 @@ import React from "react";
 import KnockoutBracketLeft from "./KnockoutBracketLeft";
 import KnockoutBracketCenter from "./KnockoutBracketCenter";
 import KnockoutBracketRight from "./KnockoutBracketRight";
-import { buildPropagatedTeams } from "../utils/KnockoutPropagation";
+import {
+  buildPropagatedTeams,
+  buildActualWinnersByMatchNumber,
+} from "../utils/KnockoutPropagation";
 
 export default function KnockoutBracket({
   matches = [],
@@ -16,6 +19,7 @@ export default function KnockoutBracket({
   StatusBadge,
 }) {
   const propagatedTeams = buildPropagatedTeams(matches, predictions);
+  const actualWinnersByMatchNumber = buildActualWinnersByMatchNumber(matches);
   const sharedProps = {
     matches,
     predictions,
@@ -25,6 +29,7 @@ export default function KnockoutBracket({
     isMatchLocked,
     handleScoreChange,
     handleAdvancingChange,
+    actualWinnersByMatchNumber,
     savePrediction,
     StatusBadge,
   };
