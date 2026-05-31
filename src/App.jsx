@@ -806,10 +806,14 @@ if (currentView === 'rules') {
       setMatchPhase('knockout');
       loadTournamentAndMatches();
     }}
-    onLoadAdmin={() => {
-      setMatchPhase('admin');
-      loadTournamentAndMatches();
-    }}
+          onLoadAdmin={
+        isAdmin
+          ? () => {
+              setMatchPhase('admin');
+              loadTournamentAndMatches();
+            }
+          : null
+      }
   />
 
         {loadingData && <Sub>Loading tournament data…</Sub>}

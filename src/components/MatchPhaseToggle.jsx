@@ -50,18 +50,20 @@ export default function MatchPhaseToggle({
       >
         Load Knockout Phase matches
       </button>
-      <button
-  onClick={onLoadAdmin}
-  style={{
-    ...baseButton,
-    background:
-      matchPhase === "admin"
-        ? "linear-gradient(135deg, #059669 0%, #047857 40%, #059669 100%)"
-        : "rgba(71,85,105,0.9)",
-  }}
->
-  Admin
-</button>
+              {onLoadAdmin && (
+          <button
+            onClick={onLoadAdmin}
+            style={{
+              ...baseButton,
+              background:
+                matchPhase === "admin"
+                  ? "linear-gradient(135deg, #059669 0%, #047857 40%, #059669 100%)"
+                  : "rgba(71,85,105,0.9)",
+            }}
+          >
+            Admin
+          </button>
+        )}
     </div>
   );
 }
