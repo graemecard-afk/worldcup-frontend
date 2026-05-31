@@ -3,6 +3,7 @@ import { apiGet, apiPost, setAuthToken, getStoredToken } from './api/client.js';
 import LeaderboardTable from "./components/LeaderboardTable";
 import AdminFinalizeMatchPanel from "./components/AdminFinalizeMatchPanel";
 import AdminKnockoutTeamPanel from "./components/AdminKnockoutTeamPanel";
+import AdminUserPaymentsPanel from "./components/AdminUserPaymentsPanel";
 import LeaderboardPage from "./pages/Leaderboard";
 import AuthPage from "./pages/Auth";
 import NavDrawer from './components/NavDrawer';
@@ -860,6 +861,8 @@ if (currentView === 'rules') {
     matches={visibleMatches}
     onAfterSave={refreshMatchesAndPredictions}
   />
+
+  <AdminUserPaymentsPanel />
 </div>
 ) : matchPhase === 'knockout' ? (
                 <>

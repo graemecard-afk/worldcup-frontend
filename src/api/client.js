@@ -50,4 +50,19 @@ export async function apiPost(path, body) {
   if (!res.ok) await handleError(res, 'POST', path);
   return res.json();
 }
+export async function apiPatch(path, body) {
+  const token = getStoredToken();
+
+  const res = await fetch(`${API_BASE}${path}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify(body ?? {}),
+  });
+
+  if (!res.ok) await handleError(res, 'PATCH', path);
+  return res.json();
+}
 
