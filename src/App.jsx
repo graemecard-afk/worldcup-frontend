@@ -341,6 +341,9 @@ const groupTables = computeGroupTables(
   function toggleTheme() {
     setTheme(t => (t === 'dark' ? 'light' : 'dark'));
   }
+    function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((email || '').trim());
+  }
 
   async function handleAuthSubmit(e) {
     e.preventDefault();
@@ -348,6 +351,14 @@ const groupTables = computeGroupTables(
 
     try {
       if (mode === 'register') {
+                  if (!isValidEmail(form.email)) {
+            setAuthError('Please enter a valid email address.');
+            return;
+          }
+                    if ((form.password || '').length < 8) {
+            setAuthError('Password must be at least 8 characters long.');
+            return;
+          }
         // Front-end pool code check
         if (form.poolCode.trim().toUpperCase() !== POOL_CODE.toUpperCase()) {
           setAuthError(
