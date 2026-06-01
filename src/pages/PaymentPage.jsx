@@ -23,8 +23,9 @@ export default function PaymentPage() {
     background: "rgba(34, 197, 94, 0.08)",
   }}
 >
-  You will only be given a code to enter the pool once payment has been
-  received.
+      Predictions can be entered before payment is received. However, from three
+    days before the start of the tournament, unpaid entrants will be unable to
+    save new or updated predictions until payment has been confirmed.
 </p>
 
      <p>
@@ -49,9 +50,9 @@ export default function PaymentPage() {
       <h2 style={{ marginTop: 32 }}>Entrance fee</h2>
 
       <p>
-        <strong>USD$25.00</strong>git add src/pages/PaymentPage.jsx
-        <br />
-        if paying with PayPal from within the USA
+                 <strong>USD$25.00</strong>
+          <br />
+          if paying with PayPal from within the USA
       </p>
 
       <p>
@@ -96,8 +97,9 @@ export default function PaymentPage() {
     background: "rgba(34, 197, 94, 0.08)",
   }}
 >
-  You will only be given a code to enter the pool once payment has been
-  received.
+      Predictions can be entered before payment is received. However, from three
+    days before the start of the tournament, unpaid entrants will be unable to
+    save new or updated predictions until payment has been confirmed.
 </p>
     </div>
   );
