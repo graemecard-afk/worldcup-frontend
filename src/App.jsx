@@ -553,7 +553,7 @@ function handleAdvancingChange(matchId, value) {
     const home = parseInt(entry.home, 10);
     const away = parseInt(entry.away, 10);
     const advancing = entry.advancing || '';
-    if (home === away && !advancing) {
+          if (matchPhase === 'knockout' && home === away && !advancing) {
   setPredictions(prev => ({
     ...prev,
     [match.id]: {
