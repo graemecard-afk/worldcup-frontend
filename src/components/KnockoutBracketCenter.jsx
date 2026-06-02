@@ -48,7 +48,7 @@ const finalClearWinner =
       : finalAwayTeam
     : "";
 const championValue =
-  finalClearWinner || finalPrediction.champion || "";
+  finalClearWinner || finalPrediction.advancing || "";
   const thirdPlaceMatch = matches.find(m => getMatchNumber(m) === 103);
 const thirdPlaceTeams = thirdPlaceMatch ? propagatedTeams[103] : null;
 const thirdPlaceHomeTeam = thirdPlaceTeams?.homeTeam || thirdPlaceMatch?.home_team || "";
@@ -66,8 +66,8 @@ const thirdPlaceClearWinner =
       ? thirdPlaceHomeTeam
       : thirdPlaceAwayTeam
     : "";
-const thirdPlaceValue =
-  thirdPlaceClearWinner || thirdPlacePrediction.thirdPlace || "";
+  const thirdPlaceValue =
+    thirdPlaceClearWinner || thirdPlacePrediction.advancing || "";
   return (
     <div
       style={{
@@ -111,7 +111,7 @@ const thirdPlaceValue =
         value={championValue}
         disabled={Boolean(finalClearWinner) || (isMatchLocked ? isMatchLocked(groupMatches[0]) : false)}
         onChange={e =>
-          handleScoreChange?.(groupMatches[0].id, "champion", e.target.value)
+         handleAdvancingChange?.(groupMatches[0].id, e.target.value)
         }
         onBlur={() => savePrediction?.(groupMatches[0])}
         style={{
@@ -165,7 +165,7 @@ const thirdPlaceValue =
           value={thirdPlaceValue}
           disabled={Boolean(thirdPlaceClearWinner) || (isMatchLocked ? isMatchLocked(groupMatches[0]) : false)}
           onChange={e =>
-            handleScoreChange?.(groupMatches[0].id, "thirdPlace", e.target.value)
+          handleAdvancingChange?.(groupMatches[0].id, e.target.value)
           }
           onBlur={() => savePrediction?.(groupMatches[0])}
           style={{

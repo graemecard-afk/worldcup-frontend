@@ -502,20 +502,25 @@ async function refreshMatchesAndPredictions() {
   }
 
   function handleScoreChange(matchId, field, value) {
-    // Keep it numeric or empty
     const clean =
-      value === '' ? '' : value.replace(/[^\d]/g, '').slice(0, 2); // 0–99
+      value === '' ? '' : value.replace(/[^\d]/g, '').slice(0, 2);
 
-    setPredictions(prev => ({
-      ...prev,
-      [matchId]: {
-        ...prev[matchId],
-        home: field === 'home' ? clean : prev[matchId]?.home ?? '',
-        away: field === 'away' ? clean : prev[matchId]?.away ?? '',
-        status: 'dirty',
-        points: prev[matchId]?.points ?? null,
-      },
-    }));
+    setPredictions(prev => {
+      const existing = prev[matchId] || {};
+
+      return {
+        ...prev,
+        [matchId]: {
+          ...existing,
+          home: field === 'home' ? clean : existing.home ?? '',
+          away: field === 'away' ? clean : existing.away ?? '',
+          champion: field === 'champion' ? value : existing.champion ?? '',
+          thirdPlace: field === 'thirdPlace' ? value : existing.thirdPlace ?? '',
+          status: 'dirty',
+          points: existing.points ?? null,
+        },
+      };
+    });
   }
 function handleAdvancingChange(matchId, value) {
   setPredictions(prev => ({
