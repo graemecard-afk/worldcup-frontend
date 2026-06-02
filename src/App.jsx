@@ -436,6 +436,8 @@ const groupTables = computeGroupTables(
 
         
         setPredictions(map);
+                  const leaderboard = await loadLeaderboard(first.id);
+          setLeaderboardRows(leaderboard || []);
       } catch (err) {
         console.error(
           'Failed to load existing predictions (OK if endpoint not implemented yet):',
@@ -730,6 +732,37 @@ if (currentView === 'rules') {
 }
 
   // Logged-in view
+    const myGroupStagePoints = Object.values(predictions || {}).reduce(
+    (sum, p) => sum + (Number(p?.points) || 0),
+    0
+  );
+
+  const myTotalPoints = myGroupStagePoints;
+
+  const rankedLeaderboardRows = [...(leaderboardRows || [])]
+    .map(r => ({
+      ...r,
+      _points: Number(r?.total_points ?? 0),
+    }))
+    .sort((a, b) => {
+      if (b._points !== a._points) return b._points - a._points;
+      return String(a?.name || '').localeCompare(String(b?.name || ''));
+    });
+
+  let myRankLabel = '—';
+  let lastRankPoints = null;
+  let currentRank = 0;
+
+  rankedLeaderboardRows.forEach((row, idx) => {
+    if (lastRankPoints === null || row._points !== lastRankPoints) {
+      currentRank = idx + 1;
+      lastRankPoints = row._points;
+    }
+
+    if (row.user_id === user?.id) {
+      myRankLabel = String(currentRank);
+    }
+  });
   return (
     <Screen
   user={user}
@@ -756,6 +789,42 @@ if (currentView === 'rules') {
             <Sub>Welcome, {user.name}</Sub>
           </div>
         </div>
+                  <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+              gap: '10px',
+              marginBottom: '16px',
+              padding: '12px',
+              borderRadius: '12px',
+              border: theme === 'dark'
+                ? '1px solid rgba(148,163,184,0.35)'
+                : '1px solid rgba(15,23,42,0.15)',
+              background: theme === 'dark'
+                ? 'rgba(15,23,42,0.72)'
+                : 'rgba(255,255,255,0.88)',
+            }}
+          >
+            <div>
+              <div style={{ fontSize: '0.75rem', opacity: 0.75 }}>Group Stage</div>
+              <div style={{ fontSize: '1.25rem', fontWeight: 800 }}>{myGroupStagePoints}</div>
+            </div>
+
+            <div>
+              <div style={{ fontSize: '0.75rem', opacity: 0.75 }}>Knockouts</div>
+              <div style={{ fontSize: '1.25rem', fontWeight: 800 }}>0</div>
+            </div>
+
+            <div>
+              <div style={{ fontSize: '0.75rem', opacity: 0.75 }}>Total</div>
+              <div style={{ fontSize: '1.25rem', fontWeight: 800 }}>{myTotalPoints}</div>
+            </div>
+
+            <div>
+              <div style={{ fontSize: '0.75rem', opacity: 0.75 }}>Rank</div>
+              <div style={{ fontSize: '1.25rem', fontWeight: 800 }}>{myRankLabel}</div>
+            </div>
+          </div>
 
         <div
           style={{
