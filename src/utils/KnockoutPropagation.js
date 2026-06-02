@@ -71,6 +71,16 @@ export function getActualAdvancingTeam(match) {
 
   return "";
 }
+export function getActualLosingTeam(match) {
+  if (!match || !match.result_finalized) return "";
+
+  const winner = getActualAdvancingTeam(match);
+
+  if (winner === match.home_team) return match.away_team;
+  if (winner === match.away_team) return match.home_team;
+
+  return "";
+}
 export function buildActualWinnersByMatchNumber(matches) {
   const result = {};
 
@@ -183,13 +193,17 @@ export function buildActualPropagatedTeams(matches) {
     const homeMatch = matchesByNumber[homeSource];
     const awayMatch = matchesByNumber[awaySource];
 
-    const homeTeam = getActualAdvancingTeam(homeMatch);
-    const awayTeam = getActualAdvancingTeam(awayMatch);
-
-    result[target] = {
-      homeTeam,
-      awayTeam,
-    };
+          if (Number(target) === 103) {
+        result[target] = {
+          homeTeam: getActualLosingTeam(homeMatch),
+          awayTeam: getActualLosingTeam(awayMatch),
+        };
+      } else {
+        result[target] = {
+          homeTeam: getActualAdvancingTeam(homeMatch),
+          awayTeam: getActualAdvancingTeam(awayMatch),
+        };
+      }
   });
 
   return result;
