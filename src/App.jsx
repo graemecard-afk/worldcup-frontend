@@ -737,12 +737,15 @@ if (currentView === 'rules') {
 }
 
   // Logged-in view
-    const myGroupStagePoints = Object.values(predictions || {}).reduce(
-    (sum, p) => sum + (Number(p?.points) || 0),
-    0
-  );
+       const myLeaderboardRow = (leaderboardRows || []).find(
+      r => r.user_id === user?.id
+    );
 
-  const myTotalPoints = myGroupStagePoints;
+    const myGroupStagePoints = Number(myLeaderboardRow?.group_stage_points ?? 0);
+    const myKnockoutPoints = Number(myLeaderboardRow?.knockout_points ?? 0);
+    const myTotalPoints = Number(
+      myLeaderboardRow?.total_points ?? myGroupStagePoints + myKnockoutPoints
+    );
 
   const rankedLeaderboardRows = [...(leaderboardRows || [])]
     .map(r => ({
@@ -817,7 +820,7 @@ if (currentView === 'rules') {
 
             <div>
               <div style={{ fontSize: '0.75rem', opacity: 0.75 }}>Knockouts</div>
-              <div style={{ fontSize: '1.25rem', fontWeight: 800 }}>0</div>
+                              <div style={{ fontSize: '1.25rem', fontWeight: 800 }}>{myKnockoutPoints}</div>
             </div>
 
             <div>
@@ -1414,9 +1417,9 @@ function LeaderboardTable_OLD({ rows = [], theme = 'dark' }) {
   // 1) Normalise + compute columns (knockouts are placeholder for now)
   const normalised = (rows || []).map(r => {
     const name = r?.name || r?.username || '—';
-    const groupStagePoints = Number(r?.total_points ?? 0);
-    const knockoutPoints = 0; // placeholder
-    const grandTotal = groupStagePoints + knockoutPoints;
+          const groupStagePoints = Number(r?.group_stage_points ?? 0);
+      const knockoutPoints = Number(r?.knockout_points ?? 0);
+      const grandTotal = Number(r?.total_points ?? groupStagePoints + knockoutPoints);
 
     return {
       ...r,

@@ -6,9 +6,9 @@ export default function LeaderboardTable({ rows = [], theme = "dark" }) {
   // 1) Normalise + compute columns (match App.jsx logic exactly)
   const normalised = (rows || []).map(r => {
     const name = r?.name || r?.username || "—";
-    const groupStagePoints = Number(r?.total_points ?? 0);
-    const knockoutPoints = 0; // placeholder (matches your App.jsx)
-    const grandTotal = groupStagePoints + knockoutPoints;
+          const groupStagePoints = Number(r?.group_stage_points ?? 0);
+      const knockoutPoints = Number(r?.knockout_points ?? 0);
+      const grandTotal = Number(r?.total_points ?? groupStagePoints + knockoutPoints);
 
     return {
       ...r,
