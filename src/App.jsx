@@ -928,6 +928,25 @@ if (currentView === 'rules') {
             >
               Enter scores and tap away from the field – your prediction will
               autosave for that match.
+                            {matchPhase === 'group' && isAdmin && (
+                <div
+                  style={{
+                    marginBottom: '12px',
+                    padding: '12px',
+                    borderRadius: '12px',
+                    border: '1px solid rgba(148,163,184,0.35)',
+                  }}
+                >
+                  <AdminFinalizeMatchPanel
+                    apiBaseUrl={''}
+                    token={getStoredToken()}
+                    tournamentId={currentTournament?.id}
+                    matches={visibleMatches}
+                    actualPropagatedTeams={actualPropagatedTeams}
+                    onAfterSave={refreshMatchesAndPredictions}
+                  />
+                </div>
+              )}
             </p>
                           {matchPhase === 'admin' ? (
  <div
@@ -983,22 +1002,7 @@ if (currentView === 'rules') {
       : 'rgba(255,255,255,0.95)',
               }}
             >
-              
-
-             {isAdmin && (
-  <AdminFinalizeMatchPanel
-    apiBaseUrl={''}
-    token={getStoredToken()}
-    tournamentId={currentTournament?.id}
-    matches={visibleMatches}
-    actualPropagatedTeams={actualPropagatedTeams}
-    onAfterSave={refreshMatchesAndPredictions}
-  />
-)}
-
-
-
-              
+ 
               {visibleMatches.map(m => {
                 const pred = predictions[m.id] || {
                   home: '',
