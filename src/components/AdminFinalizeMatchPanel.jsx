@@ -125,6 +125,34 @@ async function handleUnfinalise() {
     setSaving(false);
   }
 }
+async function handleUnfinaliseAllKnockouts() {
+  const confirmed = window.confirm(
+    "Unfinalise all knockout matches? This will clear all knockout results."
+  );
+
+  if (!confirmed) return;
+
+  setSaving(true);
+  setStatus("");
+
+  try {
+    const result = await apiPost("/matches/knockouts/unfinalise-all");
+
+    setStatus(`✅ Unfinalised ${result.count ?? 0} knockout matches. Refreshing data…`);
+    setHomeGoals("");
+    setAwayGoals("");
+    setActualAdvancingTeam("");
+    setMatchId("");
+
+    if (onAfterSave) {
+      await onAfterSave();
+    }
+  } catch (e) {
+    setStatus(`❌ Unfinalise all failed: ${e.message}`);
+  } finally {
+    setSaving(false);
+  }
+}
 const selectedMatch = matches.find(m => String(m.id) === String(matchId));
 const knockoutStages = [
   "Round of 32",
@@ -203,6 +231,13 @@ const needsAdvancingTeam = isKnockoutMatch && isDraw;
   style={{ marginLeft: 8 }}
 >
   Unfinalise
+</button>
+<button
+  onClick={handleUnfinaliseAllKnockouts}
+  disabled={saving}
+  style={{ marginLeft: 8, color: "#ef4444" }}
+>
+  Unfinalise all knockouts
 </button>
 
       </div>
