@@ -34,6 +34,15 @@ const displayHomeTeam =
 
 const displayAwayTeam =
   propagated?.awayTeam || m.away_team;
+  function getAdvancingOverride() {
+  const home = parseInt(pred.home, 10);
+  const away = parseInt(pred.away, 10);
+
+  if (Number.isNaN(home) || Number.isNaN(away)) return {};
+  if (home > away) return { advancing: displayHomeTeam };
+  if (away > home) return { advancing: displayAwayTeam };
+  return {};
+}
 const sourceMatches = matchNumber
   ? KNOCKOUT_PROPAGATION[matchNumber]
   : null;
@@ -122,7 +131,7 @@ function renderTeamLine(predictedTeam, actualTeam) {
           value={pred.home}
           disabled={locked}
           onChange={e => handleScoreChange?.(m.id, "home", e.target.value)}
-          onBlur={() => savePrediction?.(m)}
+          onBlur={() => savePrediction?.(m, getAdvancingOverride())}
           style={{
             width: "42px",
             padding: "4px 6px",
@@ -143,7 +152,7 @@ function renderTeamLine(predictedTeam, actualTeam) {
           value={pred.away}
           disabled={locked}
           onChange={e => handleScoreChange?.(m.id, "away", e.target.value)}
-          onBlur={() => savePrediction?.(m)}
+          onBlur={() => savePrediction?.(m, getAdvancingOverride())}
           style={{
             width: "42px",
             padding: "4px 6px",
