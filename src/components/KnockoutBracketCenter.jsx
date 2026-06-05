@@ -50,10 +50,29 @@ const finalClearWinner =
     : "";
 const championValue =
   finalClearWinner || finalPrediction.advancing || "";
-  const thirdPlaceMatch = matches.find(m => getMatchNumber(m) === 103);
-const thirdPlaceTeams = thirdPlaceMatch ? actualPropagatedTeams[103] : null;
-const thirdPlaceHomeTeam = thirdPlaceTeams?.homeTeam || thirdPlaceMatch?.home_team || "";
-const thirdPlaceAwayTeam = thirdPlaceTeams?.awayTeam || thirdPlaceMatch?.away_team || "";
+   const thirdPlaceMatch = matches.find(m => getMatchNumber(m) === 103);
+
+  const semiFinalTeams = [
+    actualPropagatedTeams[101]?.homeTeam,
+    actualPropagatedTeams[101]?.awayTeam,
+    actualPropagatedTeams[102]?.homeTeam,
+    actualPropagatedTeams[102]?.awayTeam,
+  ].filter(Boolean);
+
+  const finalists = [
+    actualPropagatedTeams[104]?.homeTeam,
+    actualPropagatedTeams[104]?.awayTeam,
+  ].filter(Boolean);
+
+  const thirdPlaceTeamsFromSemis = semiFinalTeams.filter(
+    team => !finalists.includes(team)
+  );
+
+  const thirdPlaceHomeTeam =
+    thirdPlaceTeamsFromSemis[0] || thirdPlaceMatch?.home_team || "";
+
+  const thirdPlaceAwayTeam =
+    thirdPlaceTeamsFromSemis[1] || thirdPlaceMatch?.away_team || "";
 const thirdPlacePrediction = thirdPlaceMatch ? predictions[thirdPlaceMatch.id] || {} : {};
 const thirdPlaceHomeGoals = parseInt(thirdPlacePrediction.home, 10);
 const thirdPlaceAwayGoals = parseInt(thirdPlacePrediction.away, 10);
