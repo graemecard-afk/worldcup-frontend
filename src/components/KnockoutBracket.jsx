@@ -4,6 +4,7 @@ import KnockoutBracketCenter from "./KnockoutBracketCenter";
 import KnockoutBracketRight from "./KnockoutBracketRight";
 import {
   buildPropagatedTeams,
+  buildActualPropagatedTeams,
   buildActualWinnersByMatchNumber,
 } from "../utils/KnockoutPropagation";
 
@@ -19,11 +20,13 @@ export default function KnockoutBracket({
   StatusBadge,
 }) {
   const propagatedTeams = buildPropagatedTeams(matches, predictions);
+  const actualPropagatedTeams = buildActualPropagatedTeams(matches);
   const actualWinnersByMatchNumber = buildActualWinnersByMatchNumber(matches);
   const sharedProps = {
     matches,
     predictions,
     propagatedTeams,
+    actualPropagatedTeams,
     theme,
     formatKickoff,
     isMatchLocked,

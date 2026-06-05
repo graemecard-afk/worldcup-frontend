@@ -22,6 +22,7 @@ export default function KnockoutBracketCenter({
   matches = [],
   predictions = {},
   propagatedTeams = {},
+  actualPropagatedTeams = {},
   actualWinnersByMatchNumber = {},
   theme = "dark",
   formatKickoff,
@@ -50,7 +51,7 @@ const finalClearWinner =
 const championValue =
   finalClearWinner || finalPrediction.advancing || "";
   const thirdPlaceMatch = matches.find(m => getMatchNumber(m) === 103);
-const thirdPlaceTeams = thirdPlaceMatch ? propagatedTeams[103] : null;
+const thirdPlaceTeams = thirdPlaceMatch ? actualPropagatedTeams[103] : null;
 const thirdPlaceHomeTeam = thirdPlaceTeams?.homeTeam || thirdPlaceMatch?.home_team || "";
 const thirdPlaceAwayTeam = thirdPlaceTeams?.awayTeam || thirdPlaceMatch?.away_team || "";
 const thirdPlacePrediction = thirdPlaceMatch ? predictions[thirdPlaceMatch.id] || {} : {};
