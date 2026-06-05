@@ -155,7 +155,17 @@ const thirdPlaceClearWinner =
                 round={group.round}
                 matches={groupMatches}
                 predictions={predictions}
-                propagatedTeams={propagatedTeams}
+                propagatedTeams={
+  group.round === "Third-place Play-off"
+    ? {
+        ...propagatedTeams,
+        103: {
+          homeTeam: thirdPlaceHomeTeam,
+          awayTeam: thirdPlaceAwayTeam,
+        },
+      }
+    : propagatedTeams
+}
                 actualWinnersByMatchNumber={actualWinnersByMatchNumber}
                 theme={theme}
                 formatKickoff={formatKickoff}
