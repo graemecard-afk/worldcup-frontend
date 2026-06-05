@@ -166,7 +166,15 @@ const thirdPlaceClearWinner =
       }
     : propagatedTeams
 }
-                actualWinnersByMatchNumber={actualWinnersByMatchNumber}
+                actualWinnersByMatchNumber={
+  group.round === "Third-place Play-off"
+    ? {
+        ...actualWinnersByMatchNumber,
+        101: thirdPlaceHomeTeam,
+        102: thirdPlaceAwayTeam,
+      }
+    : actualWinnersByMatchNumber
+}
                 theme={theme}
                 formatKickoff={formatKickoff}
                 isMatchLocked={isMatchLocked}
