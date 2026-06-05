@@ -212,6 +212,20 @@ const thirdPlaceClearWinner =
          <option value={thirdPlaceHomeTeam}>{thirdPlaceHomeTeam}</option>
          <option value={thirdPlaceAwayTeam}>{thirdPlaceAwayTeam}</option>
         </select>
+        <div
+  style={{
+    marginTop: "8px",
+    fontSize: "0.62rem",
+    lineHeight: 1.35,
+    opacity: 0.8,
+    wordBreak: "break-word",
+  }}
+>
+  <div>DEBUG SF: {semiFinalTeams.join(" | ")}</div>
+  <div>DEBUG Final: {finalists.join(" | ")}</div>
+  <div>DEBUG 3rd: {thirdPlaceTeamsFromSemis.join(" | ")}</div>
+  <div>DEBUG card: {thirdPlaceHomeTeam} v {thirdPlaceAwayTeam}</div>
+</div>
       </div>
     )}
             </div>
