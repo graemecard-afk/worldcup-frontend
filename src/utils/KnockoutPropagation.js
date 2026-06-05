@@ -187,21 +187,37 @@ export function buildActualPropagatedTeams(matches) {
     }
   });
 
-  Object.entries(KNOCKOUT_PROPAGATION).forEach(([target, sources]) => {
-    const [homeSource, awaySource] = sources;
+      Object.entries(KNOCKOUT_PROPAGATION).forEach(([target, sources]) => {
+      const [homeSource, awaySource] = sources;
 
-    const homeMatch = matchesByNumber[homeSource];
-    const awayMatch = matchesByNumber[awaySource];
+      const homeMatch = matchesByNumber[homeSource];
+      const awayMatch = matchesByNumber[awaySource];
 
-          if (Number(target) === 103) {
+      const homeDisplayMatch = homeMatch
+        ? {
+            ...homeMatch,
+            home_team: result[homeSource]?.homeTeam || homeMatch.home_team,
+            away_team: result[homeSource]?.awayTeam || homeMatch.away_team,
+          }
+        : null;
+
+      const awayDisplayMatch = awayMatch
+        ? {
+            ...awayMatch,
+            home_team: result[awaySource]?.homeTeam || awayMatch.home_team,
+            away_team: result[awaySource]?.awayTeam || awayMatch.away_team,
+          }
+        : null;
+
+      if (Number(target) === 103) {
         result[target] = {
-          homeTeam: getActualLosingTeam(homeMatch),
-          awayTeam: getActualLosingTeam(awayMatch),
+          homeTeam: getActualLosingTeam(homeDisplayMatch),
+          awayTeam: getActualLosingTeam(awayDisplayMatch),
         };
       } else {
         result[target] = {
-          homeTeam: getActualAdvancingTeam(homeMatch),
-          awayTeam: getActualAdvancingTeam(awayMatch),
+          homeTeam: getActualAdvancingTeam(homeDisplayMatch),
+          awayTeam: getActualAdvancingTeam(awayDisplayMatch),
         };
       }
   });
