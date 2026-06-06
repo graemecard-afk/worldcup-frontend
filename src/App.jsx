@@ -595,6 +595,8 @@ function handleAdvancingChange(matchId, value) {
         predicted_home_goals: home,
         predicted_away_goals: away,
         predicted_advancing_team: advancing,
+        predicted_home_team: entry.predictedHomeTeam || null,
+        predicted_away_team: entry.predictedAwayTeam || null,
       });
 
       setPredictions(prev => ({

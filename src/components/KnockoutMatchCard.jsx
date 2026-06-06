@@ -131,7 +131,13 @@ function renderTeamLine(predictedTeam, actualTeam) {
           value={pred.home}
           disabled={locked}
           onChange={e => handleScoreChange?.(m.id, "home", e.target.value)}
-          onBlur={() => savePrediction?.(m, getAdvancingOverride())}
+          onBlur={() =>
+  savePrediction?.(m, {
+    ...getAdvancingOverride(),
+    predictedHomeTeam: displayHomeTeam,
+    predictedAwayTeam: displayAwayTeam,
+  })
+}
           style={{
             width: "42px",
             padding: "4px 6px",
@@ -152,7 +158,13 @@ function renderTeamLine(predictedTeam, actualTeam) {
           value={pred.away}
           disabled={locked}
           onChange={e => handleScoreChange?.(m.id, "away", e.target.value)}
-          onBlur={() => savePrediction?.(m, getAdvancingOverride())}
+          onBlur={() =>
+  savePrediction?.(m, {
+    ...getAdvancingOverride(),
+    predictedHomeTeam: displayHomeTeam,
+    predictedAwayTeam: displayAwayTeam,
+  })
+}
           style={{
             width: "42px",
             padding: "4px 6px",
@@ -173,7 +185,11 @@ function renderTeamLine(predictedTeam, actualTeam) {
       onChange={e => {
   const value = e.target.value;
   handleAdvancingChange?.(m.id, value);
-  savePrediction?.(m, { advancing: value });
+  savePrediction?.(m, {
+  advancing: value,
+  predictedHomeTeam: displayHomeTeam,
+  predictedAwayTeam: displayAwayTeam,
+});
 }}
       onBlur={undefined}
       style={{
