@@ -4,6 +4,7 @@ export default function KnockoutMatchCard({
   match,
   pred,
   propagatedTeams = {},
+  actualPropagatedTeams = {},
   actualWinnersByMatchNumber = {},
   locked,
   theme,
@@ -24,7 +25,7 @@ const requiresAdvancingSelection =
   pred.home === pred.away;
   const matchNumber =
   Number(String(m.group_name ?? "").match(/\d+/)?.[0]) || null;
-
+  
 const propagated = matchNumber
   ? propagatedTeams[matchNumber]
   : null;
@@ -50,13 +51,23 @@ const sourceMatches = matchNumber
 const homeSourceMatch = sourceMatches?.[0] || null;
 const awaySourceMatch = sourceMatches?.[1] || null;
 
-const actualHomeTeam = homeSourceMatch
-  ? actualWinnersByMatchNumber[homeSourceMatch] || ""
-  : "";
+const actualPropagated = matchNumber
+  ? actualPropagatedTeams[matchNumber]
+  : null;
 
-const actualAwayTeam = awaySourceMatch
-  ? actualWinnersByMatchNumber[awaySourceMatch] || ""
-  : "";
+const actualHomeTeam =
+  matchNumber === 103
+    ? actualPropagated?.homeTeam || ""
+    : homeSourceMatch
+      ? actualWinnersByMatchNumber[homeSourceMatch] || ""
+      : "";
+
+const actualAwayTeam =
+  matchNumber === 103
+    ? actualPropagated?.awayTeam || ""
+    : awaySourceMatch
+      ? actualWinnersByMatchNumber[awaySourceMatch] || ""
+      : "";
 
 function renderTeamLine(predictedTeam, actualTeam) {
   if (!actualTeam) return predictedTeam;

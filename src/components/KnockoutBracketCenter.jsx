@@ -155,26 +155,9 @@ const thirdPlaceClearWinner =
                 round={group.round}
                 matches={groupMatches}
                 predictions={predictions}
-                propagatedTeams={
-  group.round === "Third-place Play-off"
-    ? {
-        ...propagatedTeams,
-        103: {
-          homeTeam: thirdPlaceHomeTeam,
-          awayTeam: thirdPlaceAwayTeam,
-        },
-      }
-    : propagatedTeams
-}
-                actualWinnersByMatchNumber={
-  group.round === "Third-place Play-off"
-    ? {
-        ...actualWinnersByMatchNumber,
-        101: thirdPlaceHomeTeam,
-        102: thirdPlaceAwayTeam,
-      }
-    : actualWinnersByMatchNumber
-}
+                propagatedTeams={propagatedTeams}
+                actualPropagatedTeams={actualPropagatedTeams}
+                actualWinnersByMatchNumber={actualWinnersByMatchNumber}
                 theme={theme}
                 formatKickoff={formatKickoff}
                 isMatchLocked={isMatchLocked}
