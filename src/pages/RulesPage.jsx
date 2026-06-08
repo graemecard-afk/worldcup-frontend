@@ -107,25 +107,27 @@ export default function RulesPage() {
           that you get extra points for each team correctly placed in the ladder.
         </li>
 
-        <li>
-          <strong>
-            The bracket must be completed throughout by MIDNIGHT on 29 June.
-          </strong>{" "}
-          PLEASE NOTE THE TIGHT TIMING OF THIS 2ND PART. Don&apos;t blame me,
-          blame FIFA!
-        </li>
+                 <li>
+            <strong>
+              The bracket must be completed throughout by 7:00pm NZST on Sunday
+              28 June 2026.
+            </strong>{" "}
+            This is 12 hours before the first knockout game kicks off, which is{" "}
+            <strong>07:00 UTC on Sunday 28 June 2026</strong>. PLEASE NOTE THE
+            TIGHT TIMING OF THIS 2ND PART. Don&apos;t blame me, blame FIFA!
+          </li>
 
-        <li>
-          <strong>
-            The advancing team in your brackets will be locked at this point.
-          </strong>
-        </li>
+          <li>
+            <strong>
+              The advancing teams in your bracket will be locked at this point.
+            </strong>
+          </li>
 
-        <li>
-          <strong>
-            Entries received after this deadline cannot be accepted.
-          </strong>
-        </li>
+          <li>
+            <strong>
+              Entries received after this deadline cannot be accepted.
+            </strong>
+          </li>
 
         <li>
           Scores in the bracket can still be changed up to{" "}
