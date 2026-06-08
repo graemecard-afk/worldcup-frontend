@@ -20,6 +20,14 @@ export default function KnockoutRound({
   labelOffsetY = 0,
 }) {
   const CARD_SLOT_HEIGHT = 230;
+  const roundBonusLabels = {
+  "Round of 32": "R32 +10",
+  "Round of 16": "R16 +20",
+  "Quarter-final": "QF +40",
+  "Semi-final": "SF +80",
+  "Third-place Play-off": "3rd +120",
+  Final: "Final +160",
+};
 
   return (
     <div>
@@ -36,7 +44,7 @@ export default function KnockoutRound({
             : "none",
         }}
       >
-        {round}
+      {roundBonusLabels[round] || round}
       </h4>
 
       <div
