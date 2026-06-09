@@ -142,7 +142,7 @@ export default function RulesPage() {
           beating Mexico.
         </li>
       </ol>
-      ```jsx
+      <h2>Scoring for Parts 1 and 2</h2>
         <p>
           <strong>Example A</strong><br />
           Predicted: Germany 3–1 Ukraine<br />
