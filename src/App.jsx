@@ -871,19 +871,7 @@ if (currentView === 'rules') {
             >
               Get your predictions in at least 2h before kick-off, after which time they will be locked. See if you can outwit your mates!
             </p>
-                        <p
-              style={{
-                marginTop: '8px',
-                marginBottom: 0,
-                fontSize: '0.8rem',
-                color: '#fbbf24',
-                fontWeight: 600,
-              }}
-            >
-              ⚠️ Knockout predictions are currently under development and testing.
-              Any knockout selections entered before official release may be
-              changed, reset, or overwritten without notice.
-            </p>
+           
           </div>
         </div>
 
