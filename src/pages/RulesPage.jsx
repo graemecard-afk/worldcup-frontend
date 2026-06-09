@@ -142,6 +142,43 @@ export default function RulesPage() {
           beating Mexico.
         </li>
       </ol>
+      ```jsx
+        <p>
+          <strong>Example A</strong><br />
+          Predicted: Germany 3–1 Ukraine<br />
+          Actual: Germany 3–1 Ukraine<br />
+          You get 10 points for Germany's three goals, 10 points for Ukraine's 1 goal, 10 points for predicting that Germany won, and 10 points for the correct spread (3-1 = 2), giving you a total of 40 points.
+        </p>
+
+        <p>
+          <strong>Example B</strong><br />
+          Predicted: Germany 3–3 Ukraine<br />
+          Actual: Germany 0–0 Ukraine<br />
+          You get 10 points for the correct prediction that it was a draw, and 10 points for the correct spread (3-3 = zero and 0-0 = zero), giving you a total of 20 points.
+        </p>
+
+        <p>
+          <strong>Example C</strong><br />
+          Predicted: Germany 3–1 Ukraine<br />
+          Actual: Germany 3–4 Ukraine<br />
+          You get 10 points for the correct number of goals scored by Germany, giving you a total of 10 points.
+        </p>
+
+        <p>
+          <strong>Example D</strong><br />
+          Predicted: Germany 2–3 Ukraine<br />
+          Actual: Germany 6–7 Ukraine<br />
+          You get 10 points for predicting Ukraine to win, and 10 points for the correct spread (3-2 = 1 and 7-6 = 1), giving you a total of 20 points.
+        </p>
+
+        <p>
+          <strong>Example E</strong><br />
+          Predicted: Germany 1–0 Ukraine<br />
+          Actual: Germany 0–1 Ukraine<br />
+          You get nothing as you got the prediction of Germany to win wrong, the number of goals scored by both teams wrong, and the spread wrong (1-0 is not equal to 0-1), giving you a total of 0 points.
+        </p>
+```
+
             <hr style={{ margin: "36px 0", opacity: 0.35 }} />
       <p style={{ marginTop: 32 }}>
         In order to get the 10 points for the correct spread, you need at
@@ -170,7 +207,7 @@ export default function RulesPage() {
         <li><strong>3rd place play-off</strong> – 120 points</li>
         <li><strong>World Cup champion</strong> – 160 points</li>
       </ul>
-      <h2>Knockout scoring example</h2>
+      
       <hr style={{ margin: "36px 0", opacity: 0.35 }} />
 
       <h2>Knockout scoring example</h2>
