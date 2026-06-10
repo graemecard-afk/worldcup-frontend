@@ -177,6 +177,19 @@ export default function AuthPage({
         >
           {mode === "login" ? "Log in" : "Create account"}
         </button>
+                  {mode === "login" && (
+            <p
+              style={{
+                marginTop: "12px",
+                fontSize: "0.85rem",
+                textAlign: "center",
+                opacity: 0.85,
+              }}
+            >
+              Forgot your password? Email grayum2004@yahoo.com and a temporary
+              password can be issued.
+            </p>
+          )}
       </form>
     </>
   );
