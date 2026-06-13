@@ -4,6 +4,7 @@ import LeaderboardTable from "./components/LeaderboardTable";
 import AdminFinalizeMatchPanel from "./components/AdminFinalizeMatchPanel";
 import AdminKnockoutTeamPanel from "./components/AdminKnockoutTeamPanel";
 import AdminUserPaymentsPanel from "./components/AdminUserPaymentsPanel";
+import AdminReportingPanel from "./components/AdminReportingPanel";
 import LeaderboardPage from "./pages/Leaderboard";
 import AuthPage from "./pages/Auth";
 import NavDrawer from './components/NavDrawer';
@@ -960,6 +961,7 @@ if (currentView === 'rules') {
   />
 
   <AdminUserPaymentsPanel />
+  <AdminReportingPanel tournamentId={currentTournament?.id} />
 </div>
 ) : matchPhase === 'knockout' ? (
                 <>
