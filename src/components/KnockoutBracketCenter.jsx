@@ -80,11 +80,19 @@ const thirdPlaceHasScore =
   !Number.isNaN(thirdPlaceHomeGoals) && !Number.isNaN(thirdPlaceAwayGoals);
 const thirdPlaceIsDraw =
   thirdPlaceHasScore && thirdPlaceHomeGoals === thirdPlaceAwayGoals;
+  const thirdPlaceHomeValue = thirdPlaceMatch?.home_team || thirdPlaceHomeTeam || "";
+  const thirdPlaceAwayValue = thirdPlaceMatch?.away_team || thirdPlaceAwayTeam || "";
+
+  const thirdPlaceHomeLabel =
+    propagatedTeams[103]?.homeTeam || thirdPlaceHomeTeam || thirdPlaceHomeValue;
+  const thirdPlaceAwayLabel =
+    propagatedTeams[103]?.awayTeam || thirdPlaceAwayTeam || thirdPlaceAwayValue;
+
 const thirdPlaceClearWinner =
   thirdPlaceHasScore && !thirdPlaceIsDraw
     ? thirdPlaceHomeGoals > thirdPlaceAwayGoals
-      ? thirdPlaceHomeTeam
-      : thirdPlaceAwayTeam
+      ? thirdPlaceHomeValue
+      : thirdPlaceAwayValue
     : "";
   const thirdPlaceValue =
     thirdPlaceClearWinner || thirdPlacePrediction.advancing || "";
@@ -200,8 +208,8 @@ const thirdPlaceClearWinner =
           }}
         >
           <option value="">Select third place</option>
-         <option value={thirdPlaceHomeTeam}>{thirdPlaceHomeTeam}</option>
-         <option value={thirdPlaceAwayTeam}>{thirdPlaceAwayTeam}</option>
+         <option value={thirdPlaceHomeValue}>{thirdPlaceHomeLabel}</option>
+         <option value={thirdPlaceAwayValue}>{thirdPlaceAwayLabel}</option>
         </select>
         
       </div>
